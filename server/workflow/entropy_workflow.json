@@ -1,0 +1,105 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 9407388965451,
+      "steps": 30,
+      "cfg": 10,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": ["15", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0]
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "darkSushi25D25D_v40.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 728,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "(masterpiece, best quality, high res), intricate details, 1girl IncrsAhriSG, skirt, zettai ryouiki, long hair, facial mark",
+      "clip": ["16", 0]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "(worst quality, low quality, lowres, blurry)",
+      "clip": ["16", 0]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": ["3", 0],
+      "vae": ["18", 0]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": ["12", 0]
+    },
+    "class_type": "SaveImage"
+  },
+  "10": {
+    "inputs": {
+      "lora_name": "AhriStarGuardian.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": ["4", 0],
+      "clip": ["4", 1]
+    },
+    "class_type": "LoraLoader"
+  },
+  "11": {
+    "inputs": {
+      "model_name": "4x-UltraSharp.pth"
+    },
+    "class_type": "UpscaleModelLoader"
+  },
+  "12": {
+    "inputs": {
+      "upscale_model": ["11", 0],
+      "image": ["8", 0]
+    },
+    "class_type": "ImageUpscaleWithModel"
+  },
+  "15": {
+    "inputs": {
+      "lora_name": "GoodHands-beta2.safetensors",
+      "strength_model": -3.48,
+      "strength_clip": 1,
+      "model": ["10", 0],
+      "clip": ["10", 1]
+    },
+    "class_type": "LoraLoader"
+  },
+  "16": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": ["15", 1]
+    },
+    "class_type": "CLIPSetLastLayer"
+  },
+  "18": {
+    "inputs": {
+      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    "class_type": "VAELoader"
+  }
+}
