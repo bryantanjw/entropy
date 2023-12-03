@@ -10,6 +10,8 @@ import uuid
 import json
 import urllib
 import websocket
+from websocket import create_connection
+from websocket import WebSocketConnectionClosedException
 from PIL import Image
 from urllib.error import URLError
 import random
@@ -31,7 +33,7 @@ class Predictor(BasePredictor):
         print("Server is up and running!")
 
     def run_server(self):
-        command = "python ./ComfyUI/main.py"
+        command = "python ./ComfyUI/main.py --cpu"
         server_process = subprocess.Popen(command, shell=True)
         server_process.wait()
 
@@ -48,7 +50,7 @@ class Predictor(BasePredictor):
         data = json.dumps(p).encode('utf-8')
         req =  urllib.request.Request("http://{}/prompt".format(self.server_address), data=data)
         return json.loads(urllib.request.urlopen(req).read())
-
+    
     def get_image(self, filename, subfolder, folder_type):
         data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
         print(folder_type)
@@ -104,7 +106,9 @@ class Predictor(BasePredictor):
         if seed is None:
             seed = int.from_bytes(os.urandom(3), "big")
         print(f"Using seed: {seed}")
-        generator = torch.Generator("cuda").manual_seed(seed)
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        generator = torch.Generator(device).manual_seed(seed)
+
 
         # queue prompt
         img_output_path = self.get_workflow_output(
@@ -119,7 +123,7 @@ class Predictor(BasePredictor):
     def get_workflow_output(self, input_prompt, negative_prompt, steps, seed):
         # load config
         prompt = None
-        workflow_config = "./custom_workflows/sdxl_txt2img.json"
+        workflow_config = "./workflow/txt2img.json"
         with open(workflow_config, 'r') as file:
             prompt = json.load(file)
 

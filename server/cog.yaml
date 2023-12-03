@@ -1,11 +1,14 @@
+image: "r8.im/bryantanjw/lora-test"
+
 build:
   # set to true if your model requires a GPU
-  gpu: false
+  gpu: true
 
   system_packages:
     - ffmpeg
     - git
     - wget
+    - cmake
 
   python_version: "3.10.6"
 
@@ -13,6 +16,7 @@ build:
     - torch
     - torchvision
     - torchaudio
+    - --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
     - torchsde
     - einops
     - transformers>=4.25.1
