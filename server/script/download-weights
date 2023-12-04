@@ -5,7 +5,7 @@ import sys
 import shutil
 
 # append project directory to path so predict.py can be imported
-# sys.path.append('.') 
+# sys.path.append('.')
 # from predict import MODEL_NAME, MODEL_CACHE, CONTROL_CACHE
 
 # Clone ComfyUI repo
@@ -19,5 +19,10 @@ os.system("ln -s /src/models/checkpoints ComfyUI/models/checkpoints")
 # Download model weights
 os.system("wget https://huggingface.co/mdl-mirror/dark-sushi-mix/resolve/main/darkSushiMixMix_brighterPruned.safetensors -P models/checkpoints/")
 
-# Move all models to ComfyUI/models/checkpoints
-# os.system("mv ./models/checkpoints/* ComfyUI/models/checkpoints/")
+# Download LoRAs
+os.system(
+    "wget https://civitai.com/api/download/models/182649 -P models/loras/")
+
+# Move all models and loRAs to to ComfyUI/models
+os.system("mv ./models/checkpoints/* ComfyUI/models/checkpoints/")
+os.system("mv ./models/loras/* ComfyUI/models/loras/")

@@ -5,16 +5,11 @@ from cog import BasePredictor, Input, Path
 # from typing import List
 import os
 import torch
-import shutil
 import uuid
 import json
 import urllib
 import websocket
-from websocket import create_connection
-from websocket import WebSocketConnectionClosedException
-from PIL import Image
 from urllib.error import URLError
-import random
 
 
 class Predictor(BasePredictor):
@@ -44,15 +39,17 @@ class Predictor(BasePredictor):
                 return response.status == 200
         except URLError:
             return False
-    
+
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
         data = json.dumps(p).encode('utf-8')
-        req =  urllib.request.Request("http://{}/prompt".format(self.server_address), data=data)
+        req = urllib.request.Request(
+            "http://{}/prompt".format(self.server_address), data=data)
         return json.loads(urllib.request.urlopen(req).read())
-    
+
     def get_image(self, filename, subfolder, folder_type):
-        data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
+        data = {"filename": filename,
+                "subfolder": subfolder, "type": folder_type}
         print(folder_type)
         url_values = urllib.parse.urlencode(data)
         with urllib.request.urlopen("http://{}/view?{}".format(self.server_address, url_values)) as response:
@@ -68,9 +65,9 @@ class Predictor(BasePredictor):
                 if message['type'] == 'executing':
                     data = message['data']
                     if data['node'] is None and data['prompt_id'] == prompt_id:
-                        break #Execution is done
+                        break  # Execution is done
             else:
-                continue #previews are binary data
+                continue  # previews are binary data
 
         history = self.get_history(prompt_id)[prompt_id]
         for o in history['outputs']:
@@ -81,7 +78,8 @@ class Predictor(BasePredictor):
                 if 'images' in node_output:
                     images_output = []
                     for image in node_output['images']:
-                        image_data = self.get_image(image['filename'], image['subfolder'], image['type'])
+                        image_data = self.get_image(
+                            image['filename'], image['subfolder'], image['type'])
                         images_output.append(image_data)
                 output_images[node_id] = images_output
 
@@ -90,17 +88,22 @@ class Predictor(BasePredictor):
     def get_history(self, prompt_id):
         with urllib.request.urlopen("http://{}/history/{}".format(self.server_address, prompt_id)) as response:
             return json.loads(response.read())
-    
+
     # TODO: add dynamic fields based on the workflow selected
     def predict(
         self,
-        input_prompt: str = Input(description="Prompt", default="beautiful scenery nature glass bottle landscape, purple galaxy bottle"),
-        negative_prompt: str = Input(description="Negative Prompt", default="text, watermark, ugly, blurry"),
+        input_prompt: str = Input(
+            description="Prompt", default="beautiful scenery nature glass bottle landscape, purple galaxy bottle"),
+        negative_prompt: str = Input(
+            description="Negative Prompt", default="text, watermark, ugly, blurry"),
         steps: int = Input(
             description="Steps",
             default=30
         ),
-        seed: int = Input(description="Sampling seed, leave Empty for Random", default=None),
+        seed: int = Input(
+            description="Sampling seed, leave Empty for Random", default=None),
+        lora: str = Input(
+            description="LoRA Model", default="Ahri KDA All.safetensors"),
     ) -> Path:
         """Run a single prediction on the model"""
         if seed is None:
@@ -109,21 +112,21 @@ class Predictor(BasePredictor):
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         generator = torch.Generator(device).manual_seed(seed)
 
-
         # queue prompt
         img_output_path = self.get_workflow_output(
-            input_prompt = input_prompt,
-            negative_prompt = negative_prompt,
-            steps = steps,
-            seed = seed
+            input_prompt=input_prompt,
+            negative_prompt=negative_prompt,
+            lora=lora,
+            steps=steps,
+            seed=seed
+            
         )
         return Path(img_output_path)
 
-
-    def get_workflow_output(self, input_prompt, negative_prompt, steps, seed):
+    def get_workflow_output(self, input_prompt, negative_prompt, lora, steps, seed):
         # load config
         prompt = None
-        workflow_config = "./workflow/txt2img.json"
+        workflow_config = "./workflow/entropy_workflow.json"
         with open(workflow_config, 'r') as file:
             prompt = json.load(file)
 
@@ -133,20 +136,24 @@ class Predictor(BasePredictor):
         # set input variables
         prompt["6"]["inputs"]["text"] = input_prompt
         prompt["7"]["inputs"]["text"] = negative_prompt
-
+        prompt["10"]["inputs"]["lora_name"] = lora
         prompt["3"]["inputs"]["seed"] = seed
         prompt["3"]["inputs"]["steps"] = steps
+
+        prompt["11"]["inputs"]["model_name"] = "4x-UltraSharp.pth"
+        
 
         # start the process
         client_id = str(uuid.uuid4())
         ws = websocket.WebSocket()
-        ws.connect("ws://{}/ws?clientId={}".format(self.server_address, client_id))
+        ws.connect(
+            "ws://{}/ws?clientId={}".format(self.server_address, client_id))
         images = self.get_images(ws, prompt, client_id)
 
         for node_id in images:
             for image_data in images[node_id]:
-                from PIL import Image
                 import io
+                from PIL import Image
                 image = Image.open(io.BytesIO(image_data))
                 image.save("out-"+node_id+".png")
                 return Path("out-"+node_id+".png")

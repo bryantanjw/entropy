@@ -16,7 +16,7 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "darkSushi25D25D_v40.safetensors"
+      "ckpt_name": "darkSushiMixMix_brighterPruned.safetensors"
     },
     "class_type": "CheckpointLoaderSimple"
   },
@@ -58,7 +58,7 @@
   },
   "10": {
     "inputs": {
-      "lora_name": "AhriStarGuardian.safetensors",
+      "lora_name": "Ahri KDA All.safetensors",
       "strength_model": 1,
       "strength_clip": 1,
       "model": ["4", 0],
