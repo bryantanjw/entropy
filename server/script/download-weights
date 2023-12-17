@@ -10,19 +10,26 @@ import shutil
 
 # Clone ComfyUI repo
 os.system("git clone https://github.com/comfyanonymous/ComfyUI.git")
-os.system("mkdir -p models/checkpoints")
+# os.system("mkdir -p models/checkpoints")
+# os.system("mkdir -p models/loras")
+# os.system("mkdir -p models/vae")
+# os.system("mkdir -p models/upscale_models")
 
-# TODO: See if linking from ComfyUI/models/checkpoints to models/checkpoints works
-os.system("rm -rf ComfyUI/models/checkpoints")
-os.system("ln -s /src/models/checkpoints ComfyUI/models/checkpoints")
+# # TODO: See if linking from ComfyUI/models/checkpoints to models/checkpoints works
+# os.system("rm -rf ComfyUI/models/checkpoints")
+# os.system("ln -s /src/models/checkpoints ComfyUI/models/checkpoints")
 
-# Download model weights
-os.system("wget https://huggingface.co/mdl-mirror/dark-sushi-mix/resolve/main/darkSushiMixMix_brighterPruned.safetensors -P models/checkpoints/")
+# # Download model weights
+# os.system("wget https://huggingface.co/mdl-mirror/dark-sushi-mix/resolve/main/darkSushiMixMix_brighterPruned.safetensors -o 'Ahri KDA All.safetensors' -P models/checkpoints/")
 
-# Download LoRAs
-os.system(
-    "wget https://civitai.com/api/download/models/182649 -P models/loras/")
+# # Download vae
+# os.system("wget https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt -P models/vae/")
 
-# Move all models and loRAs to to ComfyUI/models
-os.system("mv ./models/checkpoints/* ComfyUI/models/checkpoints/")
-os.system("mv ./models/loras/* ComfyUI/models/loras/")
+# # Download LoRAs
+# os.system(
+#     "wget https://civitai.com/api/download/models/182649 -P models/loras/")
+
+# # Move all models to to ComfyUI/models
+# os.system("mv ./models/checkpoints/* ComfyUI/models/checkpoints/")
+# os.system("mv ./models/loras/* ComfyUI/models/loras/")
+# os.system("mv ./models/vae/* ComfyUI/models/vae/")

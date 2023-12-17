@@ -14,9 +14,13 @@ from urllib.error import URLError
 
 class Predictor(BasePredictor):
     def setup(self):
-        # start server
         self.server_address = "127.0.0.1:8188"
         self.start_server()
+        self.download_models()
+
+        # clean up pip cache
+        os.system('rm -rf /root/.cache/pip')
+
 
     def start_server(self):
         server_thread = threading.Thread(target=self.run_server)
@@ -28,7 +32,7 @@ class Predictor(BasePredictor):
         print("Server is up and running!")
 
     def run_server(self):
-        command = "python ./ComfyUI/main.py --cpu"
+        command = "python ./ComfyUI/main.py --force-fp16"
         server_process = subprocess.Popen(command, shell=True)
         server_process.wait()
 
@@ -39,6 +43,26 @@ class Predictor(BasePredictor):
                 return response.status == 200
         except URLError:
             return False
+        
+    def download_models(self):
+        model_urls = [
+            "https://huggingface.co/mdl-mirror/dark-sushi-mix/resolve/main/darkSushiMixMix_brighterPruned.safetensors",
+            "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt",
+            "https://civitai.com/api/download/models/124033"
+        ]
+        model_paths = [
+            "models/checkpoints/aniverse_v11.safetensors",
+            "models/vae/vae-ft-mse-840000-ema-pruned.ckpt",
+            "models/loras/Miss_Fortune.safetensors"
+        ]
+
+        for url, path in zip(model_urls, model_paths):
+            if not os.path.exists(path):
+                print(f"Model {path} not found, downloading from {url}")
+                urllib.request.urlretrieve(url, path)
+                print(f"Downloaded model to {path}")
+            else:
+                print(f"Model {path} already exists, skipping download")
 
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
@@ -92,18 +116,44 @@ class Predictor(BasePredictor):
     # TODO: add dynamic fields based on the workflow selected
     def predict(
         self,
+        checkpoint_model: str = Input(
+            description="Checkpoint Model",
+            choices=["aniverse_v11.safetensors"],
+            default="aniverse_v11.safetensors"
+        ),
         input_prompt: str = Input(
             description="Prompt", default="beautiful scenery nature glass bottle landscape, purple galaxy bottle"),
         negative_prompt: str = Input(
-            description="Negative Prompt", default="text, watermark, ugly, blurry"),
+            description="Negative Prompt", default="text, watermark, ugly, blurry"
+        ),
         steps: int = Input(
-            description="Steps",
+            description="Inference Steps",
             default=30
         ),
         seed: int = Input(
-            description="Sampling seed, leave Empty for Random", default=None),
+            description="Sampling seed, leave Empty for Random", default=None
+        ),
+        cfg: int = Input(
+            description="CFG Scale",
+            default=10
+        ),
         lora: str = Input(
-            description="LoRA Model", default="Ahri KDA All.safetensors"),
+            description="LoRA Model",
+            choices=["Miss_Fortune.safetensors"],
+            default="Miss_Fortune.safetensors"
+        ),
+        width: int = Input(
+            description="Image Width",
+            default=512
+        ),
+        height: int = Input(
+            description="Image Height",
+            default=512
+        ),
+        batch_size: int = Input(
+            description="Batch Size",
+            default=1
+        )
     ) -> Path:
         """Run a single prediction on the model"""
         if seed is None:
@@ -114,16 +164,32 @@ class Predictor(BasePredictor):
 
         # queue prompt
         img_output_path = self.get_workflow_output(
+            checkpoint_model=checkpoint_model,
             input_prompt=input_prompt,
             negative_prompt=negative_prompt,
             lora=lora,
             steps=steps,
-            seed=seed
-            
+            seed=seed,
+            cfg=cfg,
+            width=width,
+            height=height,
+            batch_size=batch_size
         )
         return Path(img_output_path)
 
-    def get_workflow_output(self, input_prompt, negative_prompt, lora, steps, seed):
+    def get_workflow_output(
+        self,
+        checkpoint_model,
+        input_prompt, negative_prompt,
+        lora,
+        steps,
+        seed,
+        batch_size,
+        width,
+        height,
+        cfg,
+        strength_model,
+    ):
         # load config
         prompt = None
         workflow_config = "./workflow/entropy_workflow.json"
@@ -134,14 +200,19 @@ class Predictor(BasePredictor):
             raise Exception('no workflow config found')
 
         # set input variables
+        prompt["4"]["inputs"]["ckpt_name"] = checkpoint_model
         prompt["6"]["inputs"]["text"] = input_prompt
         prompt["7"]["inputs"]["text"] = negative_prompt
         prompt["10"]["inputs"]["lora_name"] = lora
         prompt["3"]["inputs"]["seed"] = seed
         prompt["3"]["inputs"]["steps"] = steps
+        prompt["3"]["inputs"]["cfg"] = cfg
 
-        prompt["11"]["inputs"]["model_name"] = "4x-UltraSharp.pth"
-        
+        # Add lora strength, width, height, batch size
+        prompt["5"]["inputs"]["batch_size"] = batch_size
+        prompt["5"]["inputs"]["width"] = width
+        prompt["5"]["inputs"]["height"] = height
+        prompt["10"]["inputs"]["strength_model"] = strength_model
 
         # start the process
         client_id = str(uuid.uuid4())

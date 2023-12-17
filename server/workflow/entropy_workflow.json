@@ -7,7 +7,7 @@
       "sampler_name": "dpmpp_sde",
       "scheduler": "karras",
       "denoise": 1,
-      "model": ["15", 0],
+      "model": ["10", 0],
       "positive": ["6", 0],
       "negative": ["7", 0],
       "latent_image": ["5", 0]
@@ -16,21 +16,21 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "darkSushiMixMix_brighterPruned.safetensors"
+      "ckpt_name": "darkSushi25D25D_v40.safetensors"
     },
     "class_type": "CheckpointLoaderSimple"
   },
   "5": {
     "inputs": {
-      "width": 728,
-      "height": 1024,
-      "batch_size": 1
+      "width": 512,
+      "height": 720,
+      "batch_size": 2
     },
     "class_type": "EmptyLatentImage"
   },
   "6": {
     "inputs": {
-      "text": "(masterpiece, best quality, high res), intricate details, 1girl IncrsAhriSG, skirt, zettai ryouiki, long hair, facial mark",
+      "text": "(masterpiece, best quality, high res), intricate details, 1boy, 1girl IncrsAhriSG, skirt, zettai ryouiki, long hair, facial mark,  ass, ass grab, bent over, blush, book, bookshelf, breasts, classroom, desk, doggystyle, heart, heart-shaped pupils, hetero, indoors, library, long hair, panties, school desk, sex, sex from behind, dress, solo focus,",
       "clip": ["16", 0]
     },
     "class_type": "CLIPTextEncode"
@@ -52,13 +52,13 @@
   "9": {
     "inputs": {
       "filename_prefix": "ComfyUI",
-      "images": ["12", 0]
+      "images": ["8", 0]
     },
     "class_type": "SaveImage"
   },
   "10": {
     "inputs": {
-      "lora_name": "Ahri KDA All.safetensors",
+      "lora_name": "Diana Firecracker.safetensors",
       "strength_model": 1,
       "strength_clip": 1,
       "model": ["4", 0],
@@ -66,33 +66,10 @@
     },
     "class_type": "LoraLoader"
   },
-  "11": {
-    "inputs": {
-      "model_name": "4x-UltraSharp.pth"
-    },
-    "class_type": "UpscaleModelLoader"
-  },
-  "12": {
-    "inputs": {
-      "upscale_model": ["11", 0],
-      "image": ["8", 0]
-    },
-    "class_type": "ImageUpscaleWithModel"
-  },
-  "15": {
-    "inputs": {
-      "lora_name": "GoodHands-beta2.safetensors",
-      "strength_model": -3.48,
-      "strength_clip": 1,
-      "model": ["10", 0],
-      "clip": ["10", 1]
-    },
-    "class_type": "LoraLoader"
-  },
   "16": {
     "inputs": {
       "stop_at_clip_layer": -2,
-      "clip": ["15", 1]
+      "clip": ["10", 1]
     },
     "class_type": "CLIPSetLastLayer"
   },
