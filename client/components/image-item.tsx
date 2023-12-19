@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -15,7 +15,6 @@ import {
 
 import { Dialog, DialogTrigger, DialogContent, DialogClose } from "./ui/dialog";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -30,8 +29,6 @@ import { Textarea } from "./ui/textarea";
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { Badge, badgeVariants } from "./ui/badge";
 import Link from "next/link";
-import { Skeleton } from "./ui/skeleton";
-import { useRouter } from "next/navigation";
 
 type ImageItemProps = {
   index: number;
@@ -114,14 +111,20 @@ export default function ImageItem({
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
+    setCurrIndex(0);
+  }, [images]);
+
+  useEffect(() => {
     const handleRightArrow = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight") {
+        setDirection(1);
         setCurrIndex((currIndex + 1 + total) % total);
       }
     };
 
     const handleLeftArrow = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") {
+        setDirection(-1);
         setCurrIndex((currIndex - 1 + total) % total);
       }
     };
@@ -135,10 +138,6 @@ export default function ImageItem({
       window.removeEventListener("keydown", handleLeftArrow);
     };
   }, [currIndex, total]);
-
-  if (!image || !images[currIndex]) {
-    return <Skeleton className="w-[full] h-[400px]" />;
-  }
 
   return (
     <MotionConfig
@@ -192,8 +191,9 @@ export default function ImageItem({
 
         <AnimatePresence initial={false} custom={direction}>
           <DialogContent
+            showCloseIcon={false}
             className={clsx(
-              "grid-cols-[1fr_500px] gap-12 items-center justify-center max-w-6xl"
+              "grid-cols-[1fr_500px] gap-12 items-center justify-center max-w-6xl border-0"
             )}
           >
             <Button
@@ -244,7 +244,8 @@ export default function ImageItem({
             </motion.figure>
             <motion.div
               key={`${currIndex}-card`}
-              variants={cardVariants}
+              custom={direction}
+              variants={imageVariants}
               initial="enter"
               animate="center"
               exit="exit"

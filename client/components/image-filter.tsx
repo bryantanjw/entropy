@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Cross1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
@@ -47,7 +47,7 @@ export default function Filter({
           name="search"
           type="text"
           value={text}
-          className="pl-9 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="px-9 flex h-9 w-full rounded-md border border-input bg-transparent py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Search..."
           onChange={(e) => setText(e.target.value)}
         />
@@ -56,8 +56,19 @@ export default function Filter({
               flex items-center  
               pointer-events-none"
         >
-          <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
+          <MagnifyingGlassIcon className="w-4 h-4 text-gray-400" />
         </div>
+        {text && (
+          <div
+            className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+            onClick={() => {
+              setText("");
+              router.push(`/images?search=&style=${selectedStyle}`);
+            }}
+          >
+            <Cross1Icon className="w-4 h-4 mr-1 text-gray-400" />
+          </div>
+        )}
       </form>
       <ToggleGroup type="single" className="flex gap-3">
         <ToggleGroupItem
@@ -65,8 +76,8 @@ export default function Filter({
           aria-label="Toggle all"
           className={clsx(
             "opacity-60",
-            "bg-transparent hover:bg-transparent hover:opacity-80 data-[state=on]:bg-transparent",
-            !selectedStyle && "outline opacity-100"
+            "bg-transparent hover:bg-transparent hover:opacity-90 data-[state=on]:bg-transparent",
+            !selectedStyle && "outline outline-1 opacity-100"
           )}
           onClick={() => {
             setSelectedStyle("");
@@ -82,8 +93,8 @@ export default function Filter({
             aria-label={`Toggle ${style}`}
             className={clsx(
               "capitalize  opacity-60",
-              "bg-transparent hover:bg-transparent dark:hover:text-rose-five data-[state=on]:bg-transparent",
-              selectedStyle === `${style}` && "outline opacity-100"
+              "bg-transparent hover:bg-transparent hover:opacity-90 dark:hover:text-rose-five data-[state=on]:bg-transparent",
+              selectedStyle === `${style}` && "outline outline-1 opacity-100"
             )}
             onClick={() => setSelectedStyle(style)}
           >
