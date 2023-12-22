@@ -70,7 +70,11 @@ export default function Filter({
           </div>
         )}
       </form>
-      <ToggleGroup type="single" className="flex gap-3">
+      <ToggleGroup
+        type="single"
+        className="flex items-center justify-center gap-3"
+        variant="pill"
+      >
         <ToggleGroupItem
           value=""
           aria-label="Toggle all"

@@ -40,18 +40,6 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    function handleKeydown(event: KeyboardEvent) {
-      // Check if the 'Meta' (Command on Mac) key is pressed along with 'K'
-      if (event.metaKey && event.key === "k") {
-        toggleTheme();
-      }
-    }
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme]);
   const toggleTheme = () => {
     if (theme === "dark") {
       setTheme("light");

@@ -35,22 +35,22 @@ export default function GenerationPage() {
   return (
     <div className="flex flex-col w-full items-center">
       <Navbar />
-      <div className="w-full grid grid-cols-[1fr_0.2fr]">
-        <Column className="items-center min-h-screen py-32">
-          <Column className="w-full lg:max-w-4xl xl:max-w-5xl">
+      <div className="w-full grid grid-cols-[1fr_0.18fr]">
+        <Column className="items-center min-h-screen py-32 px-10">
+          <Column className="w-full lg:max-w-4xl xl:max-w-6xl">
             <InputForm />
             <Row className="my-20 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-            <div className="flex flex-wrap gap-6">
-              <div className="bg-muted h-64 w-64"></div>
-              <div className="bg-muted h-64 w-64"></div>
-              <div className="bg-muted h-64 w-64"></div>
-              <div className="bg-muted h-64 w-64"></div>
+            <div className="flex flex-wrap flex-grow gap-6">
+              <div className="bg-muted flex-grow h-64"></div>
+              <div className="bg-muted flex-grow h-64"></div>
+              <div className="bg-muted flex-grow h-64"></div>
+              <div className="bg-muted flex-grow h-64"></div>
             </div>
           </Column>
         </Column>
 
         {/* Side Menu */}
-        <div className="flex flex-col gap-12 border mt-12 p-7 py-8">
+        <div className="flex flex-col gap-12 border mt-12 px-5 py-8">
           <div className="flex justify-between items-center">
             <span>Recent</span>
             <Button variant={"secondary"} size={"sm"} className="opacity-70">
@@ -58,10 +58,10 @@ export default function GenerationPage() {
             </Button>
           </div>
           <div className="flex flex-wrap gap-2">
-            <div className="bg-muted h-12 w-12"></div>
-            <div className="bg-muted h-12 w-12"></div>
-            <div className="bg-muted h-12 w-12"></div>
-            <div className="bg-muted h-12 w-12"></div>
+            <div className="bg-muted h-9 flex-grow"></div>
+            <div className="bg-muted h-9 flex-grow"></div>
+            <div className="bg-muted h-9 flex-grow"></div>
+            <div className="bg-muted h-9 flex-grow"></div>
           </div>
         </div>
       </div>

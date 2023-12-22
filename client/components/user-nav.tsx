@@ -25,26 +25,6 @@ export function UserNav() {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    function handleKeydown(event: KeyboardEvent) {
-      // Check if the 'Meta' (Command on Mac) key is pressed along with 'K'
-      if (event.metaKey && event.key === "k") {
-        toggleTheme();
-      }
-    }
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme]);
-
-  const toggleTheme = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -82,14 +62,7 @@ export function UserNav() {
           >
             <Link href="/account">Manage account</Link>
           </DropdownMenuItem>
-          <div className="space-y-5">
-            <DropdownMenuItem
-              onClick={toggleTheme}
-              className="text-muted-foreground cursor-pointer"
-            >
-              Toggle theme
-              <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-            </DropdownMenuItem>
+          <div>
             <DropdownMenuItem className="text-muted-foreground cursor-pointer">
               Log out
             </DropdownMenuItem>

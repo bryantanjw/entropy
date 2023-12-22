@@ -24,7 +24,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "www.entropy.so",
+        hostname: "app.entropy.so",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

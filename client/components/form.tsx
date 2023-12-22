@@ -11,7 +11,11 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
-import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  MixerHorizontalIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import { Column } from "./ui/column";
 import {
   CommandDialog,
@@ -29,25 +33,27 @@ import {
 } from "@/lib/hooks/use-playground-form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Badge } from "./ui/badge";
+import { featured } from "@/app/data/characters";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import { Row } from "./ui/row";
 
 export const InputForm = () => {
   const router = useRouter();
   const { toast } = useToast();
   const form = usePlaygroundForm();
+
   const [open, setOpen] = useState(false);
+  const [character, setCharacter] = useState(featured[0]);
+  const [imageSrc, setImageSrc] = useState(featured[0].image1);
+
+  // State management for Replicate prediction
+  const [status, setStatus] = useState("Starting...");
+  const [prediction, setPrediction] = useState(null);
 
   // Form states
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
-
-  const inputDivRef = useRef<HTMLDivElement>(null);
-  const popoverContentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (inputDivRef.current && popoverContentRef.current) {
-      popoverContentRef.current.style.width = `${inputDivRef.current.offsetWidth}px`;
-    }
-  }, []);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -60,38 +66,134 @@ export const InputForm = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
-    // Do something with the form values.
-    router.push(`e/${1}`);
+  useEffect(() => {
+    setImageSrc(character.image1);
+  }, [character]);
+
+  async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
+    // Submit the values to /generatePredictions
     console.log(values);
+
+    setStatus("Starting...");
+    setPrediction(null);
+    setSubmitting(true);
+
+    // Make initial request to Lambda function to create a prediction
+    const res = await fetch("https://api.glyph.so/predictions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...values,
+      }),
+    });
+
+    const response = await res.json();
+
+    if (res.status !== 200 || response.status === "error") {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: response.message || "Unknown error",
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // Extract the prediction ID from the returned URL for polling
+    // When redirected to generation page, poll for progress
+    const predictionId = response.url.split("/").pop();
+    router.push(`/e/${predictionId}`);
   }
 
   return (
     <Column className="gap-8 w-full px-8 md:px-0">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandDialog
+            open={open}
+            onOpenChange={(newOpen) => {
+              setOpen(newOpen);
+              setCharacter(featured[0]);
+            }}
+          >
             <CommandInput placeholder="Type a command or search..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Featured">
-                <CommandItem>Calendar</CommandItem>
-                <CommandItem>Search Emoji</CommandItem>
-                <CommandItem>Calculator</CommandItem>
-              </CommandGroup>
-            </CommandList>
+            <div className="grid grid-cols-[0.9fr_0fr_1fr] py-1">
+              <CommandList>
+                <CommandGroup heading="Featured">
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <ToggleGroup
+                    type="single"
+                    value={character.name}
+                    onValueChange={(value) => {
+                      if (value) {
+                        const selectedCharacter = featured.find(
+                          (c) => c.name === value
+                        );
+                        setCharacter(selectedCharacter);
+                      }
+                    }}
+                    className="flex flex-col gap-1"
+                  >
+                    {featured.map((c, index) => (
+                      <ToggleGroupItem
+                        key={index}
+                        value={c.name}
+                        className="h-full border border-slate-500 border-opacity-0 px-0 rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
+                      >
+                        <CommandItem className="aria-selected:bg-transparent">
+                          {c.name}
+                        </CommandItem>
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </CommandGroup>
+              </CommandList>
+              <Row className="my-auto mx-5 w-[1px] h-3/4 bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+              <div className="flex flex-col pl-1 pr-8 py-5 gap-6 pb-7">
+                <Image
+                  width={720}
+                  height={720}
+                  src={imageSrc.src}
+                  alt={character.name}
+                  className={`w-full h-[380px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
+                  onMouseEnter={() => setImageSrc(character.image2)}
+                  onMouseLeave={() => setImageSrc(character.image1)}
+                />
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-1 justify-end">
+                    {character.tags.map((tag, index) => {
+                      return <Badge key={index}>{tag}</Badge>;
+                    })}
+                  </div>
+                  <div className="flex gap-1 justify-end text-sm">
+                    <span className="opacity-60">from</span>
+                    <span className="font-medium">{character.origin}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full border-t flex justify-end p-1.5">
+              <Button variant="ghost" className="items-center px-2">
+                Select Character
+                <kbd className="ml-2 py-1 px-1.5 bg-white border border-gray-200 font-mono text-xs text-gray-500 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                  <ArrowLeftIcon />
+                </kbd>
+              </Button>
+            </div>
           </CommandDialog>
 
           <div className="w-full justify-center flex flex-col">
             <FormField
               control={form.control}
-              name="prompt"
+              name="input_prompt"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <div className="flex justify-center gap-2">
                       <div className="w-full border rounded-lg shadow-lg py-2 pr-5 pl-2">
-                        <div className="flex gap-5 h-full" ref={inputDivRef}>
+                        <div className="flex gap-5 h-full">
                           <Button
                             variant={"secondary"}
                             onClick={(event) => {

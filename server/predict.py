@@ -2,7 +2,7 @@ import subprocess
 import threading
 import time
 from cog import BasePredictor, Input, Path
-# from typing import List
+from typing import List
 import os
 import torch
 import uuid
@@ -10,17 +10,14 @@ import json
 import urllib
 import websocket
 from urllib.error import URLError
+from models import checkpoints, loras
 
 
 class Predictor(BasePredictor):
     def setup(self):
         self.server_address = "127.0.0.1:8188"
+        self.download_models()  # Uncomment this function call when you're adding new models
         self.start_server()
-        self.download_models()
-
-        # clean up pip cache
-        os.system('rm -rf /root/.cache/pip')
-
 
     def start_server(self):
         server_thread = threading.Thread(target=self.run_server)
@@ -32,7 +29,7 @@ class Predictor(BasePredictor):
         print("Server is up and running!")
 
     def run_server(self):
-        command = "python ./ComfyUI/main.py --force-fp16"
+        command = "python ./ComfyUI/main.py"
         server_process = subprocess.Popen(command, shell=True)
         server_process.wait()
 
@@ -43,26 +40,25 @@ class Predictor(BasePredictor):
                 return response.status == 200
         except URLError:
             return False
-        
-    def download_models(self):
-        model_urls = [
-            "https://huggingface.co/mdl-mirror/dark-sushi-mix/resolve/main/darkSushiMixMix_brighterPruned.safetensors",
-            "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt",
-            "https://civitai.com/api/download/models/124033"
-        ]
-        model_paths = [
-            "models/checkpoints/aniverse_v11.safetensors",
-            "models/vae/vae-ft-mse-840000-ema-pruned.ckpt",
-            "models/loras/Miss_Fortune.safetensors"
-        ]
 
-        for url, path in zip(model_urls, model_paths):
-            if not os.path.exists(path):
-                print(f"Model {path} not found, downloading from {url}")
-                urllib.request.urlretrieve(url, path)
-                print(f"Downloaded model to {path}")
-            else:
-                print(f"Model {path} already exists, skipping download")
+    def download_models(self):
+        base_url = "https://huggingface.co/bryantanjw/entropy-lol/resolve/main/models"
+
+        def download_models(model_type, model_names):
+            print(f"Now downloading {model_type}")
+            for model_name in model_names:
+                path = f"ComfyUI/models/{model_type}/{os.path.basename(model_name)}"
+                if not os.path.exists(path):
+                    url = f"{base_url}/{model_type}/{model_name}"
+                    print(f"Model {path} not found, downloading from {url}")
+                    urllib.request.urlretrieve(
+                        url, path)
+                    print(f"\nDownloaded model to {path}")
+                else:
+                    print(f"Model {path} already exists, skipping download")
+
+        download_models("checkpoints", checkpoints)
+        download_models("loras", loras)
 
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
@@ -118,8 +114,8 @@ class Predictor(BasePredictor):
         self,
         checkpoint_model: str = Input(
             description="Checkpoint Model",
-            choices=["aniverse_v11.safetensors"],
-            default="aniverse_v11.safetensors"
+            choices=checkpoints,
+            default="Aniverse.safetensors"
         ),
         input_prompt: str = Input(
             description="Prompt", default="beautiful scenery nature glass bottle landscape, purple galaxy bottle"),
@@ -139,8 +135,17 @@ class Predictor(BasePredictor):
         ),
         lora: str = Input(
             description="LoRA Model",
-            choices=["Miss_Fortune.safetensors"],
-            default="Miss_Fortune.safetensors"
+            choices=loras,
+            default="gaming/Miss_Fortune.safetensors"
+        ),
+        # Inserts blob url
+        custom_lora: str = Input(
+            description="Insert URL to LoRA file (.safetensors)",
+            default=None
+        ),
+        lora_strength: int = Input(
+            description="LoRA Model",
+            default=1.0
         ),
         width: int = Input(
             description="Image Width",
@@ -148,19 +153,19 @@ class Predictor(BasePredictor):
         ),
         height: int = Input(
             description="Image Height",
-            default=512
+            default=720
         ),
         batch_size: int = Input(
             description="Batch Size",
             default=1
         )
-    ) -> Path:
+    ) -> List[Path]:
         """Run a single prediction on the model"""
         if seed is None:
             seed = int.from_bytes(os.urandom(3), "big")
         print(f"Using seed: {seed}")
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        generator = torch.Generator(device).manual_seed(seed)
+        # device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        generator = torch.Generator("cuda").manual_seed(seed)
 
         # queue prompt
         img_output_path = self.get_workflow_output(
@@ -173,9 +178,10 @@ class Predictor(BasePredictor):
             cfg=cfg,
             width=width,
             height=height,
-            batch_size=batch_size
+            batch_size=batch_size,
+            lora_strength=lora_strength
         )
-        return Path(img_output_path)
+        return img_output_path
 
     def get_workflow_output(
         self,
@@ -188,7 +194,7 @@ class Predictor(BasePredictor):
         width,
         height,
         cfg,
-        strength_model,
+        lora_strength,
     ):
         # load config
         prompt = None
@@ -203,7 +209,7 @@ class Predictor(BasePredictor):
         prompt["4"]["inputs"]["ckpt_name"] = checkpoint_model
         prompt["6"]["inputs"]["text"] = input_prompt
         prompt["7"]["inputs"]["text"] = negative_prompt
-        prompt["10"]["inputs"]["lora_name"] = lora
+        prompt["10"]["inputs"]["lora_name"] = os.path.basename(lora)
         prompt["3"]["inputs"]["seed"] = seed
         prompt["3"]["inputs"]["steps"] = steps
         prompt["3"]["inputs"]["cfg"] = cfg
@@ -212,7 +218,7 @@ class Predictor(BasePredictor):
         prompt["5"]["inputs"]["batch_size"] = batch_size
         prompt["5"]["inputs"]["width"] = width
         prompt["5"]["inputs"]["height"] = height
-        prompt["10"]["inputs"]["strength_model"] = strength_model
+        prompt["10"]["inputs"]["lora_strength"] = lora_strength
 
         # start the process
         client_id = str(uuid.uuid4())
@@ -220,6 +226,7 @@ class Predictor(BasePredictor):
         ws.connect(
             "ws://{}/ws?clientId={}".format(self.server_address, client_id))
         images = self.get_images(ws, prompt, client_id)
+        image_paths = []
 
         for node_id in images:
             for image_data in images[node_id]:
@@ -227,4 +234,6 @@ class Predictor(BasePredictor):
                 from PIL import Image
                 image = Image.open(io.BytesIO(image_data))
                 image.save("out-"+node_id+".png")
-                return Path("out-"+node_id+".png")
+                image_paths.append(Path("out-"+node_id+".png"))
+
+        return image_paths
