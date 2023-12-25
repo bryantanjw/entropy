@@ -3,38 +3,39 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const playgroundFormSchema = z.object({
-  checkpoint_model: z.string().default("aniverse_v11.safetensors"),
-  input_prompt: z
+  checkpoint_model: z.string().default("Aniverse.safetensors"),
+  input_prompt: z.string(),
+  negative_prompt: z
     .string()
-    .default(
-      "beautiful scenery nature glass bottle landscape, purple galaxy bottle"
-    ),
-  negative_prompt: z.string().default("text, watermark, ugly, blurry"),
-  steps: z.number().default(30),
+    .default("lowres, worst quality, ugly, blurry, bad fingers"),
+  steps: z.number().min(1).max(100).default(30),
+  sampler_name: z.string().default("dpmpp_2m_sde"),
   seed: z.number().optional(),
-  cfg: z.number().default(10),
-  lora: z.string().default("Miss_Fortune.safetensors"),
-  strength_model: z.number().default(1.0),
-  width: z.number().default(512),
-  height: z.number().default(512),
-  batch_size: z.number().default(1),
+  cfg: z.number().min(1.0).max(30.0).default(10.0),
+  lora: z.string().optional(),
+  custom_lora: z.string().optional(),
+  lora_strength: z.number().min(0.0).max(1.0).default(1.0),
+  width: z.number().default(800),
+  height: z.number().default(1200),
+  batch_size: z.number().min(1).max(4).default(1),
 });
 
 export function usePlaygroundForm() {
   const form = useForm<z.infer<typeof playgroundFormSchema>>({
     resolver: zodResolver(playgroundFormSchema),
     defaultValues: {
-      checkpoint_model: "aniverse_v11.safetensors",
-      input_prompt:
-        "beautiful scenery nature glass bottle landscape, purple galaxy bottle",
-      negative_prompt: "text, watermark, ugly, blurry",
+      checkpoint_model: "Aniverse.safetensors",
+      input_prompt: "",
+      negative_prompt: "lowres, worst quality, ugly, blurry, bad fingers",
       steps: 30,
+      sampler_name: "dpmpp_2m_sde",
       seed: null,
-      cfg: 10,
-      lora: "Miss_Fortune.safetensors",
-      strength_model: 1.0,
-      width: 512,
-      height: 512,
+      cfg: 10.0,
+      lora: null,
+      custom_lora: null,
+      lora_strength: 1.0,
+      width: 800,
+      height: 1200,
       batch_size: 1,
     },
   });

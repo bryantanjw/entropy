@@ -1,21 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   MixerHorizontalIcon,
   PlusIcon,
 } from "@radix-ui/react-icons";
+
+import { Button } from "./ui/button";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import { useToast } from "./ui/use-toast";
 import { Column } from "./ui/column";
 import {
   CommandDialog,
@@ -24,19 +22,19 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "./ui/command";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import { Row } from "./ui/row";
+import { Skeleton } from "./ui/skeleton";
+
+import { Badge } from "./ui/badge";
 
 import { Parameters } from "./parameters";
 import {
   playgroundFormSchema,
   usePlaygroundForm,
 } from "@/lib/hooks/use-playground-form";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Badge } from "./ui/badge";
 import { featured } from "@/app/data/characters";
-import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
-import { Row } from "./ui/row";
 
 export const InputForm = () => {
   const router = useRouter();
@@ -79,7 +77,7 @@ export const InputForm = () => {
     setSubmitting(true);
 
     // Make initial request to Lambda function to create a prediction
-    const res = await fetch("https://api.glyph.so/predictions", {
+    const res = await fetch("https://api.entropy.so/predictions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +117,7 @@ export const InputForm = () => {
             }}
           >
             <CommandInput placeholder="Type a command or search..." />
-            <div className="grid grid-cols-[0.9fr_0fr_1fr] py-1">
+            <div className="grid grid-cols-[0.9fr_0fr_1fr] py-1 px-1">
               <CommandList>
                 <CommandGroup heading="Featured">
                   <CommandEmpty>No results found.</CommandEmpty>
@@ -131,6 +129,7 @@ export const InputForm = () => {
                         const selectedCharacter = featured.find(
                           (c) => c.name === value
                         );
+                        form.setValue("lora", selectedCharacter.name);
                         setCharacter(selectedCharacter);
                       }
                     }}
@@ -151,26 +150,30 @@ export const InputForm = () => {
                 </CommandGroup>
               </CommandList>
               <Row className="my-auto mx-5 w-[1px] h-3/4 bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-              <div className="flex flex-col pl-1 pr-8 py-5 gap-6 pb-7">
-                <Image
-                  width={720}
-                  height={720}
-                  src={imageSrc.src}
-                  alt={character.name}
-                  className={`w-full h-[380px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
-                  onMouseEnter={() => setImageSrc(character.image2)}
-                  onMouseLeave={() => setImageSrc(character.image1)}
-                />
+              <div className="flex flex-col pl-4 pr-7 py-5 gap-6 pb-8">
+                <Suspense fallback={<Skeleton className="w-full h-[380px]" />}>
+                  <Image
+                    width={800}
+                    height={1200}
+                    src={imageSrc.src}
+                    alt={character.name}
+                    className={`w-full h-[380px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
+                    onMouseEnter={() => setImageSrc(character.image2)}
+                    onMouseLeave={() => setImageSrc(character.image1)}
+                  />
+                </Suspense>
                 <div className="flex flex-col gap-2">
-                  <div className="flex gap-1 justify-end">
+                  {/* <div className="flex gap-1 justify-end">
                     {character.tags.map((tag, index) => {
                       return <Badge key={index}>{tag}</Badge>;
                     })}
-                  </div>
-                  <div className="flex gap-1 justify-end text-sm">
-                    <span className="opacity-60">from</span>
-                    <span className="font-medium">{character.origin}</span>
-                  </div>
+                  </div> */}
+                  {character.origin && (
+                    <div className="flex gap-1 justify-end text-sm">
+                      <span className="opacity-60">from</span>
+                      <span className="font-medium">{character.origin}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -232,7 +235,7 @@ export const InputForm = () => {
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-[30rem] lg:w-[48rem] xl:w-[64rem]">
-                                <Parameters />
+                                <Parameters form={form} />
                               </PopoverContent>
                             </Popover>
                           </div>

@@ -28,15 +28,19 @@ export default function Filter({
   const handleSearch = (event) => {
     event.preventDefault();
     if (!text) {
-      router.push(`/`);
+      router.push(`/`, { scroll: false });
     } else {
-      router.push(`/images?search=${text}&style=${selectedStyle}`);
+      router.push(`/images?search=${text}&style=${selectedStyle}`, {
+        scroll: false,
+      });
     }
   };
 
   useEffect(() => {
     if (selectedStyle) {
-      router.push(`/images?search=${text}&style=${selectedStyle}`);
+      router.push(`/images?search=${text}&style=${selectedStyle}`, {
+        scroll: false,
+      });
     }
   }, [selectedStyle]);
 
@@ -63,7 +67,9 @@ export default function Filter({
             className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
             onClick={() => {
               setText("");
-              router.push(`/images?search=&style=${selectedStyle}`);
+              router.push(`/images?search=&style=${selectedStyle}`, {
+                scroll: false,
+              });
             }}
           >
             <Cross1Icon className="w-4 h-4 mr-1 text-gray-400" />
@@ -85,7 +91,7 @@ export default function Filter({
           )}
           onClick={() => {
             setSelectedStyle("");
-            router.push(`/images?search=${text}&style=`);
+            router.push(`/images?search=${text}&style=`, { scroll: false });
           }}
         >
           All

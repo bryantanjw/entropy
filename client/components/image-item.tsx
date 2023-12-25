@@ -199,13 +199,13 @@ export default function ImageItem({
             <Button
               variant={"ghost"}
               size={"icon"}
-              className="fixed -left-[100px] hover:bg-transparent"
+              className="fixed -left-[100px] hover:bg-transparent focus-visible:ring-0"
               onClick={() => {
                 setDirection(-1);
                 setCurrIndex((currIndex - 1 + total) % total);
               }}
             >
-              <ChevronLeftIcon className="text-red h-12 w-12 opacity-50 hover:opacity-90 transition duration-200" />
+              <ChevronLeftIcon className="h-12 w-12 opacity-50 hover:opacity-90 transition duration-200" />
             </Button>
             <motion.figure
               key={`${currIndex}-image`}
@@ -215,7 +215,7 @@ export default function ImageItem({
               animate="center"
               exit="exit"
               className={clsx(
-                "group relative max-w-2xl overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
+                "group relative max-w-2xl overflow-hidden rounded-md shadow-xl bg-neutral-two dark:bg-neutral-nine",
                 images[currIndex].ratio === "square"
                   ? "aspect-square"
                   : images[currIndex].ratio === "landscape"
@@ -224,7 +224,8 @@ export default function ImageItem({
               )}
             >
               <Image
-                fill={true}
+                width={1200}
+                height={800}
                 loading={
                   images[currIndex].ratio === "portrait" ? "eager" : "lazy"
                 }
@@ -249,7 +250,7 @@ export default function ImageItem({
               initial="enter"
               animate="center"
               exit="exit"
-              className="flex flex-col h-full rounded-lg p-2 py-5 justify-between border bg-card text-card-foreground shadow"
+              className="flex flex-col h-full rounded-lg p-2 py-5 justify-between border bg-card text-card-foreground shadow-xl"
             >
               <div className="space-y-4">
                 <CardHeader>
@@ -359,13 +360,13 @@ export default function ImageItem({
             <Button
               variant={"ghost"}
               size={"icon"}
-              className="fixed -right-[80px] hover:bg-transparent"
+              className="fixed -right-[100px] hover:bg-transparent focus-visible:ring-0"
               onClick={() => {
                 setDirection(1);
                 setCurrIndex((currIndex + 1 + total) % total);
               }}
             >
-              <ChevronRightIcon className="text-red h-12 w-12 opacity-50 hover:opacity-90 transition duration-200" />
+              <ChevronRightIcon className="h-12 w-12 opacity-50 hover:opacity-90 transition duration-200" />
             </Button>
           </DialogContent>
         </AnimatePresence>

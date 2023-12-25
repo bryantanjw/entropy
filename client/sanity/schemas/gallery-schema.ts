@@ -75,8 +75,6 @@ const gallerySchema = {
       name: "origin",
       type: "string",
       description: "e.g., League of Legends, Genshin Impact, etc.",
-      validation: (Rule: any) =>
-        Rule.required().error("Image Origin is required"),
     },
     {
       title: "Image",
@@ -145,7 +143,8 @@ const gallerySchema = {
           initialValue: 2,
         },
         {
-          title: "Civitai link",
+          title: "Image source",
+          description: "e.g., Civitati, Replicate.",
           name: "civilai_link",
           type: "string",
         },

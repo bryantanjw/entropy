@@ -38,7 +38,7 @@ export const featured: Character[] = [
       imagePosition: "object-top",
     },
     image2: {
-      src: "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=300&dpr=2&q=80",
+      src: "https://cdn.sanity.io/images/6jp747p1/production/402784951d8a7deb1b63407c020ddbb8ad2857a9-800x1200.png",
       imagePosition: "object-top",
     },
   },

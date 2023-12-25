@@ -4,13 +4,15 @@
       "seed": 9407388965451,
       "steps": 30,
       "cfg": 10,
-      "sampler_name": "dpmpp_sde",
+      "sampler_name": "dpmpp_2m_sde",
       "scheduler": "karras",
       "denoise": 1,
       "model": ["10", 0],
       "positive": ["6", 0],
       "negative": ["7", 0],
-      "latent_image": ["5", 0]
+      "latent_image": ["5", 0],
+      "width": 720,
+      "height": 1080
     },
     "class_type": "KSampler"
   },

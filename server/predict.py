@@ -109,7 +109,6 @@ class Predictor(BasePredictor):
         with urllib.request.urlopen("http://{}/history/{}".format(self.server_address, prompt_id)) as response:
             return json.loads(response.read())
 
-    # TODO: add dynamic fields based on the workflow selected
     def predict(
         self,
         checkpoint_model: str = Input(
@@ -118,46 +117,60 @@ class Predictor(BasePredictor):
             default="Aniverse.safetensors"
         ),
         input_prompt: str = Input(
-            description="Prompt", default="beautiful scenery nature glass bottle landscape, purple galaxy bottle"),
+            description="Prompt"
+        ),
         negative_prompt: str = Input(
-            description="Negative Prompt", default="text, watermark, ugly, blurry"
+            description="Negative Prompt", default="lowres, worst quality, ugly, blurry, bad fingers"
         ),
         steps: int = Input(
             description="Inference Steps",
-            default=30
+            default=30,
+            ge=1,
+            le=100
+        ),
+        sampler_name: str = Input(
+            description="Sampler Name",
+            choices=["dpmpp_2m_sde", "euler_ancestral"],
+            default="dpmpp_2m_sde"
         ),
         seed: int = Input(
             description="Sampling seed, leave Empty for Random", default=None
         ),
-        cfg: int = Input(
+        cfg: float = Input(
             description="CFG Scale",
-            default=10
+            default=10.0,
+            ge=1.0,
+            le=30.0
         ),
         lora: str = Input(
             description="LoRA Model",
             choices=loras,
-            default="gaming/Miss_Fortune.safetensors"
+            default=None
         ),
         # Inserts blob url
         custom_lora: str = Input(
             description="Insert URL to LoRA file (.safetensors)",
             default=None
         ),
-        lora_strength: int = Input(
+        lora_strength: float = Input(
             description="LoRA Model",
-            default=1.0
+            default=1.0,
+            ge=0.0,
+            le=1.0
         ),
         width: int = Input(
             description="Image Width",
-            default=512
+            default=800
         ),
         height: int = Input(
             description="Image Height",
-            default=720
+            default=1200
         ),
         batch_size: int = Input(
             description="Batch Size",
-            default=1
+            default=1,
+            ge=1,
+            le=4
         )
     ) -> List[Path]:
         """Run a single prediction on the model"""
@@ -174,6 +187,7 @@ class Predictor(BasePredictor):
             negative_prompt=negative_prompt,
             lora=lora,
             steps=steps,
+            sampler_name=sampler_name,
             seed=seed,
             cfg=cfg,
             width=width,
@@ -189,6 +203,7 @@ class Predictor(BasePredictor):
         input_prompt, negative_prompt,
         lora,
         steps,
+        sampler_name,
         seed,
         batch_size,
         width,
@@ -213,6 +228,7 @@ class Predictor(BasePredictor):
         prompt["3"]["inputs"]["seed"] = seed
         prompt["3"]["inputs"]["steps"] = steps
         prompt["3"]["inputs"]["cfg"] = cfg
+        prompt["3"]["inputs"]["sampler_name"] = sampler_name
 
         # Add lora strength, width, height, batch size
         prompt["5"]["inputs"]["batch_size"] = batch_size
@@ -225,9 +241,10 @@ class Predictor(BasePredictor):
         ws = websocket.WebSocket()
         ws.connect(
             "ws://{}/ws?clientId={}".format(self.server_address, client_id))
-        images = self.get_images(ws, prompt, client_id)
-        image_paths = []
 
+        images = self.get_images(ws, prompt, client_id)
+        print(f"{len(images)} images generated successfully")
+        image_paths = []
         for node_id in images:
             for image_data in images[node_id]:
                 import io

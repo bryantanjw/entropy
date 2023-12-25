@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Row } from "./ui/row";
@@ -10,9 +15,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { FormControl, FormField, FormItem } from "./ui/form";
 
-export const Parameters = () => {
+import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
+
+interface ParametersProps {
+  form: UseFormReturn<z.infer<typeof playgroundFormSchema>>;
+}
+
+export const Parameters: React.FC<ParametersProps> = ({ form }) => {
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    form.setValue("height", height);
+    form.setValue("width", width);
+  }, [height, width]);
+
   return (
     <div className="grid grid-cols-3 gap-4">
       <div className="flex flex-col gap-6 items-center justify-center bg-slate-50 bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 border-opacity-50">
@@ -21,7 +40,9 @@ export const Parameters = () => {
           {/* Landscape */}
           <div className="relative border-2 border-dashed border-gray-200 p-4 w-36 h-24 flex items-center justify-center rounded-lg" />
           {/* Portrait */}
-          <div className="absolute border-2 w-24 h-32 border-gray-700 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 inset-4 rounded-lg" />
+          <div className="absolute border-2 w-24 h-32 border-gray-700 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 inset-4 rounded-lg flex items-center justify-center">
+            <span>2:3</span>
+          </div>
         </div>
         <Row className="my-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
         <div className="flex items-center justify-between space-x-6">
@@ -30,6 +51,12 @@ export const Parameters = () => {
             className="flex items-center justify-center gap-3"
             variant="pill"
             value="portrait"
+            onValueChange={(value) => {
+              if (value === "portrait") {
+                setHeight(1080);
+                setWidth(720);
+              }
+            }}
           >
             <ToggleGroupItem
               className="data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500"
