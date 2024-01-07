@@ -19,7 +19,7 @@ export async function getImages(
         : ""
     } ${
       style ? `&& style == "${style}"` : ""
-    }] | order(_updatedAt desc) [$start...${start + 20}] {
+    }] | order(_updatedAt desc) [$start...${start + 30}] {
       _id,
       title,
       ratio,

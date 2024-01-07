@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
-import { InputForm } from "@/components/form";
+import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import ImageOutput from "./components/image-output";
 
 export async function generateMetadata({
   params,
@@ -33,40 +34,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function GenerationPage({
+export default function GenerationPage({
   params,
 }: {
   params: {
     id: string;
   };
 }) {
-  // Poll the API Gateway endpoint for the status using the prediction ID
-  let predictions = null;
-  while (!predictions && params.id) {
-    let pollRes = await fetch(
-      `https://api.entropy.so/predictions/${params.id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Token " + process.env.REPLICATE_API_KEY,
-        },
-      }
-    );
-    let pollResponse = await pollRes.json();
-    const { status, logs } = pollResponse;
-
-    if (pollResponse.status === "succeeded") {
-      predictions = pollResponse;
-      console.log("predictions", predictions);
-    } else if (pollResponse.status === "failed") {
-      break;
-    } else {
-      // Delay to make requests to API Gateway every 3 seconds
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-    }
-  }
-
   return (
     <div className="flex flex-col w-full items-center">
       <Navbar />
@@ -75,12 +49,7 @@ export default async function GenerationPage({
           <Column className="w-full lg:max-w-4xl xl:max-w-6xl">
             <InputForm />
             <Row className="my-20 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-            <div className="flex flex-wrap flex-grow gap-6">
-              <div className="bg-muted flex-grow h-64"></div>
-              <div className="bg-muted flex-grow h-64"></div>
-              <div className="bg-muted flex-grow h-64"></div>
-              <div className="bg-muted flex-grow h-64"></div>
-            </div>
+            <ImageOutput id={params.id} />
           </Column>
         </Column>
 

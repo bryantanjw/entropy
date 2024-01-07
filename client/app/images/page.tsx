@@ -1,6 +1,6 @@
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
-import { InputForm } from "@/components/form";
+import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 import Filter from "@/components/image-filter";
 import ImageGrid from "@/components/image-grid";

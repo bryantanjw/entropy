@@ -224,8 +224,8 @@ export default function ImageItem({
               )}
             >
               <Image
-                width={1200}
-                height={800}
+                width={1080}
+                height={720}
                 loading={
                   images[currIndex].ratio === "portrait" ? "eager" : "lazy"
                 }

@@ -1,10 +1,15 @@
 export interface Character {
   name: string;
+  dir: string;
   image1: {
     src: string;
     imagePosition: string;
   };
-  image2: {
+  image2?: {
+    src: string;
+    imagePosition: string;
+  };
+  image3?: {
     src: string;
     imagePosition: string;
   };
@@ -16,6 +21,7 @@ export interface Character {
 export const featured: Character[] = [
   {
     name: "KDA ALL OUT Ahri",
+    dir: "gaming/Ahri.safetensors",
     origin: "League of Legends",
     category: "Gaming",
     tags: ["kda all out", "ahri", "lol", "league of legends"],
@@ -30,6 +36,7 @@ export const featured: Character[] = [
   },
   {
     name: "Miss Fortune",
+    dir: "gaming/Miss_Fortune.safetensors",
     origin: "League of Legends",
     category: "Gaming",
     tags: ["miss fortune", "lol", "league of legends"],
@@ -44,6 +51,7 @@ export const featured: Character[] = [
   },
   {
     name: "Cyberpunk Egderunners Lucy",
+    dir: "anime/Lucy_Cyberpunk.safetensors",
     origin: "Cyberpunk Edgerunners",
     category: "Anime",
     tags: ["cyberpunk edgerunners", "lucy", "anime"],
@@ -58,6 +66,7 @@ export const featured: Character[] = [
   },
   {
     name: "Coven Evelynn",
+    dir: "gaming/Coven_Evelynn.safetensors",
     origin: "League of Legends",
     category: "Gaming",
     tags: ["coven", "evelynn", "lol", "league of legends"],

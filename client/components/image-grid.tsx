@@ -1,14 +1,15 @@
 "use client";
-
+import { useInView } from "react-intersection-observer";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Suspense } from "react";
+
+import { Skeleton } from "./ui/skeleton";
 import { Icons } from "./ui/icons";
 import ImageItem from "./image-item";
-import { useEffect, useState } from "react";
+
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { fetchImages } from "@/lib/actions";
-import { useInView } from "react-intersection-observer";
-import { Skeleton } from "./ui/skeleton";
 
 export default function ImageGrid({
   initialImages,
@@ -26,11 +27,14 @@ export default function ImageGrid({
 
   useEffect(() => {
     setImages(initialImages);
+    console.log("initialImages", initialImages);
   }, [initialImages]);
 
   async function loadMoreImages() {
-    const next = start + 20;
+    const next = start + 30;
     const images = await fetchImages({ start: next, search, style });
+    console.log("Fetched images:", images); // Add this line
+
     if (images.length) {
       setStart(next);
       setImages((prev) => [...(prev?.length ? prev : []), ...images]);
@@ -40,6 +44,8 @@ export default function ImageGrid({
   }
 
   useEffect(() => {
+    console.log("inView:", inView, "hasMore:", hasMore); // Add this line
+
     if (inView && hasMore) {
       loadMoreImages();
     }

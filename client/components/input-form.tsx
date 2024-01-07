@@ -8,12 +8,13 @@ import {
   ArrowLeftIcon,
   MixerHorizontalIcon,
   PlusIcon,
+  ReloadIcon,
 } from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
-import { useToast } from "./ui/use-toast";
 import { Column } from "./ui/column";
 import {
   CommandDialog,
@@ -27,8 +28,6 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { Row } from "./ui/row";
 import { Skeleton } from "./ui/skeleton";
 
-import { Badge } from "./ui/badge";
-
 import { Parameters } from "./parameters";
 import {
   playgroundFormSchema,
@@ -38,19 +37,15 @@ import { featured } from "@/app/data/characters";
 
 export const InputForm = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const form = usePlaygroundForm();
 
   const [open, setOpen] = useState(false);
   const [character, setCharacter] = useState(featured[0]);
   const [imageSrc, setImageSrc] = useState(featured[0].image1);
-
-  // State management for Replicate prediction
-  const [status, setStatus] = useState("Starting...");
-  const [prediction, setPrediction] = useState(null);
+  // Create a ref to store the last clicked character
+  const lastClickedCharacterRef = useRef(null);
 
   // Form states
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -71,9 +66,6 @@ export const InputForm = () => {
   async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
     // Submit the values to /generatePredictions
     console.log(values);
-
-    setStatus("Starting...");
-    setPrediction(null);
     setSubmitting(true);
 
     // Make initial request to Lambda function to create a prediction
@@ -88,11 +80,10 @@ export const InputForm = () => {
     });
 
     const response = await res.json();
+    console.log("response", response);
 
     if (res.status !== 200 || response.status === "error") {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong", {
         description: response.message || "Unknown error",
       });
       setSubmitting(false);
@@ -102,6 +93,7 @@ export const InputForm = () => {
     // Extract the prediction ID from the returned URL for polling
     // When redirected to generation page, poll for progress
     const predictionId = response.url.split("/").pop();
+    console.log("predictionId", predictionId);
     router.push(`/e/${predictionId}`);
   }
 
@@ -129,7 +121,6 @@ export const InputForm = () => {
                         const selectedCharacter = featured.find(
                           (c) => c.name === value
                         );
-                        form.setValue("lora", selectedCharacter.name);
                         setCharacter(selectedCharacter);
                       }
                     }}
@@ -139,6 +130,28 @@ export const InputForm = () => {
                       <ToggleGroupItem
                         key={index}
                         value={c.name}
+                        onClick={() => {
+                          if (lastClickedCharacterRef.current === c) {
+                            // Update the form value if the same character is clicked twice
+                            form.setValue("lora", c.dir);
+                            setOpen(false);
+                            lastClickedCharacterRef.current = null; // Reset the ref
+                          } else {
+                            // Store the last clicked character in the ref
+                            lastClickedCharacterRef.current = c;
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (
+                            e.key === "Enter" &&
+                            lastClickedCharacterRef.current === c
+                          ) {
+                            // Update the form value if Enter is pressed and it's the last clicked character
+                            form.setValue("lora", c.dir);
+                            setOpen(false);
+                            lastClickedCharacterRef.current = null; // Reset the ref
+                          }
+                        }}
                         className="h-full border border-slate-500 border-opacity-0 px-0 rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
                       >
                         <CommandItem className="aria-selected:bg-transparent">
@@ -153,8 +166,8 @@ export const InputForm = () => {
               <div className="flex flex-col pl-4 pr-7 py-5 gap-6 pb-8">
                 <Suspense fallback={<Skeleton className="w-full h-[380px]" />}>
                   <Image
-                    width={800}
-                    height={1200}
+                    width={720}
+                    height={1080}
                     src={imageSrc.src}
                     alt={character.name}
                     className={`w-full h-[380px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
@@ -163,11 +176,6 @@ export const InputForm = () => {
                   />
                 </Suspense>
                 <div className="flex flex-col gap-2">
-                  {/* <div className="flex gap-1 justify-end">
-                    {character.tags.map((tag, index) => {
-                      return <Badge key={index}>{tag}</Badge>;
-                    })}
-                  </div> */}
                   {character.origin && (
                     <div className="flex gap-1 justify-end text-sm">
                       <span className="opacity-60">from</span>
@@ -195,22 +203,34 @@ export const InputForm = () => {
                 <FormItem>
                   <FormControl>
                     <div className="flex justify-center gap-2">
-                      <div className="w-full border rounded-lg shadow-lg py-2 pr-5 pl-2">
-                        <div className="flex gap-5 h-full">
+                      <div className="w-full rounded-lg shadow-lg">
+                        <div className="flex gap-5 h-full items-center">
                           <Button
-                            variant={"secondary"}
+                            variant={
+                              form.watch("lora") ? "outline" : "secondary"
+                            }
                             onClick={(event) => {
                               setOpen(true);
                               event.preventDefault();
                             }}
+                            className="m-2 item-start"
                           >
-                            <PlusIcon className="mr-2 h-4 w-4" /> Character
+                            {form
+                              .watch("lora")
+                              ?.split("/")[1]
+                              ?.split(".")[0]
+                              .replace(/_/g, " ") ?? (
+                              <>
+                                <PlusIcon className="mr-2 h-4 w-4" />
+                                Character
+                              </>
+                            )}
                           </Button>
                           <div
                             role="textbox"
                             contentEditable
                             data-placeholder="Imagine..."
-                            className="flex-1 my-auto border-0 shadow-none bg-transparent outline-none"
+                            className="flex-1 my-2 border-0 shadow-none bg-transparent outline-none"
                             onKeyDown={(e) => {
                               if (e.key === "Backspace" || e.key === "Delete") {
                                 if (
@@ -222,16 +242,25 @@ export const InputForm = () => {
                                 }
                               }
                             }}
+                            onInput={(e) => {
+                              form.setValue(
+                                "input_prompt",
+                                e.currentTarget.textContent
+                              );
+                            }}
                             {...field}
                           />
                           <div className="justify-end items-center">
                             <Popover>
-                              <PopoverTrigger asChild>
+                              <PopoverTrigger
+                                asChild
+                                className="opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
+                              >
                                 <Button
                                   variant="ghost"
-                                  className="p-0 hover:bg-transparent hover:opacity-100 transition duration-200 opacity-70"
+                                  className="p-0 hover:bg-transparent transition duration-200"
                                 >
-                                  <MixerHorizontalIcon className="h-4 w-4" />
+                                  <MixerHorizontalIcon className="h-4 w-4 mr-1" />
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-[30rem] lg:w-[48rem] xl:w-[64rem]">
@@ -239,24 +268,30 @@ export const InputForm = () => {
                               </PopoverContent>
                             </Popover>
                           </div>
+                          <Button
+                            onClick={async (event) => {
+                              event.preventDefault();
+                              onSubmit(form.getValues());
+                            }}
+                            className="min-w-[120px] h-full rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
+                          >
+                            {isSubmitting ? (
+                              <ReloadIcon className="animate-spin" />
+                            ) : (
+                              <>
+                                <Image
+                                  className="filter invert dark:filter-none mr-2"
+                                  width={15}
+                                  height={15}
+                                  src={"/sparkling-icon.png"}
+                                  alt={"Generate"}
+                                />
+                                Generate
+                              </>
+                            )}
+                          </Button>
                         </div>
                       </div>
-                      <Button
-                        onClick={async (event) => {
-                          event.preventDefault();
-                          onSubmit(form.getValues());
-                        }}
-                        className="w-[20%] h-full py-4 lg:w-auto active:scale-95 scale-100 disabled:cursor-not-allowed transition duration-200 shadow-lg"
-                      >
-                        <Image
-                          className="filter invert dark:filter-none mr-2"
-                          width={17}
-                          height={17}
-                          src={"/sparkling-icon.png"}
-                          alt={"Generate"}
-                        />
-                        Generate
-                      </Button>
                     </div>
                   </FormControl>
                 </FormItem>

@@ -35,6 +35,8 @@ loras = [
     "gaming/Star_Guardian_Ahri.safetensors",
     "gaming/Pool_Party_Miss_Fortune.safetensors",
 
+    "gaming/Jett.safetensors",
+
     # Anime
     "anime/Lucy_Cyberpunk.safetensors",
     "anime/Rias_Gremory.safetensors",
@@ -46,6 +48,7 @@ loras = [
     "hollywood/Jenna_Ortega.safetensors",
     "hollywood/Scarlett_Johansson.safetensors",
     "hollywood/Ana_De_Armas.safetensors",
+    "hollywood/Sydney_Sweeney.safetensors",
 
     # Music Artists
     "music_artists/Taylor_Swift.safetensors",

@@ -4,7 +4,7 @@
       "seed": 9407388965451,
       "steps": 30,
       "cfg": 10,
-      "sampler_name": "dpmpp_2m_sde",
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
       "denoise": 1,
       "model": ["10", 0],

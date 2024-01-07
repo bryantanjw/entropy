@@ -124,21 +124,21 @@ class Predictor(BasePredictor):
         ),
         steps: int = Input(
             description="Inference Steps",
-            default=30,
+            default=25,
             ge=1,
             le=100
         ),
         sampler_name: str = Input(
             description="Sampler Name",
-            choices=["dpmpp_2m_sde", "euler_ancestral"],
-            default="dpmpp_2m_sde"
+            choices=["dpmpp_2m", "euler_ancestral"],
+            default="dpmpp_2m"
         ),
         seed: int = Input(
             description="Sampling seed, leave Empty for Random", default=None
         ),
         cfg: float = Input(
             description="CFG Scale",
-            default=10.0,
+            default=7.0,
             ge=1.0,
             le=30.0
         ),
@@ -160,11 +160,11 @@ class Predictor(BasePredictor):
         ),
         width: int = Input(
             description="Image Width",
-            default=800
+            default=720
         ),
         height: int = Input(
             description="Image Height",
-            default=1200
+            default=1080
         ),
         batch_size: int = Input(
             description="Batch Size",

@@ -178,7 +178,7 @@ const gallerySchema = {
       title: "Tags String",
       name: "tagsString",
       type: "string",
-      hidden: true,
+      hidden: false,
       options: {
         source: (data) => data.tags.join(" "),
       },
