@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import clsx from "clsx";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import Image from "next/image";
@@ -28,7 +29,6 @@ import { Textarea } from "./ui/textarea";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { Badge, badgeVariants } from "./ui/badge";
-import Link from "next/link";
 
 type ImageItemProps = {
   index: number;

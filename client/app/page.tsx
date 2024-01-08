@@ -12,7 +12,7 @@ export default function Home() {
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
           <InputForm />
           <Row className="my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-          {/* <Gallery /> */}
+          <Gallery />
         </Column>
       </Column>
     </div>

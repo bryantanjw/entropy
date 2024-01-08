@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import * as z from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   ArrowLeftIcon,
   MixerHorizontalIcon,
@@ -198,7 +199,16 @@ export const InputForm = () => {
             </div>
           </CommandDialog>
 
-          <div className="w-full justify-center flex flex-col">
+          <motion.div
+            className="w-full justify-center flex flex-col"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              y: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+          >
             <FormField
               control={form.control}
               name="input_prompt"
@@ -300,7 +310,7 @@ export const InputForm = () => {
                 </FormItem>
               )}
             />
-          </div>
+          </motion.div>
         </form>
       </Form>
     </Column>
