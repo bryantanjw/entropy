@@ -34,6 +34,7 @@ import {
   usePlaygroundForm,
 } from "@/lib/hooks/use-playground-form";
 import { featured } from "@/app/data/characters";
+import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
 
 export const InputForm = () => {
   const router = useRouter();
@@ -107,9 +108,10 @@ export const InputForm = () => {
               setOpen(newOpen);
               setCharacter(featured[0]);
             }}
+            className="md:min-w-[900px]"
           >
             <CommandInput placeholder="Type a command or search..." />
-            <div className="grid grid-cols-[0.9fr_0fr_1fr] py-1 px-1">
+            <div className="grid grid-cols-[1.4fr_0fr_1fr] py-1 px-1">
               <CommandList>
                 <CommandGroup heading="Featured">
                   <CommandEmpty>No results found.</CommandEmpty>
@@ -152,37 +154,38 @@ export const InputForm = () => {
                             lastClickedCharacterRef.current = null; // Reset the ref
                           }
                         }}
-                        className="h-full border border-slate-500 border-opacity-0 px-0 rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
+                        className="flex justify-between h-full border border-slate-500 border-opacity-0 px-0 items-center rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
                       >
                         <CommandItem className="aria-selected:bg-transparent">
                           {c.name}
                         </CommandItem>
+
+                        {c.origin && (
+                          <span className="font-light text-xs opacity-40 pr-2">
+                            {c.origin}
+                          </span>
+                        )}
                       </ToggleGroupItem>
                     ))}
                   </ToggleGroup>
                 </CommandGroup>
               </CommandList>
               <Row className="my-auto mx-5 w-[1px] h-3/4 bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-              <div className="flex flex-col pl-4 pr-7 py-5 gap-6 pb-8">
+              <div className="flex flex-col gap-6 pb-5">
                 <Suspense fallback={<Skeleton className="w-full h-[380px]" />}>
-                  <Image
-                    width={720}
-                    height={1080}
-                    src={imageSrc.src}
-                    alt={character.name}
-                    className={`w-full h-[380px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
-                    onMouseEnter={() => setImageSrc(character.image2)}
-                    onMouseLeave={() => setImageSrc(character.image1)}
-                  />
+                  <CardContainer className="inter-var">
+                    <CardItem translateZ="100" className="mt-4 relative">
+                      <Image
+                        width={720}
+                        height={1080}
+                        src={imageSrc.src}
+                        alt={character.name}
+                        className={`w-[300px] h-[400px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
+                      />
+                    </CardItem>
+                  </CardContainer>
                 </Suspense>
-                <div className="flex flex-col gap-2">
-                  {character.origin && (
-                    <div className="flex gap-1 justify-end text-sm">
-                      <span className="opacity-60">from</span>
-                      <span className="font-medium">{character.origin}</span>
-                    </div>
-                  )}
-                </div>
+                <div className="flex flex-col gap-2"></div>
               </div>
             </div>
             <div className="w-full border-t flex justify-end p-1.5">
