@@ -206,7 +206,7 @@ export const InputForm = () => {
                 <FormItem>
                   <FormControl>
                     <div className="flex justify-center gap-2">
-                      <div className="w-full rounded-lg shadow-lg">
+                      <div className="w-full rounded-lg shadow-lg dark:border">
                         <div className="flex gap-5 h-full items-center">
                           <Button
                             variant={

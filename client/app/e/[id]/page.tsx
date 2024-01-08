@@ -7,6 +7,7 @@ import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import ImageOutput from "./components/image-output";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 export async function generateMetadata({
   params,
@@ -48,7 +49,6 @@ export default function GenerationPage({
         <Column className="items-center min-h-screen py-32 px-10">
           <Column className="w-full lg:max-w-4xl xl:max-w-6xl">
             <InputForm />
-            <Row className="my-20 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
             <ImageOutput id={params.id} />
           </Column>
         </Column>
