@@ -36,6 +36,7 @@ import {
 } from "@/lib/hooks/use-playground-form";
 import { featured } from "@/app/data/characters";
 import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
+import { SparklesCore } from "./ui/sparkles";
 
 export const InputForm = () => {
   const router = useRouter();
@@ -286,8 +287,19 @@ export const InputForm = () => {
                               event.preventDefault();
                               onSubmit(form.getValues());
                             }}
-                            className="min-w-[120px] h-full rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
+                            className="w-[120px] h-full rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
                           >
+                            <div className="w-full absolute inset-0 h-full">
+                              <SparklesCore
+                                id="tsparticlesfullpage"
+                                background="transparent"
+                                minSize={0.6}
+                                maxSize={1.4}
+                                particleDensity={200}
+                                className="w-full h-full"
+                                particleColor="#FFFFFF"
+                              />
+                            </div>
                             {isSubmitting ? (
                               <ReloadIcon className="animate-spin" />
                             ) : (
