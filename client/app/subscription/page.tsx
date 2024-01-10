@@ -1,17 +1,9 @@
-import { Separator } from "@/components/ui/separator";
-import {
-  getSession,
-  getSubscription,
-  getUserDetails,
-} from "@/app/supabase-server";
+import { getSession, getUserDetails } from "@/app/supabase-server";
 import Navbar from "@/components/navbar";
 import { redirect } from "next/navigation";
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
-import {
-  SubscriptionBentoGrid,
-  SubscriptionGrid,
-} from "./components/bento-grid";
+import { SubscriptionGrid } from "./components/grid";
 
 export default async function SettingsBillingPage() {
   const [session, userDetails] = await Promise.all([
@@ -35,7 +27,7 @@ export default async function SettingsBillingPage() {
             </h2>
             <p className="text-muted-foreground">bryantanjw01@gmail.com</p>
           </div>
-          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-gray-200 dark:via-gray-800 to-transparent" />
           <SubscriptionGrid />
         </Column>
       </Column>

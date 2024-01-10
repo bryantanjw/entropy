@@ -178,7 +178,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                   form.setValue("checkpoint_model", value + ".safetensors")
                 }
               >
-                <SelectTrigger className="border-none shadow-none h-7 hover:bg-muted focus:bg-muted focus:ring-0">
+                <SelectTrigger className="justify-end border-none shadow-none h-7 hover:bg-muted focus:bg-muted focus:ring-0">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
