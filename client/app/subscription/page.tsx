@@ -4,13 +4,41 @@ import {
   getSubscription,
   getUserDetails,
 } from "@/app/supabase-server";
+import Navbar from "@/components/navbar";
+import { redirect } from "next/navigation";
+import { Column } from "@/components/ui/column";
+import { Row } from "@/components/ui/row";
+import {
+  SubscriptionBentoGrid,
+  SubscriptionGrid,
+} from "./components/bento-grid";
 
 export default async function SettingsBillingPage() {
-  const [session, userDetails, subscription] = await Promise.all([
+  const [session, userDetails] = await Promise.all([
     getSession(),
     getUserDetails(),
-    getSubscription(),
   ]);
 
-  return <div className="space-y-6 h-[800px]"></div>;
+  const user = session?.user;
+  if (!session) {
+    return redirect("/signin");
+  }
+
+  return (
+    <div>
+      <Navbar user={user} userDetails={userDetails} />
+      <Column className="w-full items-center min-h-screen py-32">
+        <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
+          <div className="space-y-0.5">
+            <h2 className="text-3xl font-semibold tracking-tight">
+              Subscription & Billing
+            </h2>
+            <p className="text-muted-foreground">bryantanjw01@gmail.com</p>
+          </div>
+          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+          <SubscriptionGrid />
+        </Column>
+      </Column>
+    </div>
+  );
 }

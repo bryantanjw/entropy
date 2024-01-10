@@ -103,7 +103,7 @@ export default function Filter({
             aria-label={`Toggle ${style}`}
             className={clsx(
               "capitalize  opacity-60",
-              "bg-transparent hover:bg-transparent hover:opacity-90 dark:hover:text-rose-five data-[state=on]:bg-transparent",
+              "bg-transparent hover:bg-transparent hover:opacity-90 data-[state=on]:bg-transparent",
               selectedStyle === `${style}` && "outline outline-1 opacity-100"
             )}
             onClick={() => setSelectedStyle(style)}

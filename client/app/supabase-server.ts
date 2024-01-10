@@ -73,7 +73,7 @@ export async function getGenerationCount() {
       .from("generations")
       .select("count")
       .single();
-
+    console.log("generation", generation);
     if (error) {
       console.error("Supabase error:", error);
     }
