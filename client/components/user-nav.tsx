@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 import { PersonIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,20 +21,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 
-export function UserNav() {
+import { useSupabase } from "@/app/supabase-provider";
+
+interface Props {
+  user: User | null | undefined;
+  userDetails?: any;
+}
+
+export function UserNav({ user, userDetails }: Props) {
+  const { supabase } = useSupabase();
   const router = useRouter();
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-8 w-8 rounded-full flex items-center justify-center"
+          className="relative h-7 w-7 rounded-full flex items-center justify-center"
         >
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={"/avatar-icon.png"} />
+          <Avatar className="h-7 w-7">
+            <AvatarImage
+              src={user.user_metadata.avatar_url ?? "/avatar-icon.png"}
+              alt={userDetails?.full_name ?? user.email}
+            />
             <AvatarFallback>
               <PersonIcon />
             </AvatarFallback>
@@ -46,12 +57,12 @@ export function UserNav() {
             href={"/account"}
             className="flex flex-col space-y-1 hover:underline underline-offset-2"
           >
-            {/* <p className="text-sm font-medium">
+            <p className="text-sm font-medium">
               {userDetails?.full_name ?? user.email}
             </p>
             <p className="text-sm leading-none text-muted-foreground">
               {userDetails?.credits ?? 0} credits
-            </p> */}
+            </p>
           </Link>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -60,10 +71,25 @@ export function UserNav() {
             asChild
             className="text-muted-foreground cursor-pointer"
           >
-            <Link href="/account">Manage account</Link>
+            <Link href="/subscription">Subscription & Billing</Link>
           </DropdownMenuItem>
-          <div>
-            <DropdownMenuItem className="text-muted-foreground cursor-pointer">
+          <div className="space-y-5">
+            <DropdownMenuItem
+              onClick={async () => {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                  console.error("Error signing out:", error.message);
+                  toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message || "Failed to sign out.",
+                  });
+                  return;
+                }
+                router.push("/signin");
+              }}
+              className="text-muted-foreground cursor-pointer"
+            >
               Log out
             </DropdownMenuItem>
           </div>

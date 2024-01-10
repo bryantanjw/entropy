@@ -7,6 +7,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
 import "./globals.css";
+import SupabaseProvider from "./supabase-provider";
 
 export const metadata: Metadata = {
   title: "Entropy AI",
@@ -22,12 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
-          <Toaster />
-          <TailwindIndicator />
-          <SpeedInsights />
-        </ThemeProvider>
+        <SupabaseProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            {children}
+            <Toaster />
+            <TailwindIndicator />
+            <SpeedInsights />
+          </ThemeProvider>
+        </SupabaseProvider>
       </body>
     </html>
   );

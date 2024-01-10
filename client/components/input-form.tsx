@@ -12,6 +12,7 @@ import {
   ReloadIcon,
 } from "@radix-ui/react-icons";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
@@ -41,6 +42,7 @@ import { SparklesCore } from "./ui/sparkles";
 export const InputForm = () => {
   const router = useRouter();
   const form = usePlaygroundForm();
+  const { theme } = useTheme();
 
   const [open, setOpen] = useState(false);
   const [character, setCharacter] = useState(featured[0]);
@@ -113,7 +115,7 @@ export const InputForm = () => {
             className="md:min-w-[900px]"
           >
             <CommandInput placeholder="Type a command or search..." />
-            <div className="grid grid-cols-[1.4fr_0fr_1fr] py-1 px-1">
+            <div className="grid grid-cols-[1.4fr_0fr_1fr] py-1 px-1 mt-2">
               <CommandList>
                 <CommandGroup heading="Featured">
                   <CommandEmpty>No results found.</CommandEmpty>
@@ -217,8 +219,8 @@ export const InputForm = () => {
                 <FormItem>
                   <FormControl>
                     <div className="flex justify-center gap-2">
-                      <div className="w-full rounded-lg shadow-lg dark:border">
-                        <div className="flex gap-5 h-full items-center">
+                      <div className="w-full rounded-lg">
+                        <div className="flex gap-5 h-full items-center border rounded-lg shadow-lg">
                           <Button
                             variant={
                               form.watch("lora") ? "outline" : "secondary"
@@ -297,7 +299,9 @@ export const InputForm = () => {
                                 maxSize={1.4}
                                 particleDensity={200}
                                 className="w-full h-full"
-                                particleColor="#FFFFFF"
+                                particleColor={
+                                  theme === "dark" ? "#000" : "#fff"
+                                }
                               />
                             </div>
                             {isSubmitting ? (

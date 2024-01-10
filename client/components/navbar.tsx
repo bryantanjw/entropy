@@ -17,6 +17,7 @@ import {
   RocketIcon,
   SunIcon,
 } from "@radix-ui/react-icons";
+import { User } from "@supabase/supabase-js";
 
 import {
   NavigationMenu,
@@ -28,15 +29,22 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { UserNav } from "./user-nav";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { ModeToggle } from "./ui/theme-toggle";
+import { useSupabase } from "@/app/supabase-provider";
 
-export default function Navbar() {
+interface NavbarProps {
+  user: User | null | undefined;
+  userDetails?: any;
+}
+
+export default function Navbar({ user, userDetails }: NavbarProps) {
+  const { supabase } = useSupabase();
   const router = useRouter();
-  const { toast } = useToast();
   const { theme, setTheme } = useTheme();
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -75,35 +83,38 @@ export default function Navbar() {
                     <ModeToggle />
                   </NavigationMenuItem>
 
-                  {/* <div className="pl-5">
-                    <UserNav />
-                  </div> */}
-                  <NavigationMenuItem>
-                    <Link
-                      href="/signin"
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "group",
-                        "bg-transparent focus:bg-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800"
-                      )}
-                    >
-                      <span>Log In</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="ml-4 h-3 w-3 opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all"
+                  {user ? (
+                    <div className="pl-5">
+                      <UserNav user={user} userDetails={userDetails} />
+                    </div>
+                  ) : (
+                    <NavigationMenuItem>
+                      <Link
+                        href="/signin"
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "group",
+                          "bg-transparent focus:bg-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        )}
                       >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </Link>
-                  </NavigationMenuItem>
+                        <span>Log In</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="ml-4 h-3 w-3 opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </Link>
+                    </NavigationMenuItem>
+                  )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
@@ -133,35 +144,67 @@ export default function Navbar() {
                 <span className="flex items-center gap-3" onClick={toggleTheme}>
                   {theme === "light" ? <MoonIcon /> : <SunIcon />} Toggle theme
                 </span>
-                <p className="cursor-pointer flex items-center gap-3 mt-4">
-                  <ExitIcon /> Logout
-                </p>
+                {user && (
+                  <p
+                    onClick={async () => {
+                      const { error } = await supabase.auth.signOut();
+                      if (error) {
+                        console.error("Error signing out:", error.message);
+                        toast.error("Uh oh! Something went wrong", {
+                          description: error.message || "Failed to sign out.",
+                        });
+                        return;
+                      }
+                      router.push("/signin");
+                    }}
+                    className="cursor-pointer flex items-center gap-3 mt-4"
+                  >
+                    <ExitIcon /> Logout
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="sticky inset-x-0 bottom-0 border-t border-slate-400 border-opacity-20 px-2">
-              <Link
-                href="/account"
-                className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
-              >
-                <div className="flex flex-row items-center">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={"/avatar-icon.png"} />
-                    <AvatarFallback>
-                      <PersonIcon />
-                    </AvatarFallback>
-                  </Avatar>
+              {user ? (
+                <Link
+                  href="/account"
+                  className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
+                >
+                  <div className="flex flex-row items-center">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={
+                          user.user_metadata.avatar_url ?? "/avatar-icon.png"
+                        }
+                        alt={userDetails?.full_name ?? user.email}
+                      />
+                      <AvatarFallback>
+                        <PersonIcon />
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div className="ml-3">
-                    <p className="text-sm font-medium">email</p>
-                    <p className="text-sm leading-none text-muted-foreground">
-                      credits
-                    </p>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">
+                        {userDetails?.full_name ?? user.email}
+                      </p>
+                      <p className="text-sm leading-none text-muted-foreground">
+                        {userDetails?.credits ?? 0} credits
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <ArrowRightIcon className="h-5 w-5 mr-2" />
-              </Link>
+                  <ArrowRightIcon className="h-5 w-5 mr-2" />
+                </Link>
+              ) : (
+                <Link
+                  href="/signin"
+                  className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
+                >
+                  <p>Log In</p>
+                  <ArrowRightIcon className="mr-3" />
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

@@ -5,10 +5,10 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import { MotionConfig, motion } from "framer-motion";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { Row } from "@/components/ui/row";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { notFound } from "next/navigation";
 
 export default function ImageOutput({ id }) {
   const [predictions, setPredictions] = useState(null);
@@ -59,8 +59,8 @@ export default function ImageOutput({ id }) {
     };
   }, [id]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (error || !id) {
+    return notFound();
   }
 
   return (

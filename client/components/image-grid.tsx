@@ -1,6 +1,7 @@
 "use client";
 import { useInView } from "react-intersection-observer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useScroll, useTransform, motion } from "framer-motion";
 import clsx from "clsx";
 import { Suspense } from "react";
 
@@ -25,15 +26,27 @@ export default function ImageGrid({
   const [hasMore, setHasMore] = useState(true);
   const [ref, inView] = useInView();
 
+  const { scrollYProgress } = useScroll({
+    offset: ["start start", "end start"], // remove this if your container is not fixed height
+  });
+
+  const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const translateSecond = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const translateThird = useTransform(scrollYProgress, [0, 1], [0, -200]);
+
+  const third = Math.ceil(images.length / 3);
+
+  const firstPart = images.slice(0, third);
+  const secondPart = images.slice(third, 2 * third);
+  const thirdPart = images.slice(2 * third);
+
   useEffect(() => {
     setImages(initialImages);
-    console.log("initialImages", initialImages);
   }, [initialImages]);
 
   async function loadMoreImages() {
     const next = start + 30;
     const images = await fetchImages({ start: next, search, style });
-    console.log("Fetched images:", images); // Add this line
 
     if (images.length) {
       setStart(next);
@@ -44,8 +57,6 @@ export default function ImageGrid({
   }
 
   useEffect(() => {
-    console.log("inView:", inView, "hasMore:", hasMore); // Add this line
-
     if (inView && hasMore) {
       loadMoreImages();
     }
@@ -63,40 +74,70 @@ export default function ImageGrid({
         </div>
       }
     >
-      <main className="mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start mx-auto gap-10 py-12">
+        <div className="grid gap-10">
+          {firstPart.map((image, index) => (
+            <motion.div
+              style={{ y: translateFirst }} // Apply the translateY motion value here
+              key={"grid-1" + index}
+            >
+              <ImageItem
+                key={image._id}
+                image={image}
+                images={images}
+                index={index}
+                total={images.length}
+              />
+            </motion.div>
+          ))}
+        </div>
+        <div className="grid gap-10">
+          {secondPart.map((image, index) => (
+            <motion.div
+              style={{ y: translateSecond }} // Apply the translateY motion value here
+              key={"grid-2" + index}
+            >
+              <ImageItem
+                key={image._id}
+                image={image}
+                images={images}
+                index={index}
+                total={images.length}
+              />
+            </motion.div>
+          ))}
+        </div>
+        <div className="grid gap-10">
+          {thirdPart.map((image, index) => (
+            <motion.div
+              style={{ y: translateThird }} // Apply the translateY motion value here
+              key={"grid-3" + index}
+            >
+              <ImageItem
+                key={image._id}
+                image={image}
+                images={images}
+                index={index}
+                total={images.length}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+      {hasMore && (
         <div
+          ref={ref}
           className={clsx(
-            "grid grid-cols-2 gap-x-4",
+            "h-[400px] w-full grid grid-cols-2 gap-x-4 gap-y-4",
             "md:grid-cols-3",
             "lg:grid-cols-4 lg:gap-x-8"
           )}
         >
-          {images.map((image, index) => (
-            <ImageItem
-              key={image._id}
-              image={image}
-              images={images}
-              index={index}
-              total={images.length}
-            />
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} className="h-full w-full" />
           ))}
         </div>
-
-        {hasMore && (
-          <div
-            ref={ref}
-            className={clsx(
-              "h-[400px] w-full grid grid-cols-2 gap-x-4 gap-y-4",
-              "md:grid-cols-3",
-              "lg:grid-cols-4 lg:gap-x-8"
-            )}
-          >
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} className="h-full w-full" />
-            ))}
-          </div>
-        )}
-      </main>
+      )}
     </Suspense>
   );
 }

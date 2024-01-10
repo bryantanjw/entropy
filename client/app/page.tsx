@@ -4,10 +4,27 @@ import { Gallery } from "@/components/gallery";
 import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 
-export default function Home() {
+import {
+  getGenerationCount,
+  getSession,
+  getSubscription,
+  getUserDetails,
+} from "@/app/supabase-server";
+
+export default async function Home() {
+  const [session, userDetails, subscription, generationCount] =
+    await Promise.all([
+      getSession(),
+      getUserDetails(),
+      getSubscription(),
+      getGenerationCount(),
+    ]);
+
+  const user = session?.user;
+
   return (
     <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
-      <Navbar />
+      <Navbar user={user} userDetails={userDetails} />
       <Column className="w-full items-center min-h-screen py-44">
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
           <InputForm />
