@@ -27,7 +27,7 @@ export default async function SettingsBillingPage() {
             </h2>
             <p className="text-muted-foreground">bryantanjw01@gmail.com</p>
           </div>
-          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-gray-200 dark:via-gray-800 to-transparent" />
+          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-gray-200 dark:from-gray-800 to-transparent" />
           <SubscriptionGrid />
         </Column>
       </Column>

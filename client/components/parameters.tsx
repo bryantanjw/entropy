@@ -26,6 +26,7 @@ import {
 import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
 import { SettingsSelectors } from "./settings-selectors";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { cn } from "@/lib/utils";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
 const styles = ["Digital", "Realism", "Anime"];
@@ -87,12 +88,12 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-3">
-      <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-slate-900 bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-slate-800 border-opacity-50">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
         <Label htmlFor="image-size">Image Size</Label>
         <div className="relative flex flex-col items-center p-4">
           {/* Landscape */}
-          <div className="relative border-2 border-dashed border-gray-200 p-4 w-36 h-24 flex items-center justify-center rounded-lg" />
+          <div className="relative border-2 border-dashed border-gray-200 dark:border-gray-600 p-4 w-36 h-24 flex items-center justify-center rounded-lg" />
           {/* Portrait */}
           <div
             className={`absolute border-2 ${
@@ -101,7 +102,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                 : size === "Square"
                 ? "w-32 h-32"
                 : "w-36 h-24"
-            } border-gray-700 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 inset-4 rounded-lg flex items-center justify-center transition-all duration-300`}
+            } border-gray-700 dark:border-gray-200 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 inset-4 rounded-lg flex items-center justify-center transition-all duration-300`}
           >
             {size === "Portrait" && <span>2:3</span>}
             {size === "Square" && <span>1:1</span>}
@@ -121,7 +122,10 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
             {dimensions.map((size) => (
               <ToggleGroupItem
                 key={size}
-                className="data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500"
+                className={cn(
+                  "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
+                  "dark:data-[state=on]:bg-slate-100 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                )}
                 value={size}
                 aria-label={`Toggle ${size}`}
                 size={"sm"}
@@ -136,7 +140,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
       <SettingsSelectors form={form} />
 
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-6 h-full items-center justify-between bg-slate-50 dark:bg-slate-900 bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-slate-800 border-opacity-50">
+        <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
           <Label htmlFor="model">Aesthetics</Label>
           <div className="grid w-full">
             <div className="flex items-center justify-between space-x-6">
@@ -157,7 +161,11 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                     value={style}
                     aria-label={`Toggle ${style}`}
                     size={"sm"}
-                    className="font-light gap-2 data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500"
+                    className={cn(
+                      "font-light gap-2",
+                      "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
+                      "dark:data-[state=on]:bg-slate-100 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                    )}
                   >
                     {style}
                   </ToggleGroupItem>
@@ -229,7 +237,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
             /> */}
           </div>
         </div>
-        <div className="flex flex-col gap-6  items-center justify-between bg-slate-50 dark:bg-slate-900 bg-opacity-30 p-5 rounded-lg border border-slate-200 dark:border-slate-800 border-opacity-50">
+        <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
           <FormField
             control={form.control}
             name="seed"

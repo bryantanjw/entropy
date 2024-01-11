@@ -22,7 +22,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useSupabase } from "@/app/supabase-provider";
 import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 interface UpdatePasswordFormProps

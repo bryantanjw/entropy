@@ -9,6 +9,7 @@ import { SparklesCore } from "@/components/ui/sparkles";
 import { Row } from "@/components/ui/row";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { notFound } from "next/navigation";
+import { Icons } from "@/components/ui/icons";
 
 export default function ImageOutput({ id }) {
   const [predictions, setPredictions] = useState(null);
@@ -100,7 +101,7 @@ export default function ImageOutput({ id }) {
           <div className="flex flex-col">
             <div className="h-40 relative">
               <div className="flex items-center justify-center mb-2">
-                <ReloadIcon className="animate-spin h-3 w-3 mr-2" />
+                <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
                 <span className="z-20 items-center italic">Loading</span>
               </div>
               {/* Gradients */}
@@ -114,7 +115,7 @@ export default function ImageOutput({ id }) {
                 particleColor={theme === "dark" ? "#fff" : "#000"}
               />
               {/* Radial Gradient to prevent sharp edges */}
-              <div className="absolute inset-0 w-full h-full bg-white dark:bg-[#020817] [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+              <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
             </div>
           </div>
         )}

@@ -74,7 +74,7 @@ export default function ImageGrid({
         </div>
       }
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start mx-auto gap-10 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start mx-auto gap-10 py-10">
         <div className="grid gap-10">
           {firstPart.map((image, index) => (
             <motion.div

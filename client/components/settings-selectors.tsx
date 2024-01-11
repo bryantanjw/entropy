@@ -22,7 +22,7 @@ export function SettingsSelectors({ form }: SettingsSelectorsProps) {
   );
 
   return (
-    <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-slate-900 bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-slate-800 border-opacity-50">
+    <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
       <Label htmlFor="settings">Settings</Label>
       <div className="grid w-full h-full">
         <StepSelector form={form} />

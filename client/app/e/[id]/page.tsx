@@ -2,12 +2,12 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Column } from "@/components/ui/column";
-import { Row } from "@/components/ui/row";
 import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import ImageOutput from "./components/image-output";
-import { SparklesCore } from "@/components/ui/sparkles";
+
+import { getSession, getUserDetails } from "@/app/supabase-server";
 
 export async function generateMetadata({
   params,
@@ -35,16 +35,23 @@ export async function generateMetadata({
   };
 }
 
-export default function GenerationPage({
+export default async function GenerationPage({
   params,
 }: {
   params: {
     id: string;
   };
 }) {
+  const [session, userDetails] = await Promise.all([
+    getSession(),
+    getUserDetails(),
+  ]);
+
+  const user = session?.user;
+
   return (
     <div className="flex flex-col w-full items-center">
-      <Navbar />
+      <Navbar user={user} userDetails={userDetails} />
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
         <Column className="items-center min-h-screen py-32 px-10">
           <Column className="w-full lg:max-w-4xl xl:max-w-6xl">

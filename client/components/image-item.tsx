@@ -156,9 +156,7 @@ export default function ImageItem({
       >
         <motion.figure
           className={clsx(
-            "group relative mb-4 overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
-            "md:mb-4",
-            "lg:mb-8",
+            "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
             image.ratio === "square"
               ? "aspect-square"
               : image.ratio === "landscape"

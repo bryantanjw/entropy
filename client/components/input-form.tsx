@@ -29,6 +29,9 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { Row } from "./ui/row";
 import { Skeleton } from "./ui/skeleton";
+import { CardContainer, CardItem } from "./ui/3d-card";
+import { SparklesCore } from "./ui/sparkles";
+import { Icons } from "./ui/icons";
 
 import { Parameters } from "./parameters";
 import {
@@ -36,8 +39,7 @@ import {
   usePlaygroundForm,
 } from "@/lib/hooks/use-playground-form";
 import { featured } from "@/app/data/characters";
-import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
-import { SparklesCore } from "./ui/sparkles";
+import { ScrollArea } from "./ui/scroll-area";
 
 export const InputForm = () => {
   const router = useRouter();
@@ -114,7 +116,7 @@ export const InputForm = () => {
             }}
             className="md:min-w-[900px]"
           >
-            <CommandInput placeholder="Type a command or search..." />
+            <CommandInput placeholder="Search..." />
             <div className="grid grid-cols-[1.4fr_0fr_1fr] py-1 px-1 mt-2">
               <CommandList>
                 <CommandGroup heading="Featured">
@@ -158,7 +160,7 @@ export const InputForm = () => {
                             lastClickedCharacterRef.current = null; // Reset the ref
                           }
                         }}
-                        className="flex justify-between h-full border border-slate-500 border-opacity-0 px-0 items-center rounded-md hover:bg-slate-50 dark:hover:bg-slate-900 data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
+                        className="flex justify-between h-full border border-slate-500 border-opacity-0 px-0 items-center rounded-md hover:bg-primary-foreground data-[state=on]:bg-accent data-[state=on]:border-opacity-20"
                       >
                         <CommandItem className="aria-selected:bg-transparent">
                           {c.name}
@@ -195,7 +197,7 @@ export const InputForm = () => {
             <div className="w-full border-t flex justify-end p-1.5">
               <Button variant="ghost" className="items-center px-2">
                 Select Character
-                <kbd className="ml-2 py-1 px-1.5 bg-white border border-gray-200 font-mono text-xs text-gray-500 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                <kbd className="ml-2 py-1 px-1.5 border font-mono text-xs rounded-md">
                   <ArrowLeftIcon />
                 </kbd>
               </Button>
@@ -274,13 +276,15 @@ export const InputForm = () => {
                               >
                                 <Button
                                   variant="ghost"
-                                  className="p-0 hover:bg-transparent transition duration-200"
+                                  className="p-2 hover:bg-transparent transition duration-200"
                                 >
                                   <MixerHorizontalIcon className="h-4 w-4 mr-1" />
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[30rem] lg:w-[48rem] xl:w-[64rem]">
-                                <Parameters form={form} />
+                              <PopoverContent className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem]">
+                                <ScrollArea className="h-[700px] md:h-full">
+                                  <Parameters form={form} />
+                                </ScrollArea>
                               </PopoverContent>
                             </Popover>
                           </div>
@@ -297,7 +301,7 @@ export const InputForm = () => {
                                 background="transparent"
                                 minSize={0.6}
                                 maxSize={1.4}
-                                particleDensity={200}
+                                particleDensity={120}
                                 className="w-full h-full"
                                 particleColor={
                                   theme === "dark" ? "#000" : "#fff"
@@ -305,7 +309,7 @@ export const InputForm = () => {
                               />
                             </div>
                             {isSubmitting ? (
-                              <ReloadIcon className="animate-spin" />
+                              <Icons.spinner className="animate-spin" />
                             ) : (
                               <>
                                 <Image
