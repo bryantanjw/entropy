@@ -4,7 +4,7 @@ import { Gallery } from "@/components/gallery";
 import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 
-import { getSession, getUserDetails } from "@/app/supabase-server";
+import { getSession, getUserDetails } from "@/lib/supabase-server";
 
 export default async function Home() {
   const [session, userDetails] = await Promise.all([

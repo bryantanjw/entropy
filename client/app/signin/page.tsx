@@ -7,7 +7,7 @@ import { BrandStatement } from "@/components/ui/brand-statement";
 import { UserAuthForm } from "./components/user-auth-form";
 import { cn } from "@/lib/utils";
 
-import { getSession } from "@/app/supabase-server";
+import { getSession } from "@/lib/supabase-server";
 
 export const metadata: Metadata = {
   title: "Entropy | Sign in",

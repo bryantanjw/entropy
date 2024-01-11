@@ -6,7 +6,7 @@ import Filter from "@/components/image-filter";
 import ImageGrid from "@/components/image-grid";
 
 import { fetchImages } from "@/lib/actions";
-import { getSession, getUserDetails } from "@/app/supabase-server";
+import { getSession, getUserDetails } from "@/lib/supabase-server";
 
 export default async function Search({
   searchParams, // has to be searchParams. i think it's a next.js thing to recognize the query params

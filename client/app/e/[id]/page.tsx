@@ -7,7 +7,7 @@ import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import ImageOutput from "./components/image-output";
 
-import { getSession, getUserDetails } from "@/app/supabase-server";
+import { getSession, getUserDetails } from "@/lib/supabase-server";
 
 export async function generateMetadata({
   params,

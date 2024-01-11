@@ -1,4 +1,4 @@
-import { getSession, getUserDetails } from "@/app/supabase-server";
+import { getSession, getUserDetails } from "@/lib/supabase-server";
 import Navbar from "@/components/navbar";
 import { redirect } from "next/navigation";
 import { Column } from "@/components/ui/column";
@@ -28,7 +28,7 @@ export default async function SettingsBillingPage() {
             <p className="text-muted-foreground">bryantanjw01@gmail.com</p>
           </div>
           <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-gray-200 dark:from-gray-800 to-transparent" />
-          <SubscriptionGrid />
+          <SubscriptionGrid userDetails={userDetails} />
         </Column>
       </Column>
     </div>

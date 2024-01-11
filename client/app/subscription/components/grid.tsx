@@ -22,7 +22,7 @@ import { Progress } from "@/components/ui/progress";
 import { Meteors } from "@/components/ui/meteors";
 import { Illustration } from "@/components/ui/glowing-stars";
 import { useState } from "react";
-import { Row } from "@/components/ui/row";
+import { PaymentCard } from "./payment-card";
 
 export const BentoGrid = ({
   className,
@@ -43,13 +43,14 @@ export const BentoGrid = ({
   );
 };
 
-export function SubscriptionGrid() {
-  const [mouseEnter, setMouseEnter] = useState(false);
+export function SubscriptionGrid({ userDetails }) {
+  const [mouseEnterCredits, setMouseEnterCredits] = useState(false);
+  const [mouseEnterInvoices, setMouseEnterInvoices] = useState(false);
 
   return (
     <div className="mx-auto">
-      <div className="grid grid-cols-5 gap-5">
-        <div className="col-span-3 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+        <div className="lg:col-span-3 space-y-4">
           <div
             className={cn(
               "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
@@ -91,7 +92,7 @@ export function SubscriptionGrid() {
 
           <div
             className={cn(
-              "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
+              "row-span-1 relative isolate overflow-hidden rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
           >
             <CardHeader className="px-0 group-hover/bento:translate-x-2 transition duration-200">
@@ -100,12 +101,21 @@ export function SubscriptionGrid() {
             <CardContent className="px-0 group-hover/bento:translate-x-2 transition duration-200">
               <div className="font-light text-sm">No payment method added.</div>
             </CardContent>
+            <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-2 transition duration-200">
+              <PaymentCard userDetails={userDetails} />
+            </div>
           </div>
 
           <div
             className={cn(
               "relative overflow-hidden row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
+            onMouseEnter={() => {
+              setMouseEnterInvoices(true);
+            }}
+            onMouseLeave={() => {
+              setMouseEnterInvoices(false);
+            }}
           >
             <CardHeader className="px-0 group-hover/bento:translate-x-2 transition duration-200">
               <CardTitle>Invoices</CardTitle>
@@ -115,29 +125,29 @@ export function SubscriptionGrid() {
                 You can refer to all your past invoices in your Stripe portal,
                 under Invoices.
               </p>
-              <Link className="text-blue-600 hover:underline" href="#">
+              <Link className="text-blue-600 hover:underline w-fit" href="#">
                 Go to the Invoices page <sup>&#8599;</sup>
               </Link>
             </CardContent>
 
-            <Meteors number={20} />
+            <Meteors number={20} mouseEnter={mouseEnterInvoices} />
           </div>
         </div>
 
         <div
           className={cn(
-            "col-span-2",
-            "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
+            "lg:col-span-2",
+            "row-span-1 flex flex-col h-fit rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border space-y-2"
           )}
           onMouseEnter={() => {
-            setMouseEnter(true);
+            setMouseEnterCredits(true);
           }}
           onMouseLeave={() => {
-            setMouseEnter(false);
+            setMouseEnterCredits(false);
           }}
         >
-          <Illustration mouseEnter={mouseEnter} />
-          <CardHeader className="px-4 pt-2">
+          <Illustration mouseEnter={mouseEnterCredits} />
+          <CardHeader className="px-4 pt-3">
             <CardTitle>On-Demand Credits</CardTitle>
           </CardHeader>
           <CardContent className="font-light px-4 space-y-4">

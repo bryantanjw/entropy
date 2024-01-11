@@ -6,9 +6,9 @@ import {
   manageSubscriptionStatusChange,
   creditUserForOneTimePayment,
   creditUserForRecurringPayment,
-} from "@/utils/supabase-admin";
+} from "@/lib/supabase-admin";
 
-import { stripe } from "@/utils/stripe";
+import { stripe } from "@/lib/stripe";
 
 const relevantEvents = new Set([
   "product.created",
