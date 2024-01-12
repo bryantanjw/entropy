@@ -198,7 +198,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                 </SelectContent>
               </Select>
             </div>
-            {/* <Row className="my-6 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+            <Row className="my-6 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
             <FormField
               control={form.control}
               name="sampler_name"
@@ -234,7 +234,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                   <FormMessage />
                 </div>
               )}
-            /> */}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">

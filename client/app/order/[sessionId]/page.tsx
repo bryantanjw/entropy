@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
-import { BrandStatement } from "@/components/brand-statement";
+import { BrandStatement } from "@/components/ui/brand-statement";
 import { stripe } from "@/utils/stripe";
 
 export const metadata: Metadata = {

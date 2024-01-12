@@ -28,7 +28,7 @@ export function usePlaygroundForm() {
       input_prompt: "",
       negative_prompt: "lowres, worst quality, ugly, blurry, bad fingers",
       steps: 25,
-      sampler_name: "dpmpp_2m_sde",
+      sampler_name: "dpmpp_2m",
       seed: 69420,
       cfg: 7.0,
       lora: "",

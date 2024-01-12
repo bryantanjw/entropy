@@ -14,6 +14,7 @@ checkpoints = [
 
     # Anime
     "Hassaku.safetensors",
+    "OrangeMixs.safetensors",
     "CamelliaMix.safetensors",
     "Counterfeit.safetensors",
     "Animeliner.safetensors",
