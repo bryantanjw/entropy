@@ -23,6 +23,7 @@ import { useSupabase } from "@/lib/providers/supabase-provider";
 import { SparklesCore } from "./ui/sparkles";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { ShareFeedback } from "./share-feedback";
+import { useTheme } from "next-themes";
 
 interface Props {
   user: User | null | undefined;
@@ -31,6 +32,7 @@ interface Props {
 
 export function UserNav({ user, userDetails }: Props) {
   const { supabase } = useSupabase();
+  const { theme } = useTheme();
   const router = useRouter();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
@@ -88,7 +90,7 @@ export function UserNav({ user, userDetails }: Props) {
                 height="44"
                 viewBox="0 0 24 24"
                 strokeWidth="1.2"
-                stroke="#2c3e50"
+                stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -114,7 +116,7 @@ export function UserNav({ user, userDetails }: Props) {
                 height="44"
                 viewBox="0 0 24 24"
                 strokeWidth="1.2"
-                stroke="#2c3e50"
+                stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -138,7 +140,7 @@ export function UserNav({ user, userDetails }: Props) {
                 height="44"
                 viewBox="0 0 24 24"
                 strokeWidth="1.2"
-                stroke="#2c3e50"
+                stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -164,7 +166,7 @@ export function UserNav({ user, userDetails }: Props) {
                 height="44"
                 viewBox="0 0 24 24"
                 strokeWidth="1.2"
-                stroke="#2c3e50"
+                stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -190,7 +192,7 @@ export function UserNav({ user, userDetails }: Props) {
                 height="44"
                 viewBox="0 0 24 24"
                 strokeWidth="1.2"
-                stroke="#2c3e50"
+                stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -228,7 +230,7 @@ export function UserNav({ user, userDetails }: Props) {
                       background="transparent"
                       minSize={0.8}
                       maxSize={2}
-                      particleDensity={1500}
+                      particleDensity={1000}
                       className="w-full h-full"
                       particleColor={"#e11d48"}
                     />
@@ -252,7 +254,7 @@ export function UserNav({ user, userDetails }: Props) {
                 Share Feedback
               </div>
             </DropdownMenuItem>
-            <DialogContent showCloseIcon={false} className="border-0 w-fit">
+            <DialogContent showCloseIcon={false} className="border-0 w-full">
               <ShareFeedback />
             </DialogContent>
           </Dialog>
@@ -278,7 +280,7 @@ export function UserNav({ user, userDetails }: Props) {
               height="44"
               viewBox="0 0 24 24"
               strokeWidth="1.2"
-              stroke="#2c3e50"
+              stroke={theme === "dark" ? "lightgray" : "#2c3e50"}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
