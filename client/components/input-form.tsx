@@ -9,7 +9,6 @@ import {
   ArrowLeftIcon,
   MixerHorizontalIcon,
   PlusIcon,
-  ReloadIcon,
 } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
@@ -31,6 +30,7 @@ import { Row } from "./ui/row";
 import { Skeleton } from "./ui/skeleton";
 import { CardContainer, CardItem } from "./ui/3d-card";
 import { SparklesCore } from "./ui/sparkles";
+import { ScrollArea } from "./ui/scroll-area";
 import { Icons } from "./ui/icons";
 
 import { Parameters } from "./parameters";
@@ -39,7 +39,6 @@ import {
   usePlaygroundForm,
 } from "@/lib/hooks/use-playground-form";
 import { featured } from "@/app/data/characters";
-import { ScrollArea } from "./ui/scroll-area";
 
 export const InputForm = () => {
   const router = useRouter();

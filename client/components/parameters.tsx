@@ -6,7 +6,6 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Row } from "./ui/row";
-import { Slider } from "./ui/slider";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import {
   Select,
@@ -124,7 +123,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                 key={size}
                 className={cn(
                   "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
-                  "dark:data-[state=on]:bg-slate-100 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                  "dark:data-[state=on]:bg-slate-100 hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
                 )}
                 value={size}
                 aria-label={`Toggle ${size}`}
@@ -164,7 +163,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                     className={cn(
                       "font-light gap-2",
                       "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
-                      "dark:data-[state=on]:bg-slate-100 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                      "dark:data-[state=on]:bg-slate-100 hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
                     )}
                   >
                     {style}

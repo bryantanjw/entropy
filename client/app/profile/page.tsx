@@ -33,7 +33,7 @@ export default async function ProfilePage() {
           Your Spotlights
         </h1>
         <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg md:ml-2">
-          Scroll to browse your spotlights. Click on a spotlight to view it.
+          Scroll to browse your images. Click on a spotlight to view it.
         </p>
       </div>
 

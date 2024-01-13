@@ -255,7 +255,7 @@ export function UserNav({ user, userDetails }: Props) {
               </div>
             </DropdownMenuItem>
             <DialogContent showCloseIcon={false} className="border-0 w-full">
-              <ShareFeedback />
+              <ShareFeedback email={user?.email} />
             </DialogContent>
           </Dialog>
 

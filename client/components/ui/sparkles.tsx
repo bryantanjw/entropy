@@ -298,12 +298,12 @@ const SparklesCore = React.memo((props: ParticlesProps) => {
                 split: {
                   count: 1,
                   factor: {
-                    value: 3,
+                    value: 6,
                   },
                   rate: {
                     value: {
-                      min: 4,
-                      max: 9,
+                      min: 20,
+                      max: 100,
                     },
                   },
                   sizeOffset: true,

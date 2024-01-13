@@ -34,7 +34,6 @@ import { UserNav } from "./user-nav";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./ui/theme-toggle";
-import { ShareFeedback } from "./share-feedback";
 
 import { useSupabase } from "@/lib/providers/supabase-provider";
 
