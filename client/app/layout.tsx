@@ -6,8 +6,9 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
+import SupabaseProvider from "../lib/providers/supabase-provider";
+
 import "./globals.css";
-import SupabaseProvider from "./supabase-provider";
 
 export const metadata: Metadata = {
   title: "Entropy AI",
@@ -24,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
         <SupabaseProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="light">
             {children}
             <Toaster />
             <TailwindIndicator />

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useSupabase } from "@/app/supabase-provider";
+import { useSupabase } from "@/lib/providers/supabase-provider";
 import { signInFormSchema } from "@/lib/utils";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}

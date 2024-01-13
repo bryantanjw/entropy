@@ -3,9 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-
 import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useTheme } from "next-themes";
+
 import {
   ArrowRightIcon,
   CameraIcon,
@@ -27,15 +29,14 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "./ui/navigation-menu";
 import { UserNav } from "./user-nav";
-import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { ModeToggle } from "./ui/theme-toggle";
-import { useSupabase } from "@/app/supabase-provider";
+import { ShareFeedback } from "./share-feedback";
+
+import { useSupabase } from "@/lib/providers/supabase-provider";
 
 interface NavbarProps {
   user: User | null | undefined;
@@ -75,16 +76,16 @@ export default function Navbar({ user, userDetails }: NavbarProps) {
             {isMenuOpen ? <Cross2Icon /> : <HamburgerMenuIcon />}
           </Button>
 
-          <div className="hidden space-x-5 md:flex items-center">
-            <div className="space-x-2">
+          <div className="hidden space-x-5 md:flex">
+            <div>
               <NavigationMenu>
-                <NavigationMenuList>
+                <NavigationMenuList className="gap-4 items-center">
                   <NavigationMenuItem>
                     <ModeToggle />
                   </NavigationMenuItem>
 
                   {user ? (
-                    <div className="pl-5">
+                    <div>
                       <UserNav user={user} userDetails={userDetails} />
                     </div>
                   ) : (

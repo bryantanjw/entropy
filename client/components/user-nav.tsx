@@ -1,18 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
-import {
-  ChatBubbleIcon,
-  DashboardIcon,
-  ExitIcon,
-  PersonIcon,
-  PlusCircledIcon,
-  ShadowIcon,
-} from "@radix-ui/react-icons";
+import { PersonIcon, ShadowIcon } from "@radix-ui/react-icons";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,13 +15,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-import { useSupabase } from "@/app/supabase-provider";
-import { Badge } from "./ui/badge";
+import { useSupabase } from "@/lib/providers/supabase-provider";
+import { SparklesCore } from "./ui/sparkles";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { ShareFeedback } from "./share-feedback";
 
 interface Props {
   user: User | null | undefined;
@@ -39,13 +32,14 @@ interface Props {
 export function UserNav({ user, userDetails }: Props) {
   const { supabase } = useSupabase();
   const router = useRouter();
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-7 w-7 rounded-full flex items-center justify-center"
+          className="relative h-7 w-7 rounded-full flex items-center justify-center focus-visible:ring-none"
         >
           <Avatar className="h-7 w-7">
             <AvatarImage
@@ -93,7 +87,7 @@ export function UserNav({ user, userDetails }: Props) {
                 width="44"
                 height="44"
                 viewBox="0 0 24 24"
-                strokeWidth="1"
+                strokeWidth="1.2"
                 stroke="#2c3e50"
                 fill="none"
                 strokeLinecap="round"
@@ -119,7 +113,7 @@ export function UserNav({ user, userDetails }: Props) {
                 width="44"
                 height="44"
                 viewBox="0 0 24 24"
-                strokeWidth="1"
+                strokeWidth="1.2"
                 stroke="#2c3e50"
                 fill="none"
                 strokeLinecap="round"
@@ -143,7 +137,7 @@ export function UserNav({ user, userDetails }: Props) {
                 width="44"
                 height="44"
                 viewBox="0 0 24 24"
-                strokeWidth="1"
+                strokeWidth="1.2"
                 stroke="#2c3e50"
                 fill="none"
                 strokeLinecap="round"
@@ -169,7 +163,7 @@ export function UserNav({ user, userDetails }: Props) {
                 width="44"
                 height="44"
                 viewBox="0 0 24 24"
-                strokeWidth="1"
+                strokeWidth="1.2"
                 stroke="#2c3e50"
                 fill="none"
                 strokeLinecap="round"
@@ -195,7 +189,7 @@ export function UserNav({ user, userDetails }: Props) {
                 width="44"
                 height="44"
                 viewBox="0 0 24 24"
-                strokeWidth="1"
+                strokeWidth="1.2"
                 stroke="#2c3e50"
                 fill="none"
                 strokeLinecap="round"
@@ -211,6 +205,58 @@ export function UserNav({ user, userDetails }: Props) {
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup className="space-y-1 py-1">
+          <Dialog
+            open={feedbackOpen}
+            onOpenChange={(open) => {
+              setFeedbackOpen(open);
+            }}
+          >
+            <DropdownMenuItem
+              asChild
+              className="cursor-pointer rounded-md py-2"
+            >
+              <div
+                className="flex items-center text-muted-foreground text-sm gap-4 w-full"
+                onClick={(event) => {
+                  setFeedbackOpen(true);
+                  event.preventDefault();
+                }}
+              >
+                <div className="relative">
+                  <div className="absolute w-full h-full">
+                    <SparklesCore
+                      background="transparent"
+                      minSize={0.8}
+                      maxSize={2}
+                      particleDensity={1500}
+                      className="w-full h-full"
+                      particleColor={"#e11d48"}
+                    />
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-heart w-5 h-5"
+                    width="44"
+                    height="44"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.6"
+                    stroke="#e11d48"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                  </svg>
+                </div>
+                Share Feedback
+              </div>
+            </DropdownMenuItem>
+            <DialogContent showCloseIcon={false} className="border-0 w-fit">
+              <ShareFeedback />
+            </DialogContent>
+          </Dialog>
+
           <DropdownMenuItem
             onClick={async () => {
               const { error } = await supabase.auth.signOut();
@@ -231,7 +277,7 @@ export function UserNav({ user, userDetails }: Props) {
               width="44"
               height="44"
               viewBox="0 0 24 24"
-              strokeWidth="1"
+              strokeWidth="1.2"
               stroke="#2c3e50"
               fill="none"
               strokeLinecap="round"

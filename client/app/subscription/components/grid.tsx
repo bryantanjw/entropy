@@ -56,13 +56,15 @@ export function SubscriptionGrid({ userDetails }) {
               "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
           >
-            <CardHeader className="items-center gap-3 px-5 pt-5 group-hover/bento:translate-x-2 transition duration-200">
-              <CardTitle>Plan summary</CardTitle>
+            <div className="flex p-1.5 items-center gap-3 px-5 pt-5 group-hover/bento:translate-x-2 transition duration-200">
+              <span className="font-semibold leading-none tracking-wide">
+                Plan summary
+              </span>
               <Badge variant="secondary" className="w-fit rounded-xl">
                 Free Plan
               </Badge>
-            </CardHeader>
-            <CardContent className="grid grid-cols-5 gap-16 text-sm items-center px-5 pb-5 group-hover/bento:translate-x-2 transition duration-200">
+            </div>
+            <div className="grid grid-cols-5 gap-16 p-1.5 pt-0 text-sm items-center px-5 pb-5 group-hover/bento:translate-x-2 transition duration-200">
               <div className="col-span-2 flex flex-col gap-2">
                 <div className="font-light text-xs">
                   <span className="font-semibold text-sm">200 </span>
@@ -87,7 +89,7 @@ export function SubscriptionGrid({ userDetails }) {
                   <span className="font-semibold">Feb 1, 2024</span>
                 </div>
               </div>
-            </CardContent>
+            </div>
           </div>
 
           <div
@@ -95,12 +97,14 @@ export function SubscriptionGrid({ userDetails }) {
               "row-span-1 relative isolate overflow-hidden rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
           >
-            <CardHeader className="px-0 group-hover/bento:translate-x-2 transition duration-200">
-              <CardTitle>Payment method</CardTitle>
-            </CardHeader>
-            <CardContent className="px-0 group-hover/bento:translate-x-2 transition duration-200">
+            <div className="flex p-1.5 px-0 group-hover/bento:translate-x-2 transition duration-200">
+              <span className="font-semibold leading-none tracking-wide">
+                Payment method
+              </span>
+            </div>
+            <div className="p-1.5 pt-0 text-sm px-0 group-hover/bento:translate-x-2 transition duration-200">
               <div className="font-light text-sm">No payment method added.</div>
-            </CardContent>
+            </div>
             <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-2 transition duration-200">
               <PaymentCard userDetails={userDetails} />
             </div>
@@ -117,10 +121,10 @@ export function SubscriptionGrid({ userDetails }) {
               setMouseEnterInvoices(false);
             }}
           >
-            <CardHeader className="px-0 group-hover/bento:translate-x-2 transition duration-200">
+            <div className="flex p-1.5 px-0 group-hover/bento:translate-x-2 transition duration-200">
               <CardTitle>Invoices</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col px-0 gap-2 group-hover/bento:translate-x-2 transition duration-200">
+            </div>
+            <div className="flex flex-col px-0 p-1.5 pt-0 text-sm gap-2 group-hover/bento:translate-x-2 transition duration-200">
               <p>
                 You can refer to all your past invoices in your Stripe portal,
                 under Invoices.
@@ -128,7 +132,7 @@ export function SubscriptionGrid({ userDetails }) {
               <Link className="text-blue-600 hover:underline w-fit" href="#">
                 Go to the Invoices page <sup>&#8599;</sup>
               </Link>
-            </CardContent>
+            </div>
 
             <Meteors number={20} mouseEnter={mouseEnterInvoices} />
           </div>
@@ -137,7 +141,7 @@ export function SubscriptionGrid({ userDetails }) {
         <div
           className={cn(
             "lg:col-span-2",
-            "row-span-1 flex flex-col h-fit rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border space-y-2"
+            "row-span-1 flex flex-col rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border space-y-2"
           )}
           onMouseEnter={() => {
             setMouseEnterCredits(true);
@@ -147,10 +151,12 @@ export function SubscriptionGrid({ userDetails }) {
           }}
         >
           <Illustration mouseEnter={mouseEnterCredits} />
-          <CardHeader className="px-4 pt-3">
-            <CardTitle>On-Demand Credits</CardTitle>
-          </CardHeader>
-          <CardContent className="font-light px-4 space-y-4">
+          <div className="flex p-1.5 px-4 pt-3">
+            <span className="font-semibold leading-none tracking-wide">
+              On-Demand Credits
+            </span>
+          </div>
+          <div className="p-1.5 pt-0 text-sm font-light px-4 space-y-4">
             <p className="opacity-70">
               You cannot buy on-demand credits without an active subscription.
               Please resume your subscription or choose a new plan.
@@ -191,7 +197,7 @@ export function SubscriptionGrid({ userDetails }) {
                 </div>
               </div>
             </div> */}
-          </CardContent>
+          </div>
 
           <CardFooter className="px-4">
             <Button className="w-full">Purchase Credits</Button>
