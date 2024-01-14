@@ -21,7 +21,6 @@ import { toast } from "sonner";
 
 import { useSupabase } from "@/lib/providers/supabase-provider";
 import { SparklesCore } from "./ui/sparkles";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { ShareFeedback } from "./share-feedback";
 import { useTheme } from "next-themes";
 
@@ -207,57 +206,52 @@ export function UserNav({ user, userDetails }: Props) {
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup className="space-y-1 py-1">
-          <Dialog
-            open={feedbackOpen}
-            onOpenChange={(open) => {
-              setFeedbackOpen(open);
-            }}
+          <DropdownMenuItem
+            className="cursor-pointer rounded-md py-2"
+            onClick={() => setFeedbackOpen(true)}
           >
-            <DropdownMenuItem
-              asChild
-              className="cursor-pointer rounded-md py-2"
+            <div
+              className="flex items-center text-muted-foreground text-sm gap-4 w-full"
+              onClick={(event) => {
+                setFeedbackOpen(true);
+                event.preventDefault();
+              }}
             >
-              <div
-                className="flex items-center text-muted-foreground text-sm gap-4 w-full"
-                onClick={(event) => {
-                  setFeedbackOpen(true);
-                  event.preventDefault();
-                }}
-              >
-                <div className="relative">
-                  <div className="absolute w-full h-full">
-                    <SparklesCore
-                      background="transparent"
-                      minSize={0.8}
-                      maxSize={2}
-                      particleDensity={1000}
-                      className="w-full h-full"
-                      particleColor={"#e11d48"}
-                    />
-                  </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon icon-tabler icon-tabler-heart w-5 h-5"
-                    width="44"
-                    height="44"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.6"
-                    stroke="#e11d48"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-                  </svg>
+              <div className="relative">
+                <div className="absolute w-full h-full">
+                  <SparklesCore
+                    background="transparent"
+                    minSize={0.8}
+                    maxSize={2}
+                    particleDensity={800}
+                    className="w-full h-full"
+                    particleColor={"#e11d48"}
+                  />
                 </div>
-                Share Feedback
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon icon-tabler icon-tabler-heart w-5 h-5"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.6"
+                  stroke="#e11d48"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                </svg>
               </div>
-            </DropdownMenuItem>
-            <DialogContent showCloseIcon={false} className="border-0 w-full">
-              <ShareFeedback email={user?.email} />
-            </DialogContent>
-          </Dialog>
+              Share Feedback
+            </div>
+          </DropdownMenuItem>
+          <ShareFeedback
+            email={user?.email}
+            open={feedbackOpen}
+            setOpen={setFeedbackOpen}
+          />
 
           <DropdownMenuItem
             onClick={async () => {

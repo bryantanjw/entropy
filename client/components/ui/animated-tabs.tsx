@@ -71,9 +71,7 @@ export const AnimatedTabs = ({
               />
             )}
 
-            <span className="relative block text-black dark:text-white">
-              {tab.title}
-            </span>
+            <span className="relative block font-medium">{tab.title}</span>
           </button>
         ))}
       </div>

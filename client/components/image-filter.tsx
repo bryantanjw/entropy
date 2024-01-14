@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Cross1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
@@ -45,7 +46,17 @@ export default function Filter({
   }, [selectedStyle]);
 
   return (
-    <nav className="text-sm flex flex-col md:flex-row justify-between w-full items-center">
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        y: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 },
+        delay: 0.1,
+      }}
+      className="text-sm flex flex-col md:flex-row justify-between w-full items-center"
+    >
       <form onSubmit={handleSearch} className="relative w-[300px]">
         <input
           name="search"
@@ -112,6 +123,6 @@ export default function Filter({
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-    </nav>
+    </motion.div>
   );
 }

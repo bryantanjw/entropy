@@ -24,7 +24,8 @@ export default async function AuthenticationPage() {
   return (
     <div className="container relative h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-[1fr_0.8fr] lg:px-0">
       <Link
-        href="/pricing"
+        href="https://entropy.so/pricing"
+        target="_blank"
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute right-4 top-4 md:right-8 md:top-8 z-50 text-md"

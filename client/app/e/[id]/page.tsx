@@ -55,7 +55,7 @@ export default async function GenerationPage({
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
         <Column className="items-center min-h-screen py-32 px-10">
           <Column className="w-full lg:max-w-4xl xl:max-w-6xl">
-            <InputForm />
+            <InputForm user={user} />
             <ImageOutput id={params.id} />
           </Column>
         </Column>

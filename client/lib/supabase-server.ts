@@ -84,3 +84,22 @@ export async function getGenerationCount() {
     return null;
   }
 }
+
+export async function getCharacters() {
+  const supabase = createServerSupabaseClient();
+  try {
+    const { data: characters, error } = await supabase
+      .from("characters")
+      .select("*");
+
+    if (error) {
+      console.error("Error fetching characters:", error);
+      return null;
+    }
+
+    return characters;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}

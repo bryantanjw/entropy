@@ -294,16 +294,16 @@ const SparklesCore = React.memo((props: ParticlesProps) => {
               },
               destroy: {
                 bounds: {},
-                mode: "auto",
+                mode: "none",
                 split: {
                   count: 1,
                   factor: {
-                    value: 6,
+                    value: 3,
                   },
                   rate: {
                     value: {
-                      min: 20,
-                      max: 100,
+                      min: 3,
+                      max: 9,
                     },
                   },
                   sizeOffset: true,

@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -21,6 +21,7 @@ import { WavyBackground } from "./ui/wavy-bg";
 import { AnimatedTabs } from "./ui/animated-tabs";
 import { Icons, SuccessIcon } from "./ui/icons";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "./ui/dialog";
 
 const requestFormSchema = z.object({
   request: z.string().min(1, {
@@ -33,7 +34,13 @@ const feedbackFormSchema = z.object({
   }),
 });
 
-export function ShareFeedback({ email }: { email?: string }) {
+interface ShareFeedbackProps {
+  email: string | null | undefined;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+}
+
+export function ShareFeedback({ email, open, setOpen }: ShareFeedbackProps) {
   const [isRequestSubmitting, setRequestSubmitting] = useState(false);
   const [isFeedbackSubmitting, setFeedbackSubmitting] = useState(false);
   const [isRequestSuccess, setRequestSuccess] = useState(false);
@@ -52,22 +59,35 @@ export function ShareFeedback({ email }: { email?: string }) {
     setRequestSubmitting(true);
 
     // publish the event to LogSnag
-    publishToLogSnag({
-      event: "Request Received",
-      description: values.request,
-      icon: "💬",
-      notify: true,
-      tags: {
-        email: email,
-        type: "request",
-      },
-    });
+    try {
+      await publishToLogSnag({
+        event: "Reqest Received",
+        description: values.request,
+        icon: "🙋🏼‍♀️",
+        notify: true,
+        tags: {
+          email: email,
+          type: "request",
+        },
+      });
 
-    setRequestSubmitting(false);
-    setRequestSuccess(true);
-    toast.success("Request received!", {
-      description: "We'll notify you when it's added.",
-    });
+      setTimeout(() => {
+        setRequestSubmitting(false);
+        setRequestSuccess(true);
+        toast.success("Request received!", {
+          description: "We'll notify you when it's added.",
+        });
+        setTimeout(() => {
+          setRequestSuccess(false);
+        }, 2000);
+      }, 2000);
+    } catch (error) {
+      setRequestSubmitting(false);
+      toast.error("Failed to submit request.", {
+        description:
+          error.message || "An error occurred while submitting your request.",
+      });
+    }
   }
 
   async function onFeedbackSubmit(values: z.infer<typeof feedbackFormSchema>) {
@@ -75,21 +95,34 @@ export function ShareFeedback({ email }: { email?: string }) {
     setFeedbackSubmitting(true);
 
     // publish the event to LogSnag
-    // publish the event to LogSnag
-    publishToLogSnag({
-      event: "Feedback Submitted",
-      description: values.feedback,
-      icon: "😍",
-      notify: true,
-      tags: {
-        email: email,
-        type: "feedback",
-      },
-    });
+    try {
+      await publishToLogSnag({
+        event: "Feedback Submitted",
+        description: values.feedback,
+        icon: "😍",
+        notify: true,
+        tags: {
+          email: email,
+          type: "feedback",
+        },
+      });
 
-    setFeedbackSubmitting(false);
-    setFeedbackSuccess(true);
-    toast.success("Thank you for the feedback!");
+      setTimeout(() => {
+        setFeedbackSubmitting(false);
+        setFeedbackSuccess(true);
+        toast.success("Feedback received. Thanks for using Entropy!");
+        setFeedbackSubmitting(false);
+        setTimeout(() => {
+          setFeedbackSuccess(false);
+        }, 2000);
+      }, 2000);
+    } catch (error) {
+      setFeedbackSubmitting(false);
+      toast.error("Failed to send feedback.", {
+        description:
+          error.message || "An error occurred while sending your feedback.",
+      });
+    }
   }
 
   const tabs = [
@@ -128,8 +161,20 @@ export function ShareFeedback({ email }: { email?: string }) {
                     </FormItem>
                   </CardContent>
                   <CardFooter className="justify-between pt-4">
-                    <Button variant="ghost">Cancel</Button>
-                    <Button disabled={isRequestSubmitting} type="submit">
+                    <Button
+                      variant="ghost"
+                      onClick={(e) => {
+                        setOpen(false);
+                        e.preventDefault();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      disabled={isRequestSubmitting}
+                      type="submit"
+                      className="min-w-[100px]"
+                    >
                       {isRequestSubmitting ? (
                         <Icons.spinner className="h-4 w-4 animate-spin" />
                       ) : isRequestSuccess ? (
@@ -192,7 +237,13 @@ export function ShareFeedback({ email }: { email?: string }) {
                     </FormItem>
                   </CardContent>
                   <CardFooter className="justify-between pt-4">
-                    <Button type="submit" variant="ghost">
+                    <Button
+                      variant="ghost"
+                      onClick={(e) => {
+                        setOpen(false);
+                        e.preventDefault();
+                      }}
+                    >
                       Cancel
                     </Button>
                     <Button disabled={isFeedbackSubmitting}>
@@ -217,9 +268,19 @@ export function ShareFeedback({ email }: { email?: string }) {
   ];
 
   return (
-    <div className="h-[20rem] md:h-[40rem] [perspective:1000px] relative b flex flex-col max-w-5xl mx-auto w-full  items-start justify-start my-40">
-      <AnimatedTabs tabs={tabs} />
-    </div>
+    <Dialog
+      key={"feedback"}
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+      }}
+    >
+      <DialogContent showCloseIcon={false} className="border-0 w-full">
+        <div className="h-[20rem] md:h-[40rem] [perspective:1000px] relative b flex flex-col max-w-5xl mx-auto w-full  items-start justify-start my-40">
+          <AnimatedTabs key={isRequestSubmitting.toString()} tabs={tabs} />{" "}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -242,8 +303,17 @@ export function publishToLogSnag({ event, description, icon, ...props }) {
     }),
   };
 
-  fetch("https://api.logsnag.com/v1/log", requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.log("error", error));
+  return fetch("https://api.logsnag.com/v1/log", requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((json) => {
+          throw new Error(json.message || "Network response was not ok");
+        });
+      }
+      return response.text();
+    })
+    .then((result) => {
+      console.log(result);
+      return "Success";
+    });
 }
