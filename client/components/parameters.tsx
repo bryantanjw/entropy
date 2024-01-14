@@ -26,27 +26,10 @@ import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
 import { SettingsSelectors } from "./settings-selectors";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
+import { checkpoints } from "@/lib/constants";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
 const styles = ["Digital", "Realism", "Anime"];
-const checkpoints = {
-  Realism: [
-    "MajicMix",
-    "epiCPhotoGasm",
-    "ThisIsReal",
-    "RealisticVision",
-    "Era",
-  ],
-  Digital: ["Aniverse", "DarkSushi", "DarkSun", "UnleashedDiffusion"],
-  Anime: [
-    "Hassaku",
-    "CamelliaMix",
-    "Counterfeit",
-    "Animeliner",
-    "Pastel",
-    "RichyRichMix",
-  ],
-};
 
 interface ParametersProps {
   form: UseFormReturn<z.infer<typeof playgroundFormSchema>>;
@@ -123,7 +106,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                 key={size}
                 className={cn(
                   "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
-                  "dark:data-[state=on]:bg-slate-100 hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                  "dark:data-[state=on]:bg-slate-100 dark:hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
                 )}
                 value={size}
                 aria-label={`Toggle ${size}`}
@@ -163,7 +146,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                     className={cn(
                       "font-light gap-2",
                       "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
-                      "dark:data-[state=on]:bg-slate-100 hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
+                      "dark:data-[state=on]:bg-slate-100 dark:hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
                     )}
                   >
                     {style}
@@ -247,7 +230,12 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                     <Label htmlFor="seed" className="font-normal">
                       Seed
                     </Label>
-                    <Input type="number" placeholder="69420" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="69420"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />{" "}
                   </FormItem>
                 </div>
               </FormControl>

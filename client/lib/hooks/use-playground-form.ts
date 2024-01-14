@@ -36,7 +36,7 @@ export function usePlaygroundForm() {
       lora_strength: 1,
       width: 720,
       height: 1080,
-      batch_size: 1,
+      batch_size: 4,
     },
   });
 

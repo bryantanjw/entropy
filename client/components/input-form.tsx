@@ -6,7 +6,11 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  LockClosedIcon,
+  MixerHorizontalIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import { useTheme } from "next-themes";
@@ -88,6 +92,7 @@ export const InputForm = ({
       },
       body: JSON.stringify({
         ...values,
+        userId: user.id,
       }),
     });
 
@@ -109,10 +114,24 @@ export const InputForm = ({
     router.push(`/e/${predictionId}`);
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter") {
+        form.setValue("lora", lastClickedCharacterRef.current.directory);
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    // Cleanup function to remove the event listener
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <motion.div
       className="flex flex-col"
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
         x: { type: "spring", stiffness: 300, damping: 30 },
@@ -176,17 +195,6 @@ export const InputForm = ({
                           } else {
                             // Store the last clicked character in the ref
                             lastClickedCharacterRef.current = c;
-                          }
-                        }}
-                        onKeyDown={(e) => {
-                          if (
-                            e.key === "Enter" &&
-                            lastClickedCharacterRef.current === c
-                          ) {
-                            // Update the form value if Enter is pressed and it's the last clicked character
-                            form.setValue("lora", c.directory);
-                            setOpen(false);
-                            lastClickedCharacterRef.current = null; // Reset the ref
                           }
                         }}
                         className={cn(
@@ -344,6 +352,12 @@ export const InputForm = ({
                                   }
                                 }
                               }}
+                              onPaste={(e) => {
+                                e.preventDefault();
+                                const text =
+                                  e.clipboardData.getData("text/plain");
+                                document.execCommand("insertText", false, text);
+                              }}
                               onInput={(e) => {
                                 form.setValue(
                                   "input_prompt",
@@ -375,7 +389,22 @@ export const InputForm = ({
                             <Button
                               onClick={async (event) => {
                                 event.preventDefault();
-                                onSubmit(form.getValues());
+                                if (!user) {
+                                  toast.error(
+                                    "You must be logged in to generate",
+                                    {
+                                      action: {
+                                        label: "Log in",
+                                        onClick: () => router.push("/signin"),
+                                      },
+                                    }
+                                  );
+                                } else {
+                                  const isValid = await form.trigger();
+                                  if (isValid) {
+                                    onSubmit(form.getValues());
+                                  }
+                                }
                               }}
                               className="w-[120px] h-full rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
                             >
@@ -385,7 +414,7 @@ export const InputForm = ({
                                   background="transparent"
                                   minSize={0.6}
                                   maxSize={1.4}
-                                  particleDensity={120}
+                                  particleDensity={100}
                                   className="w-full h-full"
                                   particleColor={
                                     theme === "dark" ? "#000" : "#fff"
@@ -395,16 +424,20 @@ export const InputForm = ({
                               {isSubmitting ? (
                                 <Icons.spinner className="animate-spin" />
                               ) : (
-                                <>
-                                  <Image
-                                    className="filter invert dark:filter-none mr-2"
-                                    width={15}
-                                    height={15}
-                                    src={"/sparkling-icon.png"}
-                                    alt={"Generate"}
-                                  />
-                                  Generate
-                                </>
+                                <div className="flex items-center justify-center gap-x-2">
+                                  {user ? (
+                                    <Image
+                                      className="filter invert dark:filter-none"
+                                      width={15}
+                                      height={15}
+                                      src={"/sparkling-icon.png"}
+                                      alt={"Generate"}
+                                    />
+                                  ) : (
+                                    <LockClosedIcon className="h-4 w-4" />
+                                  )}
+                                  <span>Generate</span>
+                                </div>
                               )}
                             </Button>
                           </div>

@@ -90,18 +90,15 @@ class Predictor(BasePredictor):
                 continue  # previews are binary data
 
         history = self.get_history(prompt_id)[prompt_id]
-        for o in history['outputs']:
-            for node_id in history['outputs']:
-                node_output = history['outputs'][node_id]
-                print("node output: ", node_output)
+        for node_id in history['outputs']:
+            node_output = history['outputs'][node_id]
+            print("node output: ", node_output)
 
-                if 'images' in node_output:
-                    images_output = []
-                    for image in node_output['images']:
-                        image_data = self.get_image(
-                            image['filename'], image['subfolder'], image['type'])
-                        images_output.append(image_data)
-                output_images[node_id] = images_output
+            if 'images' in node_output:
+                for i, image in enumerate(node_output['images']):
+                    image_data = self.get_image(
+                        image['filename'], image['subfolder'], image['type'])
+                    output_images[f"{node_id}_{i}"] = [image_data]
 
         return output_images
 
@@ -177,8 +174,6 @@ class Predictor(BasePredictor):
         if seed is None:
             seed = int.from_bytes(os.urandom(3), "big")
         print(f"Using seed: {seed}")
-        # device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        generator = torch.Generator("cuda").manual_seed(seed)
 
         # queue prompt
         img_output_path = self.get_workflow_output(

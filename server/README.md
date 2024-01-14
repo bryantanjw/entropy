@@ -12,7 +12,7 @@ Then, you can run predictions:
 
 The workflow used for this repo is found under:
 
-    custom_workflows/sdxl_txt2img.json
+    custom_workflows/sdxl_txft2img.json
 
 ## Example:
 

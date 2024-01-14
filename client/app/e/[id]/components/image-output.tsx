@@ -73,13 +73,12 @@ export default function ImageOutput({ id }) {
       }}
     >
       <motion.div
-        className="mt-32"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
       >
         {predictions ? (
-          <div className="grid grid-col-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {predictions.output.map((img, index) => (
               <motion.figure
                 key={index}
@@ -100,12 +99,7 @@ export default function ImageOutput({ id }) {
         ) : (
           <div className="flex flex-col">
             <div className="h-40 relative">
-              <div className="flex items-center justify-center mb-2">
-                <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
-                <span className="z-20 items-center italic">Loading</span>
-              </div>
               {/* Gradients */}
-              <Row className="w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
               <SparklesCore
                 background="transparent"
                 minSize={0.4}
@@ -115,7 +109,11 @@ export default function ImageOutput({ id }) {
                 particleColor={theme === "dark" ? "#fff" : "#000"}
               />
               {/* Radial Gradient to prevent sharp edges */}
-              <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+              <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
+              <div className="flex items-center justify-center mt-10">
+                <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
+                <span className="z-20 items-center italic">Loading</span>
+              </div>
             </div>
           </div>
         )}
