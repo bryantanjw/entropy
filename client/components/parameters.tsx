@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { z } from "zod";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -25,7 +25,6 @@ import {
 import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
 import { SettingsSelectors } from "./settings-selectors";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { cn } from "@/lib/utils";
 import { checkpoints } from "@/lib/constants";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
@@ -53,8 +52,8 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
         form.setValue("height", 1080);
         form.setValue("width", 720);
       } else if (value === "Square") {
-        form.setValue("height", 1080);
-        form.setValue("width", 1080);
+        form.setValue("height", 720);
+        form.setValue("width", 720);
       } else if (value === "Landscape") {
         form.setValue("height", 720);
         form.setValue("width", 1080);
@@ -66,6 +65,8 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
     if (value) {
       setStyle(value);
       setSelectedCheckpoints(checkpoints[value]);
+      form.setValue("style", value);
+      form.setValue("checkpoint_model", checkpoints[value][0] + ".safetensors");
     }
   };
 
@@ -133,7 +134,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                 key={"style"}
                 type="single"
                 variant="pill"
-                value={style}
+                value={form.watch("style")}
                 className="flex gap-1"
                 onValueChange={handleStyleChange}
               >
@@ -163,17 +164,17 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
               </div>
               <Select
                 key={selectedCheckpoints[0]}
-                defaultValue={selectedCheckpoints[0]}
                 onValueChange={(value) =>
-                  form.setValue("checkpoint_model", value + ".safetensors")
+                  form.setValue("checkpoint_model", value)
                 }
+                value={form.watch("checkpoint_model")}
               >
                 <SelectTrigger className="justify-end border-none shadow-none h-7 hover:bg-muted focus:bg-muted focus:ring-0">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {selectedCheckpoints.map((checkpoint, index) => (
-                    <SelectItem key={index} value={checkpoint}>
+                    <SelectItem key={index} value={checkpoint + ".safetensors"}>
                       {checkpoint}
                     </SelectItem>
                   ))}
@@ -235,7 +236,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                       placeholder="69420"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
-                    />{" "}
+                    />
                   </FormItem>
                 </div>
               </FormControl>

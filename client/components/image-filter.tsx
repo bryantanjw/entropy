@@ -28,6 +28,7 @@ export default function Filter({
 
   const handleSearch = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     if (!text) {
       router.push(`/`, { scroll: false });
     } else {
@@ -63,7 +64,9 @@ export default function Filter({
           value={text}
           className="px-9 flex h-9 w-full rounded-md border border-input bg-transparent py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Search..."
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+          }}
         />
         <div
           className="absolute inset-y-0 left-0 pl-2  

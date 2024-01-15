@@ -6,7 +6,8 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
-import SupabaseProvider from "../lib/providers/supabase-provider";
+import SupabaseProvider from "@/lib/providers/supabase-provider";
+import { FormProvider } from "@/lib/providers/form-provider";
 
 import "./globals.css";
 
@@ -25,12 +26,14 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
         <SupabaseProvider>
-          <ThemeProvider attribute="class" defaultTheme="light">
-            {children}
-            <Toaster />
-            <TailwindIndicator />
-            <SpeedInsights />
-          </ThemeProvider>
+          <FormProvider>
+            <ThemeProvider attribute="class" defaultTheme="light">
+              {children}
+              <Toaster />
+              <TailwindIndicator />
+              <SpeedInsights />
+            </ThemeProvider>
+          </FormProvider>
         </SupabaseProvider>
       </body>
     </html>

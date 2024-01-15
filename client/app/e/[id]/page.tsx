@@ -66,9 +66,9 @@ export default async function GenerationPage({
         </Column>
 
         {/* Side Menu */}
-        <div className="flex flex-col gap-12 border mt-12 px-5 py-8">
+        <div className="flex flex-col gap-12 border mt-12 px-5 py-8 bg-muted">
           <div className="flex justify-between items-center">
-            <span>Recent</span>
+            <span className="opacity-60 text-sm">Recent</span>
             <Button variant={"secondary"} size={"sm"} className="opacity-70">
               Clear
             </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import * as z from "zod";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -27,8 +27,6 @@ import {
   CommandList,
 } from "./ui/command";
 import { Row } from "./ui/row";
-import { Skeleton } from "./ui/skeleton";
-import { CardContainer, CardItem } from "./ui/3d-card";
 import { SparklesCore } from "./ui/sparkles";
 import { ScrollArea } from "./ui/scroll-area";
 import { Icons } from "./ui/icons";
@@ -37,10 +35,9 @@ import { Parameters } from "./parameters";
 import { Separator } from "./ui/separator";
 import { ShareFeedback } from "./share-feedback";
 
-import {
-  playgroundFormSchema,
-  usePlaygroundForm,
-} from "@/lib/hooks/use-playground-form";
+import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
+import { FormContext } from "@/lib/providers/form-provider";
+import { ImageCarousel } from "./image-carousel";
 
 export const InputForm = ({
   user,
@@ -50,12 +47,12 @@ export const InputForm = ({
   characters: any;
 }) => {
   const router = useRouter();
-  const form = usePlaygroundForm();
+  const form = useContext(FormContext);
   const { theme } = useTheme();
 
   const [open, setOpen] = useState(false);
   const [character, setCharacter] = useState(characters[0]);
-  const [imageSrc, setImageSrc] = useState(characters[0].images[0]);
+  const [images, setImages] = useState(characters[0].images);
   // Create a ref to store the last clicked character
   const lastClickedCharacterRef = useRef(null);
 
@@ -76,7 +73,7 @@ export const InputForm = ({
   }, []);
 
   useEffect(() => {
-    setImageSrc(character.images[0]);
+    setImages(character.images);
   }, [character]);
 
   async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
@@ -84,7 +81,7 @@ export const InputForm = ({
     console.log(values);
     setSubmitting(true);
 
-    // Make initial request to Lambda function to create a prediction
+    // // Make initial request to Lambda function to create a prediction
     const res = await fetch("https://api.entropy.so/predictions", {
       method: "POST",
       headers: {
@@ -111,22 +108,31 @@ export const InputForm = ({
     // When redirected to generation page, poll for progress
     const predictionId = response.url.split("/").pop();
     console.log("predictionId", predictionId);
-    router.push(`/e/${predictionId}`);
+    router.push(`/e/hi6v6abbikfwmtjivr3sq574va`);
   }
 
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if (e.key === "Enter") {
+  //       e.preventDefault();
+  //       form.setValue("lora", lastClickedCharacterRef.current.directory);
+  //       setOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   // Cleanup function to remove the event listener
+  //   return () => {
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, []);
+
+  const inputPromptRef = useRef(null);
+
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Enter") {
-        form.setValue("lora", lastClickedCharacterRef.current.directory);
-        setOpen(false);
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    // Cleanup function to remove the event listener
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+    if (inputPromptRef.current) {
+      inputPromptRef.current.textContent = form.watch("input_prompt");
+    }
+  }, [form.watch("input_prompt")]);
 
   return (
     <motion.div
@@ -150,8 +156,8 @@ export const InputForm = ({
               className="md:min-w-[900px]"
             >
               <CommandInput placeholder="Search..." />
-              <div className="grid grid-cols-[1.4fr_0fr_1fr] py-1 px-1 mt-2">
-                <CommandList>
+              <div className="grid grid-cols-[1.1fr_0.08fr_1fr] py-1 px-1 mt-2 justify-items-center">
+                <CommandList className="w-full">
                   <CommandEmpty className="flex flex-col py-6 items-center gap-5">
                     <span> No results found. </span>
                     <Button
@@ -180,7 +186,7 @@ export const InputForm = ({
                       setOpen={setFeedbackOpen}
                     />
                   </CommandEmpty>
-                  <CommandGroup heading="Characters">
+                  <CommandGroup heading="Characters" className="w-stretch">
                     {characters.map((c, index) => (
                       <CommandItem
                         key={index}
@@ -217,25 +223,8 @@ export const InputForm = ({
                     ))}
                   </CommandGroup>
                 </CommandList>
-                <Row className="my-auto mx-5 w-[1px] h-3/4 bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
-                <div className="flex flex-col gap-6 pb-5">
-                  <Suspense
-                    fallback={<Skeleton className="w-full h-[380px]" />}
-                  >
-                    <CardContainer className="inter-var">
-                      <CardItem translateZ="100" className="mt-4 relative">
-                        <Image
-                          width={720}
-                          height={1080}
-                          src={imageSrc.src}
-                          alt={character.name}
-                          className={`w-[300px] h-[400px] object-cover ${imageSrc.imagePosition} rounded-lg shadow-lg`}
-                        />
-                      </CardItem>
-                    </CardContainer>
-                  </Suspense>
-                  <div className="flex flex-col gap-2"></div>
-                </div>
+                <Row className="my-auto w-[1px] h-3/4 bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+                <ImageCarousel images={images} character={character} />
               </div>
               <div className="w-full border-t flex justify-end p-1.5 items-center">
                 <Button
@@ -334,6 +323,7 @@ export const InputForm = ({
                               )}
                             </Button>
                             <div
+                              ref={inputPromptRef}
                               role="textbox"
                               contentEditable
                               data-placeholder="Imagine..."
@@ -379,7 +369,7 @@ export const InputForm = ({
                                     <MixerHorizontalIcon className="h-4 w-4 mr-1" />
                                   </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem]">
+                                <PopoverContent className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem] 2xl:w-[72rem]">
                                   <ScrollArea className="h-[700px] md:h-full">
                                     <Parameters form={form} />
                                   </ScrollArea>

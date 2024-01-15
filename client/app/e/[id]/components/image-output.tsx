@@ -10,6 +10,7 @@ import { Row } from "@/components/ui/row";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { notFound } from "next/navigation";
 import { Icons } from "@/components/ui/icons";
+import Link from "next/link";
 
 export default function ImageOutput({ id }) {
   const [predictions, setPredictions] = useState(null);
@@ -80,24 +81,19 @@ export default function ImageOutput({ id }) {
         {predictions ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {predictions.output.map((img, index) => (
-              <motion.figure
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="relative aspect-portrait max-w-sm overflow-hidden rounded-md"
-              >
+              <Link href={img} key={index} target="">
                 <Image
-                  fill={true}
                   src={img}
-                  className="object-cover"
+                  width={720}
+                  height={720}
                   alt={predictions.input_prompt}
+                  className="rounded-md hover:scale-95 transition-all duration-200"
                 />
-              </motion.figure>
+              </Link>
             ))}
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col -mt-24">
             <div className="h-40 relative">
               {/* Gradients */}
               <SparklesCore
