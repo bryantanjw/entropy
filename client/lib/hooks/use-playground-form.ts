@@ -31,7 +31,7 @@ export function usePlaygroundForm() {
       steps: 25,
       sampler_name: "dpmpp_2m",
       seed: 69420,
-      cfg: 7.0,
+      cfg: 5.0,
       lora: "",
       custom_lora: "",
       lora_strength: 1,

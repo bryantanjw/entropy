@@ -2,25 +2,32 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import { MotionConfig, motion } from "framer-motion";
 
 import { SparklesCore } from "@/components/ui/sparkles";
-import { Row } from "@/components/ui/row";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
+import OutputImage from "./image";
 
-export default function ImageOutput({ id }) {
+export default function OutputImages({ id }) {
+  const { theme } = useTheme();
+  const pathname = usePathname();
+
   const [predictions, setPredictions] = useState(null);
   const [error, setError] = useState(null);
-  const { theme } = useTheme();
 
   useEffect(() => {
     let isCancelled = false;
 
     async function pollAPI() {
+      // Check if predictions are already in sessionStorage
+      const cachedPredictions = sessionStorage.getItem("predictions");
+      if (cachedPredictions) {
+        setPredictions(JSON.parse(cachedPredictions));
+        return;
+      }
+
       while (!predictions && id && !isCancelled) {
         try {
           let pollRes = await fetch(
@@ -80,17 +87,18 @@ export default function ImageOutput({ id }) {
       >
         {predictions ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {predictions.output.map((img, index) => (
-              <Link href={img} key={index} target="">
-                <Image
-                  src={img}
-                  width={720}
-                  height={720}
-                  alt={predictions.input_prompt}
+            {predictions.output.map((img, index) => {
+              const path = img.split("/").slice(-2, -1)[0];
+              return (
+                <Link
+                  key={index}
+                  href={`${pathname}/${path}${index}`}
                   className="rounded-md hover:scale-95 transition-all duration-200"
-                />
-              </Link>
-            ))}
+                >
+                  <OutputImage path={path} index={index} />
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <div className="flex flex-col -mt-24">

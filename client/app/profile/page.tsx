@@ -1,21 +1,14 @@
-import { Boxes } from "@/components/ui/interactive-bg-boxes";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { ResetIcon } from "@radix-ui/react-icons";
 import { ProfileGallery } from "./components/profile-gallery";
-import Navbar from "@/components/navbar";
-
 import { getSession, getUserDetails } from "@/lib/supabase-server";
 import { Spotlight } from "@/components/ui/spotlight";
-import { Button } from "@/components/ui/button";
-import { ResetIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 
 export default async function ProfilePage() {
   const [session, userDetails] = await Promise.all([
     getSession(),
     getUserDetails(),
   ]);
-
-  const user = session?.user;
 
   return (
     <div className="h-screen max-h-screen w-full flex flex-col md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
