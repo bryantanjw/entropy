@@ -376,7 +376,10 @@ export const InputForm = ({
                                       <MixerHorizontalIcon className="h-4 w-4 mr-1" />
                                     </Button>
                                   </PopoverTrigger>
-                                  <PopoverContent className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem] 2xl:w-[72rem]">
+                                  <PopoverContent
+                                    alignOffset={-140}
+                                    className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem] 2xl:w-[72rem]"
+                                  >
                                     <ScrollArea className="h-[700px] md:h-full">
                                       <Parameters form={form} />
                                     </ScrollArea>

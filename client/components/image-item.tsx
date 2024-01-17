@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import clsx from "clsx";
-import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  MotionConfig,
+  useTransform,
+  useScroll,
+} from "framer-motion";
 import Image from "next/image";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -28,7 +34,8 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
-import { Badge, badgeVariants } from "./ui/badge";
+import { badgeVariants } from "./ui/badge";
+import { ScrollArea } from "./ui/scroll-area";
 
 type ImageItemProps = {
   index: number;
@@ -62,24 +69,6 @@ const imageVariants = {
     };
   },
 };
-const cardVariants = {
-  enter: () => {
-    return {
-      x: 1000,
-      opacity: 0,
-    };
-  },
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: () => {
-    return {
-      x: -1000,
-      opacity: 0,
-    };
-  },
-};
 
 const Field: React.FC<FieldProps> = ({ id, label, value }) => {
   return (
@@ -93,7 +82,7 @@ const Field: React.FC<FieldProps> = ({ id, label, value }) => {
       <Input
         disabled
         id={id}
-        className="focus-visible:ring-0 bg-slate-50 dark:bg-slate-100 disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-muted-foreground dark:text-muted"
+        className="focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground"
         value={value}
       />
     </div>
@@ -106,9 +95,19 @@ export default function ImageItem({
   total,
   images,
 }: ImageItemProps) {
+  const column = (index % 3) + 1;
   const [isLoading, setIsLoading] = useState(true);
   const [currIndex, setCurrIndex] = useState(index);
   const [direction, setDirection] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    offset: ["start start", "end start"], // remove this if your container is not fixed height
+  });
+
+  const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const translateSecond = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const translateY =
+    column === 1 || column === 3 ? translateFirst : translateSecond;
 
   useEffect(() => {
     setCurrIndex(0);
@@ -163,6 +162,7 @@ export default function ImageItem({
               ? "aspect-landscape"
               : "aspect-portrait"
           )}
+          style={{ y: translateY }}
           key={image._id}
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -253,7 +253,7 @@ export default function ImageItem({
               <div className="space-y-4">
                 <CardHeader>
                   <CardTitle className="mb-2">Imagine</CardTitle>
-                  <CardDescription className="flex flex-col text-sm gap-2">
+                  <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
                     <Link
                       href={"/"}
                       className={clsx(
@@ -264,10 +264,11 @@ export default function ImageItem({
                       <PersonIcon className="mr-2 h-3 w-3" />
                       {images[currIndex].title}
                     </Link>
-
-                    {images[currIndex].prompt.length > 500
-                      ? `${images[currIndex].prompt.substring(0, 500)}...`
-                      : images[currIndex].prompt}
+                    <ScrollArea className="h-20">
+                      {images[currIndex].prompt.length > 500
+                        ? `${images[currIndex].prompt.substring(0, 500)}...`
+                        : images[currIndex].prompt}
+                    </ScrollArea>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -282,7 +283,7 @@ export default function ImageItem({
                       <Textarea
                         disabled
                         id="negative_prompt"
-                        className="h-[80px] resize-none focus-visible:ring-0 bg-slate-50 dark:bg-slate-100 disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-muted-foreground dark:text-muted overflow-auto scrollbar-hide"
+                        className="h-[80px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
                         value={images[currIndex].negative_prompt}
                       />
                     </div>

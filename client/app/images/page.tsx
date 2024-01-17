@@ -6,20 +6,15 @@ import Filter from "@/components/image-filter";
 import ImageGrid from "@/components/image-grid";
 
 import { fetchImages } from "@/lib/actions";
-import {
-  getCharacters,
-  getSession,
-  getUserDetails,
-} from "@/lib/supabase-server";
+import { getCharacters, getSession } from "@/lib/supabase-server";
 
 export default async function Search({
   searchParams, // has to be searchParams. i think it's a next.js thing to recognize the query params
 }: {
   searchParams: { search: string; style: string };
 }) {
-  const [session, userDetails, characters] = await Promise.all([
+  const [session, characters] = await Promise.all([
     getSession(),
-    getUserDetails(),
     getCharacters(),
   ]);
 
@@ -31,7 +26,7 @@ export default async function Search({
 
   return (
     <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
-      <Navbar user={user} userDetails={userDetails} />
+      <Navbar />
       <Column className="w-full items-center min-h-screen py-44">
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
           <InputForm user={user} characters={characters} />

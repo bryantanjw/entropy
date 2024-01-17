@@ -1,24 +1,15 @@
-import { getSession, getUserDetails } from "@/lib/supabase-server";
+import { getUserDetails } from "@/lib/supabase-server";
 import Navbar from "@/components/navbar";
-import { redirect } from "next/navigation";
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
-import { SubscriptionGrid } from "./components/grid";
+import { SubscriptionGrid } from "./components/subscription-grid";
 
-export default async function SettingsBillingPage() {
-  const [session, userDetails] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-  ]);
-
-  const user = session?.user;
-  if (!session) {
-    return redirect("/signin");
-  }
+export default function SettingsBillingPage() {
+  const userDetails = getUserDetails();
 
   return (
     <div>
-      <Navbar user={user} userDetails={userDetails} />
+      <Navbar />
       <Column className="w-full items-center min-h-screen py-32">
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
           <div className="space-y-0.5">

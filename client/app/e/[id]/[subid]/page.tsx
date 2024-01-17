@@ -2,38 +2,22 @@ import OutputImage from "../components/image";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/column";
-import { getSession, getUserDetails } from "@/lib/supabase-server";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { Edits } from "../components/edits";
 
-export default async function ImagePage({
+export default function ImagePage({
   params,
 }: {
   params: { id: string; subid: string };
 }) {
-  const [session, userDetails] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-  ]);
-  const user = session?.user;
-
   const subid = params.subid.slice(0, -1);
   const index = params.subid.slice(-1);
 
   return (
     <div className="flex flex-col w-full items-center">
-      <Navbar user={user} userDetails={userDetails} />
+      <Navbar />
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
-        <Column className="items-center min-h-screen py-20 px-10 gap-4">
-          <div className="flex w-full justify-between">
-            <Button
-              variant="ghost"
-              className="items-center"
-              // onClick={() => router.back()}
-            >
-              <ArrowLeftIcon className="w-4 h-4 mr-2" /> Back
-            </Button>
-            <Button>Save</Button>
-          </div>
+        <Column className="items-center min-h-screen py-20 px-10 gap-8">
+          <Edits />
           <Column className="w-full max-w-lg">
             <OutputImage path={`${subid}`} index={index} />
           </Column>

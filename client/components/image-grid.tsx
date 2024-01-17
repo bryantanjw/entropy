@@ -1,8 +1,8 @@
 "use client";
+
 import { useInView } from "react-intersection-observer";
-import { useEffect, useState, useRef } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
-import clsx from "clsx";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { Suspense } from "react";
 
 import { Skeleton } from "./ui/skeleton";
@@ -25,20 +25,6 @@ export default function ImageGrid({
   const [start, setStart] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [ref, inView] = useInView();
-
-  const { scrollYProgress } = useScroll({
-    offset: ["start start", "end start"], // remove this if your container is not fixed height
-  });
-
-  const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const translateSecond = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const translateThird = useTransform(scrollYProgress, [0, 1], [0, -200]);
-
-  const third = Math.ceil(images.length / 3);
-
-  const firstPart = images.slice(0, third);
-  const secondPart = images.slice(third, 2 * third);
-  const thirdPart = images.slice(2 * third);
 
   useEffect(() => {
     setImages(initialImages);
@@ -74,60 +60,21 @@ export default function ImageGrid({
         </div>
       }
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start mx-auto gap-10 py-10">
-        <div className="grid gap-10">
-          {firstPart.map((image, index) => (
-            <motion.div
-              style={{ y: translateFirst }} // Apply the translateY motion value here
-              key={"grid-1" + index}
-            >
-              <ImageItem
-                key={image._id}
-                image={image}
-                images={images}
-                index={index}
-                total={images.length}
-              />
-            </motion.div>
-          ))}
-        </div>
-        <div className="grid gap-10">
-          {secondPart.map((image, index) => (
-            <motion.div
-              style={{ y: translateSecond }} // Apply the translateY motion value here
-              key={"grid-2" + index}
-            >
-              <ImageItem
-                key={image._id}
-                image={image}
-                images={images}
-                index={index}
-                total={images.length}
-              />
-            </motion.div>
-          ))}
-        </div>
-        <div className="grid gap-10">
-          {thirdPart.map((image, index) => (
-            <motion.div
-              style={{ y: translateThird }} // Apply the translateY motion value here
-              key={"grid-3" + index}
-            >
-              <ImageItem
-                key={image._id}
-                image={image}
-                images={images}
-                index={index}
-                total={images.length}
-              />
-            </motion.div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 py-10">
+        {images.map((image, index) => (
+          <ImageItem
+            key={image._id}
+            image={image}
+            images={images}
+            index={index}
+            total={images.length}
+          />
+        ))}
       </div>
       {hasMore && (
         <div
           ref={ref}
-          className={clsx(
+          className={cn(
             "h-[400px] w-full grid grid-cols-2 gap-x-4 gap-y-4",
             "md:grid-cols-3",
             "lg:grid-cols-4 lg:gap-x-8"
