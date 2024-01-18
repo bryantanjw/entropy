@@ -13,7 +13,7 @@ import {
 export const ImageCarousel = ({ images, character }) => {
   return (
     <CardContainer>
-      <CardItem translateZ="60" className="relative">
+      <CardItem translateZ="90" className="relative">
         <Carousel
           className="w-full max-w-xs px-4 py-4"
           opts={{

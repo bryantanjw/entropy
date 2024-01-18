@@ -19,7 +19,7 @@ export default async function Home() {
       <Column className="w-full items-center min-h-screen pt-44">
         <Column className="w-full max-w-3xl lg:max-w-5xl xl:max-w-6xl">
           <InputForm user={user} characters={characters} />
-          <Gallery />
+          {/* <Gallery /> */}
         </Column>
       </Column>
     </div>

@@ -1,4 +1,4 @@
-import Transition from "@/components/ui/transition";
+import Transition from "@/app/transition";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

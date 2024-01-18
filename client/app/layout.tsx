@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
-import Transition from "@/components/ui/transition";
+import Transition from "@/app/transition";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { GeistSans } from "geist/font/sans";

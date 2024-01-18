@@ -60,7 +60,7 @@ export default function ImageGrid({
         </div>
       }
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 py-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 my-10">
         {images.map((image, index) => (
           <ImageItem
             key={image._id}

@@ -50,6 +50,7 @@ export const InputForm = ({
   const form = useContext(FormContext);
   const { theme } = useTheme();
 
+  const [popoverWidth, setPopoverWidth] = useState("0px");
   const [open, setOpen] = useState(false);
   const [character, setCharacter] = useState(characters[0]);
   const [images, setImages] = useState(characters[0].images);
@@ -76,38 +77,45 @@ export const InputForm = ({
     setImages(character.images);
   }, [character]);
 
+  const parentDivRef = useRef(null);
+  useEffect(() => {
+    if (parentDivRef.current) {
+      setPopoverWidth(`${parentDivRef.current.offsetWidth}px`);
+    }
+  }, [parentDivRef.current]);
+
   async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
     // Submit the values to /generatePredictions
     console.log(values);
     setSubmitting(true);
 
     // // Make initial request to Lambda function to create a prediction
-    // const res = await fetch("https://api.entropy.so/predictions", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     ...values,
-    //     userId: user.id,
-    //   }),
-    // });
+    const res = await fetch("https://api.entropy.so/predictions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...values,
+        userId: user.id,
+      }),
+    });
 
-    // const response = await res.json();
-    // console.log("response", response);
+    const response = await res.json();
+    console.log("response", response);
 
-    // if (res.status !== 200 || response.status === "error") {
-    //   toast.error("Uh oh! Something went wrong", {
-    //     description: response.message || "Unknown error",
-    //   });
-    //   setSubmitting(false);
-    //   return;
-    // }
+    if (res.status !== 200 || response.status === "error") {
+      toast.error("Uh oh! Something went wrong", {
+        description: response.message || "Unknown error",
+      });
+      setSubmitting(false);
+      return;
+    }
 
-    // // Extract the prediction ID from the returned URL for polling
-    // // When redirected to generation page, poll for progress
-    // const predictionId = response.url.split("/").pop();
-    // console.log("predictionId", predictionId);
+    // Extract the prediction ID from the returned URL for polling
+    // When redirected to generation page, poll for progress
+    const predictionId = response.url.split("/").pop();
+    console.log("predictionId", predictionId);
     router.push(`/e/ipyqozbbmvsubyjbzlnzbefqi4`);
   }
 
@@ -157,7 +165,7 @@ export const InputForm = ({
                 className="md:min-w-[900px]"
               >
                 <CommandInput placeholder="Search..." />
-                <div className="grid grid-cols-[1.1fr_0.08fr_1fr] py-1 px-1 mt-2 justify-items-center">
+                <div className="grid grid-cols-[1.1fr_0.01fr_1fr] px-1 justify-items-center">
                   <CommandList className="w-full">
                     <CommandEmpty className="flex flex-col py-6 items-center gap-5">
                       <span> No results found. </span>
@@ -188,7 +196,7 @@ export const InputForm = ({
                       />
                     </CommandEmpty>
                     <ScrollArea className="h-[400px]">
-                      <CommandGroup heading="Characters" className="w-stretch">
+                      <CommandGroup heading="Characters" className="mt-2">
                         {characters.map((c, index) => (
                           <CommandItem
                             key={index}
@@ -303,7 +311,10 @@ export const InputForm = ({
                       <FormControl>
                         <div className="flex justify-center gap-2">
                           <div className="w-full rounded-lg">
-                            <div className="flex gap-5 h-full items-center border rounded-lg shadow-lg">
+                            <div
+                              ref={parentDivRef}
+                              className="flex gap-5 h-full items-center border rounded-lg shadow-lg"
+                            >
                               <Button
                                 variant={
                                   form.watch("lora") ? "outline" : "secondary"
@@ -378,7 +389,7 @@ export const InputForm = ({
                                   </PopoverTrigger>
                                   <PopoverContent
                                     alignOffset={-140}
-                                    className="min-w-[28rem] md:min-w-[44rem] lg:w-[60rem] xl:w-[64rem] 2xl:w-[72rem]"
+                                    style={{ width: popoverWidth }}
                                   >
                                     <ScrollArea className="h-[700px] md:h-full">
                                       <Parameters form={form} />

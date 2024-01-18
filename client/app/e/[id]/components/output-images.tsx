@@ -21,13 +21,6 @@ export default function OutputImages({ id }) {
     let isCancelled = false;
 
     async function pollAPI() {
-      // Check if predictions are already in sessionStorage
-      const cachedPredictions = sessionStorage.getItem("predictions");
-      if (cachedPredictions) {
-        setPredictions(JSON.parse(cachedPredictions));
-        return;
-      }
-
       while (!predictions && id && !isCancelled) {
         try {
           let pollRes = await fetch(
@@ -66,7 +59,7 @@ export default function OutputImages({ id }) {
     return () => {
       isCancelled = true;
     };
-  }, [id]);
+  }, [id, predictions]);
 
   if (error || !id) {
     return notFound();
@@ -80,16 +73,17 @@ export default function OutputImages({ id }) {
         opacity: { duration: 0.2 },
       }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-      >
-        {predictions ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {predictions.output.map((img, index) => {
-              const path = img.split("/").slice(-2, -1)[0];
-              return (
+      {predictions ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {predictions.output.map((img, index) => {
+            const path = img.split("/").slice(-2, -1)[0];
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                key={index}
+              >
                 <Link
                   key={index}
                   href={`${pathname}/${path}${index}`}
@@ -97,31 +91,31 @@ export default function OutputImages({ id }) {
                 >
                   <OutputImage path={path} index={index} />
                 </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="flex flex-col -mt-24">
-            <div className="h-40 relative">
-              {/* Gradients */}
-              <SparklesCore
-                background="transparent"
-                minSize={0.4}
-                maxSize={1}
-                particleDensity={1200}
-                className="w-full h-[78%]"
-                particleColor={theme === "dark" ? "#fff" : "#000"}
-              />
-              {/* Radial Gradient to prevent sharp edges */}
-              <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
-              <div className="flex items-center justify-center mt-10">
-                <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
-                <span className="z-20 items-center italic">Loading</span>
-              </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col -mt-24">
+          <div className="h-40 relative">
+            {/* Gradients */}
+            <SparklesCore
+              background="transparent"
+              minSize={0.4}
+              maxSize={1}
+              particleDensity={1200}
+              className="w-full h-[78%]"
+              particleColor={theme === "dark" ? "#fff" : "#000"}
+            />
+            {/* Radial Gradient to prevent sharp edges */}
+            <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
+            <div className="flex items-center justify-center mt-10">
+              <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
+              <span className="z-20 items-center italic">Loading</span>
             </div>
           </div>
-        )}
-      </motion.div>
+        </div>
+      )}
     </MotionConfig>
   );
 }
