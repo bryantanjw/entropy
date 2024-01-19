@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ArrowLeftIcon,
   ChevronDownIcon,
@@ -7,9 +8,9 @@ import {
   StarIcon,
 } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -18,6 +19,54 @@ import {
 
 export const Edits = () => {
   const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!file) {
+      toast.info("Please select a file to upload.");
+      return;
+    }
+
+    setUploading(true);
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_SITE_URL + "/api/upload",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+      }
+    );
+
+    if (response.ok) {
+      const { url, fields } = await response.json();
+
+      const formData = new FormData();
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value as string);
+      });
+      formData.append("file", file);
+
+      const uploadResponse = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (uploadResponse.ok) {
+        toast("Upload successful!");
+      } else {
+        console.error("S3 Upload Error:", uploadResponse);
+        toast.error("Upload failed.");
+      }
+    } else {
+      toast.error("Failed to get pre-signed URL.");
+    }
+
+    setUploading(false);
+  };
 
   return (
     <div className="flex w-full justify-between">
@@ -34,7 +83,7 @@ export const Edits = () => {
         <Button variant="secondary">Edit</Button>
         <Popover>
           <PopoverTrigger asChild>
-            <Button>
+            <Button disabled={uploading} onClick={handleSubmit}>
               Save <ChevronDownIcon className="w-4 h-4 ml-2" />
             </Button>
           </PopoverTrigger>

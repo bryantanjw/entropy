@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const playgroundFormSchema = z.object({
   checkpoint_model: z.string().default("Aniverse.safetensors"),
-  input_prompt: z.string(),
+  input_prompt: z.string().min(1, {
+    message: "Prompt is empty.",
+  }),
   negative_prompt: z
     .string()
     .default("lowres, worst quality, ugly, blurry, bad fingers"),
@@ -12,7 +14,9 @@ export const playgroundFormSchema = z.object({
   sampler_name: z.string().default("dpmpp_2m"),
   seed: z.number().optional(),
   cfg: z.number().min(1.0).max(30.0).default(10.0),
-  lora: z.string().optional(),
+  lora: z.string().min(1, {
+    message: "Lora is empty.",
+  }),
   custom_lora: z.string().optional(),
   lora_strength: z.number().min(0.0).max(1.0).default(1.0),
   width: z.number().default(800),

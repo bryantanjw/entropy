@@ -145,7 +145,7 @@ const Glow = ({ delay }: { delay: number }) => {
         opacity: 1,
       }}
       transition={{
-        duration: 1,
+        duration: 2,
         ease: "easeInOut",
         delay: delay,
       }}
