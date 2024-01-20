@@ -17,7 +17,7 @@ export default function OutputImage({ path, index }) {
     <AnimatePresence mode="wait">
       <motion.div
         layoutId={`wrapper_image_${index}`}
-        initial={!flag ? { opacity: 0 } : { y: -50, opacity: 0 }}
+        initial={!flag ? { opacity: 0 } : { y: 50, opacity: 0 }}
         animate={
           !flag
             ? { opacity: 1, transition: { delay: 0.2 } }

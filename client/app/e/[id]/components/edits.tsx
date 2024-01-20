@@ -16,53 +16,38 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Icons } from "@/components/ui/icons";
 
-export const Edits = () => {
+export const Edits = ({ userId, path, index }) => {
   const router = useRouter();
-  const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!file) {
-      toast.info("Please select a file to upload.");
-      return;
-    }
-
+  const handleUpload = async (userId) => {
     setUploading(true);
 
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_SITE_URL + "/api/upload",
-      {
+    try {
+      const response = await fetch("/api/upload", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ filename: file.name, contentType: file.type }),
-      }
-    );
-
-    if (response.ok) {
-      const { url, fields } = await response.json();
-
-      const formData = new FormData();
-      Object.entries(fields).forEach(([key, value]) => {
-        formData.append(key, value as string);
-      });
-      formData.append("file", file);
-
-      const uploadResponse = await fetch(url, {
-        method: "POST",
-        body: formData,
+        body: JSON.stringify({
+          imageUrl: `https://replicate.delivery/pbxt/${path}/out-${index}.png`,
+          userId: userId,
+        }),
       });
 
-      if (uploadResponse.ok) {
+      const responseData = await response.json();
+
+      if (response.ok) {
         toast("Upload successful!");
       } else {
-        console.error("S3 Upload Error:", uploadResponse);
+        console.error("Upload Error:", responseData);
         toast.error("Upload failed.");
       }
-    } else {
-      toast.error("Failed to get pre-signed URL.");
+    } catch (error) {
+      console.error("Request Error:", error);
+      toast.error("Upload failed.");
     }
 
     setUploading(false);
@@ -83,7 +68,7 @@ export const Edits = () => {
         <Button variant="secondary">Edit</Button>
         <Popover>
           <PopoverTrigger asChild>
-            <Button disabled={uploading} onClick={handleSubmit}>
+            <Button>
               Save <ChevronDownIcon className="w-4 h-4 ml-2" />
             </Button>
           </PopoverTrigger>
@@ -95,14 +80,22 @@ export const Edits = () => {
               <Button
                 variant="ghost"
                 className="py-5 px-3 items-center justify-start"
+                disabled={uploading}
+                onClick={() => handleUpload(userId)}
               >
-                <StarIcon className="w-4 h-4 mr-4" /> Save as favorite
+                {uploading ? (
+                  <Icons.spinner className="w-4 h-4 mr-3 animate-spin" />
+                ) : (
+                  <StarIcon className="w-4 h-4 mr-4" />
+                )}
+                Save as favorite
               </Button>
               <Button
                 variant="ghost"
                 className="py-5 px-3 justify-start items-center"
               >
-                <DownloadIcon className="w-4 h-4 mr-3" /> Download
+                <DownloadIcon className="w-4 h-4 mr-3" />
+                Download
               </Button>
             </div>
           </PopoverContent>

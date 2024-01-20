@@ -64,7 +64,7 @@ export default function Nav({ user, userDetails }: NavbarProps) {
         )}
       >
         <Link href={"/"} className="text-lg font-semibold">
-          Entropy
+          Entropy<sup className="text-blue-500 ml-1">alpha</sup>
         </Link>
         <div className="ml-auto flex space-x-3 sm:justify items-center">
           <Button
