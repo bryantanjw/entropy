@@ -43,7 +43,7 @@ export const Edits = ({ user, path, index }) => {
       const responseData = await response.json();
 
       if (response.ok) {
-        toast("Saved to favourites!", {
+        toast.success("Saved to favourites!", {
           action: {
             label: "View",
             onClick: () => router.push("/profile"),
@@ -56,9 +56,9 @@ export const Edits = ({ user, path, index }) => {
     } catch (error) {
       console.error("Request Error:", error);
       toast.error("Saving failed.");
+    } finally {
+      setUploading(false);
     }
-
-    setUploading(false);
   };
 
   const handleDownload = () => {

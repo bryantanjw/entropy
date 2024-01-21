@@ -72,7 +72,7 @@ const imageVariants = {
 
 const Field: React.FC<FieldProps> = ({ id, label, value }) => {
   return (
-    <div className="flex flex-col space-y-1.5">
+    <div className="flex flex-col space-y-1.5 w-full">
       <Label
         htmlFor={id}
         className="font-mono text-slate-600 dark:text-slate-200"

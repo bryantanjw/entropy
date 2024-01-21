@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import * as THREE from "three";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -19,6 +20,7 @@ import { Icons } from "@/components/ui/icons";
 import {
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,9 +29,25 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-import clsx from "clsx";
-import { Cross2Icon, PersonIcon } from "@radix-ui/react-icons";
+import {
+  Cross2Icon,
+  ExternalLinkIcon,
+  PersonIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 extend(geometry);
 
@@ -51,17 +69,30 @@ export const ProfileGallery = ({ userId }) => {
     fetchImages();
   }, [userId]);
 
+  const removeImageFromState = (url) => {
+    setImages((currentImages) =>
+      currentImages.filter((image) => image.url !== url)
+    );
+  };
+
   return (
     <>
+      {!images.length && (
+        <div className="flex justify-center items-center h-screen">
+          <Icons.spinner className="w-6 h-6 animate-spin text-gray-400" />
+        </div>
+      )}
+
       <Canvas dpr={[1, 1.5]}>
         <ScrollControls pages={4} infinite>
-          <Scene position={[0, 1.5, 0]} images={images} />
+          <Scene
+            position={[0, 1.5, 0]}
+            userId={userId}
+            images={images}
+            removeImageFromState={removeImageFromState}
+          />
         </ScrollControls>
       </Canvas>
-
-      {!images.length && (
-        <Icons.spinner className="w-6 h-6 animate-spin text-gray-400" />
-      )}
     </>
   );
 };
@@ -85,6 +116,8 @@ function Scene({ images, ...props }) {
   return (
     <group ref={ref} {...props}>
       <Cards
+        userId={props.userId}
+        removeImageFromState={props.removeImageFromState}
         images={images}
         category="spring"
         from={0}
@@ -135,6 +168,8 @@ function Cards({
         const angle = from + (i / amount) * len;
         return (
           <Card
+            removeImageFromState={props.removeImageFromState}
+            userId={props.userId}
             key={image.key}
             url={image.url}
             onPointerOver={(e) => (
@@ -159,11 +194,10 @@ function Card({ url, active, hovered, ...props }) {
 
   const toggleDialog = () => setDialogOpen(!isDialogOpen);
 
-  // ... rest of the Card component
-
   return (
     <group {...props}>
       <ImageDrei
+        // @ts-ignore
         alt="image"
         ref={ref}
         url={url}
@@ -171,93 +205,15 @@ function Card({ url, active, hovered, ...props }) {
         onClick={toggleDialog}
       />
       <Html>
-        <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent
-            showCloseIcon={false}
-            className={clsx(
-              "grid-cols-[1fr_500px] gap-12 items-center justify-center max-w-6xl border-0"
-            )}
-          >
-            <motion.figure
-              className={clsx(
-                "group relative max-w-2xl overflow-hidden rounded-md shadow-xl bg-neutral-two dark:bg-neutral-nine"
-              )}
-            >
-              <Image
-                width={1080}
-                height={720}
-                alt={"entropy"}
-                src={url}
-                className={clsx(
-                  "object-cover duration-700 ease-in-out h-full",
-                  isLoading
-                    ? "scale-120 blur-3xl grayscale"
-                    : "scale-100 blur-0 grayscale-0"
-                )}
-                onLoad={() => setIsLoading(false)}
-                quality={100}
-              />
-            </motion.figure>
-            <motion.div className="flex flex-col h-full rounded-lg p-2 py-5 justify-between border bg-card text-card-foreground shadow-xl">
-              <div className="space-y-4">
-                <CardHeader>
-                  <CardTitle className="mb-2">Imagine</CardTitle>
-                  <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
-                    <Badge
-                      className={clsx(
-                        badgeVariants({ variant: "default" }),
-                        "w-fit py-1 opacity-90 items-center"
-                      )}
-                    >
-                      <PersonIcon className="mr-2 h-3 w-3" />
-                      Character
-                    </Badge>
-                    <ScrollArea className="h-20">prompt</ScrollArea>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                      <Label
-                        htmlFor="negative_prompt"
-                        className="font-mono text-slate-600 dark:text-slate-200"
-                      >
-                        negative_prompt
-                      </Label>
-                      <Textarea
-                        disabled
-                        id="negative_prompt"
-                        className="h-[80px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
-                        value="negative_prompt"
-                      />
-                    </div>
-
-                    <div className="flex gap-3">
-                      <Field id="style" label="style" value="style" />
-                      <Field id="model" label="model" value={"model"} />
-                    </div>
-
-                    <div className="flex flex-col space-y-1.5">
-                      <Field
-                        id="cfg_scale"
-                        label="cfg_scale"
-                        value="cfg_scale"
-                      />
-                    </div>
-                    <Field id="steps" label="steps" value={"steps"} />
-                    <Field id="sampler" label="sampler" value={"sampler"} />
-                    <Field id="seed" label="seed" value={"seed"} />
-                  </div>
-                </CardContent>
-              </div>
-
-              <DialogClose className="absolute right-4 top-4">
-                <Cross2Icon className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </DialogClose>
-            </motion.div>
-          </DialogContent>
-        </Dialog>
+        <ImageDialog
+          removeImageFromState={props.removeImageFromState}
+          userId={props.userId}
+          url={url}
+          isDialogOpen={isDialogOpen}
+          setDialogOpen={setDialogOpen}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
+        />
       </Html>
     </group>
   );
@@ -326,9 +282,212 @@ function ActiveCard({ hovered, images, ...props }) {
   );
 }
 
+function ImageDialog({
+  userId,
+  url,
+  isDialogOpen,
+  setDialogOpen,
+  setIsLoading,
+  isLoading,
+  removeImageFromState,
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+
+  const handleDeleteImage = async (url) => {
+    setIsDeleting(true);
+    const imageKey = extractS3KeyFromUrl(url);
+
+    try {
+      const response = await fetch("/api/delete-image", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          imageKey: imageKey,
+        }),
+      });
+
+      if (response.ok) {
+        if (response.status !== 204) {
+          const responseData = await response.json();
+        }
+        removeImageFromState(url);
+        console.log("Image deleted successfully");
+        toast.success("Image deleted");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete image:", errorData.error);
+        toast.error("Failed to delete image. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast.error("Failed to delete image. Please try again later.");
+    } finally {
+      setIsDeleting(false);
+      setAlertOpen(false);
+      setDialogOpen(false);
+    }
+  };
+
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+      <DialogContent
+        showCloseIcon={false}
+        className={clsx(
+          "grid-cols-2 gap-12 items-center justify-center max-w-5xl border-0"
+        )}
+      >
+        <motion.figure
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, y: -50 }}
+          className={clsx(
+            "group relative max-w-2xl overflow-hidden rounded-md shadow-xl bg-neutral-two dark:bg-neutral-nine"
+          )}
+        >
+          <Image
+            width={1080}
+            height={720}
+            alt={"entropy"}
+            src={url}
+            className={clsx(
+              "object-cover duration-700 ease-in-out h-full",
+              isLoading
+                ? "scale-120 blur-3xl grayscale"
+                : "scale-100 blur-0 grayscale-0"
+            )}
+            onLoad={() => setIsLoading(false)}
+            quality={100}
+          />
+        </motion.figure>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, y: 50 }}
+          className="flex flex-col h-full rounded-lg p-2 py-0 justify-between border bg-card text-card-foreground shadow-xl"
+        >
+          <div className="flex flex-col justify-between h-full space-y-4">
+            <CardHeader className="pb-0">
+              <CardTitle className="mb-2">Imagine</CardTitle>
+              <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
+                <Badge
+                  className={clsx(
+                    badgeVariants({ variant: "default" }),
+                    "w-fit py-1 opacity-90 items-center"
+                  )}
+                >
+                  <PersonIcon className="mr-2 h-3 w-3" />
+                  Character
+                </Badge>
+                <ScrollArea className="h-20">
+                  pool party miss fortune, 1girl, one-piece swimsuit, red hair,
+                  smile, closed mounth, solo, detailed face, looking at viewer,
+                  cowboy shot, upper body, pool, (masterpiece:1.2, best quality)
+                </ScrollArea>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Label
+                    htmlFor="negative_prompt"
+                    className="font-mono text-slate-600 dark:text-slate-200"
+                  >
+                    negative_prompt
+                  </Label>
+                  <Textarea
+                    disabled
+                    id="negative_prompt"
+                    className="h-[60px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
+                    value="negative_prompt"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <Field id="style" label="style" value="style" />
+                  <Field id="model" label="model" value={"model"} />
+                </div>
+
+                <div className="flex flex-col space-y-1.5">
+                  <Field id="cfg_scale" label="cfg_scale" value="cfg_scale" />
+                </div>
+                <Field id="steps" label="steps" value={"steps"} />
+                <Field id="sampler" label="sampler" value={"sampler"} />
+                <Field id="seed" label="seed" value={"seed"} />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col md:flex-row gap-2">
+              <AlertDialog open={isAlertOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant={"secondary"}
+                    className="w-full h-11 text-red-500"
+                    size={"lg"}
+                    onClick={() => setAlertOpen(true)}
+                  >
+                    <TrashIcon className="mr-2 h-4 w-4" />
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your image from your account.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setAlertOpen(false)}>
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="text-red-500"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteImage(url);
+                      }}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? (
+                        <>
+                          <Icons.spinner className="w-4 h-4 mr-3 animate-spin" />
+                          Deleting
+                        </>
+                      ) : (
+                        "Delete image"
+                      )}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <Button className="w-full h-11" size={"lg"}>
+                <ExternalLinkIcon className="mr-2 h-4 w-4" /> Apply
+              </Button>
+            </CardFooter>
+          </div>
+
+          <DialogClose className="absolute right-4 top-4">
+            <Cross2Icon className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        </motion.div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function Field({ id, label, value }) {
   return (
-    <div className="flex flex-col space-y-1.5">
+    <div className="flex flex-col space-y-1.5 w-full">
       <Label
         htmlFor={id}
         className="font-mono text-slate-600 dark:text-slate-200"
@@ -343,4 +502,11 @@ function Field({ id, label, value }) {
       />
     </div>
   );
+}
+
+function extractS3KeyFromUrl(url) {
+  const urlParts = new URL(url);
+  // The pathname part of the URL starts with a '/', so we remove it
+  const key = urlParts.pathname.substring(1);
+  return key;
 }
