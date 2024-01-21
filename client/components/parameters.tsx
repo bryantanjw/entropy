@@ -26,6 +26,7 @@ import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
 import { SettingsSelectors } from "./settings-selectors";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { checkpoints } from "@/lib/constants";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
 const styles = ["Digital", "Realism", "Anime"];
@@ -228,15 +229,31 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
               <FormControl>
                 <div className="flex flex-col w-full gap-2">
                   <FormItem>
-                    <Label htmlFor="seed" className="font-normal">
-                      Seed
-                    </Label>
-                    <Input
-                      type="number"
-                      placeholder="69420"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
+                    <HoverCard openDelay={200}>
+                      <HoverCardTrigger asChild>
+                        <Label
+                          htmlFor="seed"
+                          className="font-normal underline underline-offset-2 decoration-dotted decoration-slate-500"
+                        >
+                          Seed
+                        </Label>
+                      </HoverCardTrigger>
+                      <Input
+                        {...field}
+                        type="number"
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                      <HoverCardContent
+                        side="left"
+                        align="start"
+                        className="w-[260px] text-sm"
+                      >
+                        <p>
+                          Randomizer to generate a random image. Leave as 0 to
+                          generate a random seed.
+                        </p>
+                      </HoverCardContent>
+                    </HoverCard>
                   </FormItem>
                 </div>
               </FormControl>

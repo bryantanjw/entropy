@@ -67,8 +67,9 @@ export const ProfileGallery = ({ userId }) => {
     };
 
     fetchImages();
-  }, [userId]);
+  }, []);
 
+  // Remove image from state when it is deleted
   const removeImageFromState = (url) => {
     setImages((currentImages) =>
       currentImages.filter((image) => image.url !== url)
@@ -172,6 +173,7 @@ function Cards({
             userId={props.userId}
             key={image.key}
             url={image.url}
+            metadata={image.metadata}
             onPointerOver={(e) => (
               e.stopPropagation(), hover(i), onPointerOver(i)
             )}
@@ -187,7 +189,7 @@ function Cards({
   );
 }
 
-function Card({ url, active, hovered, ...props }) {
+function Card({ url, metadata, active, hovered, ...props }) {
   const ref = useRef();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -209,6 +211,7 @@ function Card({ url, active, hovered, ...props }) {
           removeImageFromState={props.removeImageFromState}
           userId={props.userId}
           url={url}
+          metadata={metadata}
           isDialogOpen={isDialogOpen}
           setDialogOpen={setDialogOpen}
           setIsLoading={setIsLoading}
@@ -285,6 +288,7 @@ function ActiveCard({ hovered, images, ...props }) {
 function ImageDialog({
   userId,
   url,
+  metadata,
   isDialogOpen,
   setDialogOpen,
   setIsLoading,
@@ -382,12 +386,16 @@ function ImageDialog({
                   )}
                 >
                   <PersonIcon className="mr-2 h-3 w-3" />
-                  Character
+                  {metadata.lora
+                    ? metadata.lora
+                        .split("/")
+                        .pop()
+                        .replace(/_/g, " ")
+                        .replace(".safetensors", "")
+                    : "Character"}
                 </Badge>
                 <ScrollArea className="h-20">
-                  pool party miss fortune, 1girl, one-piece swimsuit, red hair,
-                  smile, closed mounth, solo, detailed face, looking at viewer,
-                  cowboy shot, upper body, pool, (masterpiece:1.2, best quality)
+                  {metadata.input_prompt}
                 </ScrollArea>
               </CardDescription>
             </CardHeader>
@@ -404,21 +412,35 @@ function ImageDialog({
                     disabled
                     id="negative_prompt"
                     className="h-[60px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
-                    value="negative_prompt"
+                    value={metadata.negative_prompt}
                   />
                 </div>
 
                 <div className="flex gap-3">
-                  <Field id="style" label="style" value="style" />
-                  <Field id="model" label="model" value={"model"} />
+                  <Field
+                    id="model"
+                    label="model"
+                    value={metadata.checkpoint_model.replace(
+                      ".safetensors",
+                      ""
+                    )}
+                  />
                 </div>
 
                 <div className="flex flex-col space-y-1.5">
-                  <Field id="cfg_scale" label="cfg_scale" value="cfg_scale" />
+                  <Field
+                    id="cfg_scale"
+                    label="cfg_scale"
+                    value={metadata.cfg}
+                  />
                 </div>
-                <Field id="steps" label="steps" value={"steps"} />
-                <Field id="sampler" label="sampler" value={"sampler"} />
-                <Field id="seed" label="seed" value={"seed"} />
+                <Field id="steps" label="steps" value={metadata.steps} />
+                <Field
+                  id="sampler"
+                  label="sampler"
+                  value={metadata.sampler_name}
+                />
+                <Field id="seed" label="seed" value={metadata.seed} />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col md:flex-row gap-2">
@@ -470,7 +492,7 @@ function ImageDialog({
               </AlertDialog>
 
               <Button className="w-full h-11" size={"lg"}>
-                <ExternalLinkIcon className="mr-2 h-4 w-4" /> Apply
+                <ExternalLinkIcon className="mr-2 h-4 w-4" /> Tweak it
               </Button>
             </CardFooter>
           </div>

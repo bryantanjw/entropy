@@ -347,7 +347,7 @@ export default function ImageItem({
                   </Button>
                 </div>
                 <Button className="w-full h-11" size={"lg"}>
-                  <MagicWandIcon className="mr-2 h-4 w-4" /> Use All
+                  <MagicWandIcon className="mr-2 h-4 w-4" /> Tweak it
                 </Button>
               </CardFooter>
 

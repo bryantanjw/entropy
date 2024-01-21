@@ -13,6 +13,7 @@ const CATEGORIES = [
   { title: "Comics", value: "comics" },
   { title: "Cartoon", value: "cartoon" },
   { title: "Cinematic", value: "cinematic" },
+  { title: "Content Creators", value: "content-creator" },
 ];
 
 const RATIOS = [

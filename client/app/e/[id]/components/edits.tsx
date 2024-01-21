@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeftIcon,
   ChevronDownIcon,
@@ -18,11 +18,43 @@ import {
 } from "@/components/ui/popover";
 import { Icons } from "@/components/ui/icons";
 
-export const Edits = ({ user, path, index }) => {
+export const Edits = ({ user, predictionId, path, index }) => {
   const { id, email } = user;
   const router = useRouter();
+  const [predictions, setPredictions] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    async function getPrediction() {
+      try {
+        const response = await fetch(
+          `https://api.entropy.so/predictions/${predictionId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Token " + process.env.REPLICATE_API_KEY,
+            },
+          }
+        );
+        const prediction = await response.json();
+
+        if (prediction.status === "succeeded") {
+          setPredictions(prediction);
+        } else if (prediction.status === "failed") {
+          throw new Error("Prediction failed");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load prediction.");
+      }
+    }
+
+    if (!predictions) {
+      getPrediction();
+    }
+  }, [predictions]);
 
   const handleUpload = async () => {
     setUploading(true);
@@ -36,7 +68,7 @@ export const Edits = ({ user, path, index }) => {
         body: JSON.stringify({
           imageUrl: `https://replicate.delivery/pbxt/${path}/out-${index}.png`,
           userId: id,
-          userEmail: email,
+          predictionInput: predictions.input,
         }),
       });
 

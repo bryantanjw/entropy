@@ -31,10 +31,10 @@ export function usePlaygroundForm() {
     defaultValues: {
       checkpoint_model: "Aniverse.safetensors",
       input_prompt: "",
-      negative_prompt: "lowres, worst quality, ugly, blurry, bad fingers",
+      negative_prompt: "(worst quality:1.4), (low quality:1.4)",
       steps: 25,
       sampler_name: "dpmpp_2m",
-      seed: 69420,
+      seed: 0,
       cfg: 5.0,
       lora: "",
       custom_lora: "",

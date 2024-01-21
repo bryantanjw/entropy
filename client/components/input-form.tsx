@@ -79,10 +79,20 @@ export const InputForm = ({
   // Get the width of the parent div to set the width of the popover
   const parentDivRef = useRef(null);
   useEffect(() => {
-    if (parentDivRef.current) {
-      setPopoverWidth(`${parentDivRef.current.offsetWidth}px`);
-    }
-  }, [parentDivRef.current]);
+    const updatePopoverWidth = () => {
+      if (parentDivRef.current) {
+        setPopoverWidth(`${parentDivRef.current.offsetWidth}px`);
+      }
+    };
+
+    // Call this function to update the width on initial mount and resize
+    updatePopoverWidth();
+    // Add the event listener for resize
+    window.addEventListener("resize", updatePopoverWidth);
+    return () => {
+      window.removeEventListener("resize", updatePopoverWidth);
+    };
+  }, []); // Empty dependency array ensures this effect runs once on mount and unmount
 
   async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
     // Submit the values to /generatePredictions
@@ -90,49 +100,47 @@ export const InputForm = ({
     setSubmitting(true);
 
     // // Make initial request to Lambda function to create a prediction
-    // const res = await fetch("https://api.entropy.so/predictions", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     ...values,
-    //     userId: user.id,
-    //   }),
-    // });
+    const res = await fetch("https://api.entropy.so/predictions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...values,
+        userId: user.id,
+      }),
+    });
 
-    // const response = await res.json();
-    // console.log("response", response);
+    const response = await res.json();
+    console.log("response", response);
 
-    // if (res.status !== 200 || response.status === "error") {
-    //   toast.error("Uh oh! Something went wrong", {
-    //     description: response.message || "Unknown error",
-    //   });
-    //   setSubmitting(false);
-    //   return;
-    // }
+    if (res.status !== 200 || response.status === "error") {
+      toast.error("Uh oh! Something went wrong", {
+        description: response.message || "Unknown error",
+      });
+      setSubmitting(false);
+      return;
+    }
 
-    // // Extract the prediction ID from the returned URL for polling
-    // // When redirected to generation page, poll for progress
-    // const predictionId = response.url.split("/").pop();
-    // console.log("predictionId", predictionId);
-    router.push(`/e/ipyqozbbmvsubyjbzlnzbefqi4`);
+    // Extract the prediction ID from the returned URL for polling
+    // When redirected to generation page, poll for progress
+    const predictionId = response.url.split("/").pop();
+    router.push(`/e/${predictionId}`);
   }
 
-  // useEffect(() => {
-  //   const handleKeyDown = (e) => {
-  //     if (e.key === "Enter") {
-  //       e.preventDefault();
-  //       form.setValue("lora", lastClickedCharacterRef.current.directory);
-  //       setOpen(false);
-  //     }
-  //   };
-  //   document.addEventListener("keydown", handleKeyDown);
-  //   // Cleanup function to remove the event listener
-  //   return () => {
-  //     document.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter") {
+        form.setValue("lora", lastClickedCharacterRef.current.directory);
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    // Cleanup function to remove the event listener
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const inputPromptRef = useRef(null);
 
@@ -214,7 +222,7 @@ export const InputForm = ({
                               }
                             }}
                             className={cn(
-                              "h-full px-0 items-center justify-between border border-slate-500 border-opacity-0 rounded-md data-[state=on]:bg-accent data-[state=on]:border-opacity-20",
+                              "h-full my-1 px-0 items-center justify-between border border-slate-500 border-opacity-0 rounded-md data-[state=on]:bg-accent data-[state=on]:border-opacity-20",
                               {
                                 "border-opacity-40 bg-muted":
                                   lastClickedCharacterRef.current === c ||
@@ -258,7 +266,7 @@ export const InputForm = ({
                         height="44"
                         viewBox="0 0 24 24"
                         strokeWidth="1.5"
-                        stroke="#2c3e50"
+                        stroke={theme === "dark" ? "#fff" : "#000"}
                         fill="none"
                         strokeLinecap="round"
                         strokeLinejoin="round"

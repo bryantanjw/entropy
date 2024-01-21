@@ -31,7 +31,8 @@ export default function OutputImage({ path, index }) {
           alt={"Entropy image"}
           className={cn(
             "shadow-lg h-full w-full object-cover rounded-md",
-            "duration-300 ease-in-out"
+            "transition-all duration-200",
+            { "hover:scale-95": !flag }
           )}
           width={720}
           height={720}

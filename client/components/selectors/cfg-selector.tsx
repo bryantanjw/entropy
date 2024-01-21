@@ -55,10 +55,8 @@ export function CfgSelector({ form }: CfgSelectorProps) {
           align="start"
           className="w-[260px] text-sm"
         >
-          Number of denoising steps (minimum: 1; maximum: 100).
-          <br /> <br /> Decrease to have the initial composition follows the QR
-          code more. You will only see the QR code if you reduce it too much.
-          The range of steps varies by model.
+          Amount of influence the prompt has on the output. <br /> <br />
+          If image output has color burn or high saturation, try lowering this.
         </HoverCardContent>
       </HoverCard>
     </div>

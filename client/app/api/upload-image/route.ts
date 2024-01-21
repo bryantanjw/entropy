@@ -2,7 +2,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
-  const { imageUrl, userId, userEmail } = await request.json();
+  const { imageUrl, userId, predictionInput } = await request.json();
   const userPrefix = `user-${userId}`;
   const key = `${userPrefix}/${uuidv4()}`; // Generate the S3 object key with the user prefix and a UUID
 
@@ -18,6 +18,18 @@ export async function POST(request: Request) {
     const imageArrayBuffer = await imageResponse.arrayBuffer(); // Use arrayBuffer() instead of buffer()
     const imageBuffer = Buffer.from(imageArrayBuffer);
 
+    // Base64 encode the predictionDetails object
+    const encodedPredictionDetails = Buffer.from(
+      JSON.stringify(predictionInput)
+    ).toString("base64");
+    const metadata = {
+      prediction_input: encodedPredictionDetails,
+    };
+
+    // When retrieving the object, you would then need to decode the base64 string back into a JSON object:
+    // const encodedPredictionDetails = retrievedMetadata['x-amz-meta-prediction_details'];
+    // const predictionDetails = JSON.parse(Buffer.from(encodedPredictionDetails, 'base64').toString('utf-8'));
+
     // Upload the image buffer to S3
     const uploadResult = await client.send(
       new PutObjectCommand({
@@ -26,6 +38,7 @@ export async function POST(request: Request) {
         Body: imageBuffer,
         ContentType: "image/png",
         ACL: "private", // Have to set private instead of public-read because our items are private
+        Metadata: metadata,
       })
     );
 

@@ -84,11 +84,7 @@ export default function OutputImages({ id }) {
                 transition={{ delay: 0.25 }}
                 key={index}
               >
-                <Link
-                  key={index}
-                  href={`${pathname}/${path}${index}`}
-                  className="rounded-md hover:scale-95 transition-all duration-200"
-                >
+                <Link key={index} href={`${pathname}/${path}${index}`}>
                   <OutputImage path={path} index={index} />
                 </Link>
               </motion.div>

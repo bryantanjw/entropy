@@ -28,7 +28,6 @@ export default function Filter({
 
   const handleSearch = (event) => {
     event.preventDefault();
-    event.stopPropagation();
     if (!text) {
       router.push(`/`, { scroll: false });
     } else {

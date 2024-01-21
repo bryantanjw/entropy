@@ -3,7 +3,7 @@ import { ResetIcon } from "@radix-ui/react-icons";
 import { ProfileGallery } from "./components/profile-gallery";
 import { Spotlight } from "@/components/ui/spotlight";
 import Navbar from "@/components/navbar";
-import { getSession, getUserDetails } from "@/lib/supabase-server";
+import { getUserDetails } from "@/lib/supabase-server";
 
 export default async function ProfilePage() {
   const userDetails = await getUserDetails();
