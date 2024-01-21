@@ -214,9 +214,9 @@ export const InputForm = ({
                               }
                             }}
                             className={cn(
-                              "h-full px-0 items-center justify-between border border-slate-500 border-opacity-0 rounded-md data-[state=on]:bg-accent aria-selected:bg-slate-50 data-[state=on]:border-opacity-20",
+                              "h-full px-0 items-center justify-between border border-slate-500 border-opacity-0 rounded-md data-[state=on]:bg-accent data-[state=on]:border-opacity-20",
                               {
-                                "border-opacity-40 bg-slate-100":
+                                "border-opacity-40 bg-muted":
                                   lastClickedCharacterRef.current === c ||
                                   character === c,
                               }

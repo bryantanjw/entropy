@@ -2,7 +2,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
-  const { imageUrl, userId } = await request.json();
+  const { imageUrl, userId, userEmail } = await request.json();
   const userPrefix = `user-${userId}`;
   const key = `${userPrefix}/${uuidv4()}`; // Generate the S3 object key with the user prefix and a UUID
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         Key: key,
         Body: imageBuffer,
         ContentType: "image/png",
-        ACL: "private",
+        ACL: "private", // Have to set private instead of public-read because our items are private
       })
     );
 

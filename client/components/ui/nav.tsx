@@ -23,11 +23,8 @@ import { User } from "@supabase/supabase-js";
 
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "./navigation-menu";
 import { UserNav } from "../user-nav";
@@ -40,9 +37,10 @@ import { useSupabase } from "@/lib/providers/supabase-provider";
 interface NavbarProps {
   user: User | null | undefined;
   userDetails?: any;
+  dark?: boolean;
 }
 
-export default function Nav({ user, userDetails }: NavbarProps) {
+export default function Nav({ user, userDetails, dark = false }: NavbarProps) {
   const { supabase } = useSupabase();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
@@ -55,6 +53,10 @@ export default function Nav({ user, userDetails }: NavbarProps) {
       setTheme("dark");
     }
   };
+
+  if (dark) {
+    setTheme("dark");
+  }
 
   return (
     <div>
@@ -80,7 +82,7 @@ export default function Nav({ user, userDetails }: NavbarProps) {
               <NavigationMenu>
                 <NavigationMenuList className="gap-4 items-center">
                   <NavigationMenuItem>
-                    <ModeToggle />
+                    {!dark && <ModeToggle />}
                   </NavigationMenuItem>
 
                   {user ? (

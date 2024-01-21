@@ -32,10 +32,10 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-
-import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { badgeVariants } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
+
+import { ImageDataType } from "@/sanity/types/ImageDataType";
 
 type ImageItemProps = {
   index: number;

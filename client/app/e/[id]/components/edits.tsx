@@ -18,39 +18,80 @@ import {
 } from "@/components/ui/popover";
 import { Icons } from "@/components/ui/icons";
 
-export const Edits = ({ userId, path, index }) => {
+export const Edits = ({ user, path, index }) => {
+  const { id, email } = user;
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
-  const handleUpload = async (userId) => {
+  const handleUpload = async () => {
     setUploading(true);
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/upload-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           imageUrl: `https://replicate.delivery/pbxt/${path}/out-${index}.png`,
-          userId: userId,
+          userId: id,
+          userEmail: email,
         }),
       });
 
       const responseData = await response.json();
 
       if (response.ok) {
-        toast("Upload successful!");
+        toast("Saved to favourites!", {
+          action: {
+            label: "View",
+            onClick: () => router.push("/profile"),
+          },
+        });
       } else {
         console.error("Upload Error:", responseData);
-        toast.error("Upload failed.");
+        toast.error("Saving failed.");
       }
     } catch (error) {
       console.error("Request Error:", error);
-      toast.error("Upload failed.");
+      toast.error("Saving failed.");
     }
 
     setUploading(false);
+  };
+
+  const handleDownload = () => {
+    setDownloading(true);
+    const imageUrl = `https://replicate.delivery/pbxt/${path}/out-${index}.png`;
+
+    fetch(imageUrl, {
+      headers: new Headers({
+        Origin: location.origin,
+      }),
+      mode: "cors",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.blob();
+      })
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `entropy-${index}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(a);
+      })
+      .catch((error) => {
+        console.error("Download failed:", error);
+        toast.error("Download failed.");
+      })
+      .finally(() => {
+        setDownloading(false);
+      });
   };
 
   return (
@@ -81,20 +122,25 @@ export const Edits = ({ userId, path, index }) => {
                 variant="ghost"
                 className="py-5 px-3 items-center justify-start"
                 disabled={uploading}
-                onClick={() => handleUpload(userId)}
+                onClick={handleUpload}
               >
                 {uploading ? (
                   <Icons.spinner className="w-4 h-4 mr-3 animate-spin" />
                 ) : (
                   <StarIcon className="w-4 h-4 mr-4" />
                 )}
-                Save as favorite
+                Save to favorites
               </Button>
               <Button
                 variant="ghost"
-                className="py-5 px-3 justify-start items-center"
+                className="w-full py-5 px-3 justify-start items-center"
+                onClick={handleDownload}
               >
-                <DownloadIcon className="w-4 h-4 mr-3" />
+                {downloading ? (
+                  <Icons.spinner className="w-4 h-4 mr-3 animate-spin" />
+                ) : (
+                  <DownloadIcon className="w-4 h-4 mr-3" />
+                )}
                 Download
               </Button>
             </div>

@@ -10,8 +10,8 @@ export default function OutputImage({ path, index }) {
 
   const flag = path.toString() === pathname;
 
-  // TODO: figure out why the fuck the exit/back page transition for image
-  // to pop back in doesn't fukcing work???
+  // TODO: figure out why the fuck does the exit page transition for image
+  // to pop back in not fukcing work???
 
   return (
     <AnimatePresence mode="wait">

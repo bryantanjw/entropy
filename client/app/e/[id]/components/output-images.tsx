@@ -79,7 +79,7 @@ export default function OutputImages({ id }) {
             const path = img.split("/").slice(-2, -1)[0];
             return (
               <motion.div
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
                 key={index}

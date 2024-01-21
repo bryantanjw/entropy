@@ -3,7 +3,7 @@ import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/column";
 import { Edits } from "../components/edits";
-import { getUserDetails } from "@/lib/supabase-server";
+import { getSession, getUserDetails } from "@/lib/supabase-server";
 
 export default async function ImagePage({
   params,
@@ -13,14 +13,15 @@ export default async function ImagePage({
   const subid = params.subid.slice(0, -1);
   const index = params.subid.slice(-1);
 
-  const userDetails = await getUserDetails();
+  const session = await getSession();
+  const user = session?.user;
 
   return (
     <div className="flex flex-col w-full items-center">
       <Navbar />
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
         <Column className="items-center min-h-screen py-20 px-10 gap-8">
-          <Edits userId={userDetails?.id} path={`${subid}`} index={index} />
+          <Edits user={user} path={`${subid}`} index={index} />
           <Column className="w-full max-w-lg">
             <OutputImage path={`${subid}`} index={index} />
           </Column>
