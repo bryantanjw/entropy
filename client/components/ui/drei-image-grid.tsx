@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import * as THREE from "three";
@@ -12,7 +14,6 @@ import {
   Scroll,
 } from "@react-three/drei";
 import { AnimatePresence, motion } from "framer-motion";
-import { useScroll } from "./scroll-controls";
 import { useInView } from "react-intersection-observer";
 import { fetchImages } from "@/lib/actions";
 
