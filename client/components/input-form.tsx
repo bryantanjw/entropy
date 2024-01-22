@@ -97,35 +97,35 @@ export const InputForm = ({
   async function onSubmit(values: z.infer<typeof playgroundFormSchema>) {
     // Submit the values to /generatePredictions
     console.log(values);
-    // setSubmitting(true);
+    setSubmitting(true);
 
-    // // // Make initial request to Lambda function to create a prediction
-    // const res = await fetch("https://api.entropy.so/predictions", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     ...values,
-    //     userId: user.id,
-    //   }),
-    // });
+    // // Make initial request to Lambda function to create a prediction
+    const res = await fetch("https://api.entropy.so/predictions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...values,
+        userId: user.id,
+      }),
+    });
 
-    // const response = await res.json();
-    // console.log("response", response);
+    const response = await res.json();
+    console.log("response", response);
 
-    // if (res.status !== 200 || response.status === "error") {
-    //   toast.error("Uh oh! Something went wrong", {
-    //     description: response.message || "Unknown error",
-    //   });
-    //   setSubmitting(false);
-    //   return;
-    // }
+    if (res.status !== 200 || response.status === "error") {
+      toast.error("Uh oh! Something went wrong", {
+        description: response.message || "Unknown error",
+      });
+      setSubmitting(false);
+      return;
+    }
 
-    // // Extract the prediction ID from the returned URL for polling
-    // // When redirected to generation page, poll for progress
-    // const predictionId = response.url.split("/").pop();
-    // router.push(`/e/${predictionId}`);
+    // Extract the prediction ID from the returned URL for polling
+    // When redirected to generation page, poll for progress
+    const predictionId = response.url.split("/").pop();
+    router.push(`/e/${predictionId}`);
   }
 
   useEffect(() => {

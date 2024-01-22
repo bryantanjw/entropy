@@ -1,6 +1,7 @@
 export const checkpoints = {
   Digital: ["Aniverse", "DarkSushi", "DarkSun", "UnleashedDiffusion"],
   Anime: [
+    "GhostMix",
     "Hassaku",
     "OrangeMixs",
     "CamelliaMix",

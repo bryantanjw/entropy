@@ -139,7 +139,7 @@ export const HorizontalTiles = ({ images }) => {
       state.images.push(image);
     });
   }, [images]);
-  console.log("images", images);
+
   return (
     <Canvas
       gl={{ antialias: false }}

@@ -16,7 +16,7 @@ export default async function ProfilePage() {
           className="absolute -top-40 left-0 md:left-72 md:-top-20"
           fill="white"
         />
-        <div className="p-4 max-w-7xl mx-auto relative z-10  w-full pt-20 md:top-40">
+        <div className="p-4 lg:max-w-6xl xl:max-w-7xl mx-auto relative z-10  w-full pt-20 md:top-40">
           <Link href="/">
             <button className="h-7 w-7 mb-4 group inline-flex items-center justify-center rounded-full border border-slate-50 border-opacity-10 bg-slate-50 bg-opacity-10">
               <ResetIcon className="w-3 h-3 text-white opacity-50 group-hover:opacity-100 transition duration-200" />
