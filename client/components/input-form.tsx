@@ -174,7 +174,7 @@ export const InputForm = ({
               >
                 <CommandInput placeholder="Search..." />
                 <div className="grid grid-cols-[1.1fr_0.01fr_1fr] px-1 justify-items-center">
-                  <CommandList className="w-full">
+                  <CommandList className="w-full h-full">
                     <CommandEmpty className="flex flex-col py-6 items-center gap-5">
                       <span> No results found. </span>
                       <Button
@@ -203,7 +203,7 @@ export const InputForm = ({
                         setOpen={setFeedbackOpen}
                       />
                     </CommandEmpty>
-                    <ScrollArea className="h-[400px]">
+                    <ScrollArea className="h-[450px]">
                       <CommandGroup heading="Characters" className="mt-2">
                         {characters.map((c, index) => (
                           <CommandItem

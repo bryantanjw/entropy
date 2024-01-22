@@ -31,7 +31,7 @@ export default function ImageGrid({
   }, [initialImages]);
 
   async function loadMoreImages() {
-    const next = start + 30;
+    const next = start + 60;
     const images = await fetchImages({ start: next, search, style });
 
     if (images.length) {

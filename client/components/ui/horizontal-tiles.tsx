@@ -2,7 +2,7 @@
 "use client";
 
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Image, ScrollControls, Scroll, useScroll } from "@react-three/drei";
 import { proxy, useSnapshot } from "valtio";
@@ -15,15 +15,13 @@ const geometry = new THREE.BufferGeometry().setFromPoints([
 ]);
 const state = proxy({
   clicked: null,
-  urls: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 5, 7, 8, 2, 4, 9, 6].map(
-    (u) => `/img${u}.jpg`
-  ),
+  images: [],
 });
 
 function Minimap() {
   const ref = useRef();
   const scroll = useScroll();
-  const { urls } = useSnapshot(state);
+  const { images } = useSnapshot(state);
   const { height } = useThree((state) => state.viewport);
   useFrame((state, delta) => {
     ref.current.children.forEach((child, index) => {
@@ -32,20 +30,20 @@ function Minimap() {
       //   ranging across 4 / total length
       //   make it a sine, so the value goes from 0 to 1 to 0.
       const y = scroll.curve(
-        index / urls.length - 1.5 / urls.length,
-        4 / urls.length
+        index / images.length - 1.5 / images.length,
+        4 / images.length
       );
       easing.damp(child.scale, "y", 0.15 + y / 6, 0.15, delta);
     });
   });
   return (
     <group ref={ref}>
-      {urls.map((_, i) => (
+      {images.map((_, i) => (
         <line
           key={i}
           geometry={geometry}
           material={material}
-          position={[i * 0.06 - urls.length * 0.03, -height / 2 + 0.6, 0]}
+          position={[i * 0.06 - images.length * 0.03, -height / 2 + 0.6, 0]}
         />
       ))}
     </group>
@@ -55,15 +53,15 @@ function Minimap() {
 function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
   const ref = useRef();
   const scroll = useScroll();
-  const { clicked, urls } = useSnapshot(state);
+  const { clicked, images } = useSnapshot(state);
   const [hovered, hover] = useState(false);
   const click = () => (state.clicked = index === clicked ? null : index);
   const over = () => hover(true);
   const out = () => hover(false);
   useFrame((state, delta) => {
     const y = scroll.curve(
-      index / urls.length - 1.5 / urls.length,
-      4 / urls.length
+      index / images.length - 1.5 / images.length,
+      4 / images.length
     );
     easing.damp3(
       ref.current.scale,
@@ -107,32 +105,48 @@ function Item({ index, position, scale, c = new THREE.Color(), ...props }) {
   );
 }
 
-function Items({ w = 0.7, gap = 0.15 }) {
-  const { urls } = useSnapshot(state);
+function Items({ w = 0.7, gap = 0.15, images }) {
   const { width } = useThree((state) => state.viewport);
   const xW = w + gap;
   return (
     <ScrollControls
       horizontal
       damping={0.1}
-      pages={(width - xW + urls.length * xW) / width}
+      pages={(width - xW + images.length * xW) / width}
     >
       <Minimap />
       <Scroll>
-        {
-          urls.map((url, i) => <Item key={i} index={i} position={[i * xW, 0, 0]} scale={[w, 4, 1]} url={url} />) /* prettier-ignore */
-        }
+        {images.map((image, i) => (
+          <Item
+            key={i}
+            index={i}
+            position={[i * xW, 0, 0]}
+            scale={[w, 4, 1]}
+            url={image.url}
+          />
+        ))}
       </Scroll>
     </ScrollControls>
   );
 }
 
-export const HorizontalTiles = () => (
-  <Canvas
-    gl={{ antialias: false }}
-    dpr={[1, 1.5]}
-    onPointerMissed={() => (state.clicked = null)}
-  >
-    <Items />
-  </Canvas>
-);
+export const HorizontalTiles = ({ images }) => {
+  useEffect(() => {
+    // Clear existing images
+    state.images.length = 0;
+    // Push new images into the state proxy
+    images.forEach((image) => {
+      state.images.push(image);
+    });
+  }, [images]);
+  console.log("images", images);
+  return (
+    <Canvas
+      gl={{ antialias: false }}
+      dpr={[1, 1.5]}
+      onPointerMissed={() => (state.clicked = null)}
+    >
+      <Items images={state.images} />
+    </Canvas>
+  );
+};

@@ -98,7 +98,7 @@ class Predictor(BasePredictor):
                 for i, image in enumerate(node_output['images']):
                     image_data = self.get_image(
                         image['filename'], image['subfolder'], image['type'])
-                    output_images[f"{node_id}_{i}"] = [image_data]
+                    output_images[f"{i}"] = [image_data]
 
         return output_images
 
@@ -135,9 +135,9 @@ class Predictor(BasePredictor):
         ),
         cfg: float = Input(
             description="CFG Scale",
-            default=7.0,
+            default=5.0,
             ge=1.0,
-            le=30.0
+            le=20.0
         ),
         lora: str = Input(
             description="LoRA Model",
@@ -171,7 +171,7 @@ class Predictor(BasePredictor):
         )
     ) -> List[Path]:
         """Run a single prediction on the model"""
-        if seed is None:
+        if seed is None or seed == 0:
             seed = int.from_bytes(os.urandom(3), "big")
         print(f"Using seed: {seed}")
 

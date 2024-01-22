@@ -10,10 +10,10 @@ export const playgroundFormSchema = z.object({
   negative_prompt: z
     .string()
     .default("lowres, worst quality, ugly, blurry, bad fingers"),
-  steps: z.number().min(1).max(100).default(30),
+  steps: z.number().min(1).max(80).default(30),
   sampler_name: z.string().default("dpmpp_2m"),
   seed: z.number().optional(),
-  cfg: z.number().min(1.0).max(30.0).default(10.0),
+  cfg: z.number().min(1.0).max(10.0).default(6.0),
   lora: z.string().min(1, {
     message: "Select a character.",
   }),
@@ -35,7 +35,7 @@ export function usePlaygroundForm() {
       steps: 25,
       sampler_name: "dpmpp_2m",
       seed: 0,
-      cfg: 5.0,
+      cfg: 6.0,
       lora: "",
       custom_lora: "",
       lora_strength: 1,

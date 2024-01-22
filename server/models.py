@@ -3,6 +3,7 @@ checkpoints = [
     "MajicMix.safetensors",
     "epiCPhotoGasm.safetensors",
     "ThisIsReal.safetensors",
+    "ChilloutMix.safetensors",
     "RealisticVision.safetensors",
     "Era.safetensors",
 
@@ -35,6 +36,9 @@ loras = [
     "gaming/Miss_Fortune.safetensors",
     "gaming/Star_Guardian_Ahri.safetensors",
     "gaming/Pool_Party_Miss_Fortune.safetensors",
+    "gaming/Battle_Bunny_Riven.safetensors",
+    "gaming/Winterblessed_Diana.safetensors",
+    "gaming/Kitty_Cat_Katarina.safetensors",
 
     "gaming/Jett.safetensors",
 
@@ -54,6 +58,6 @@ loras = [
     # Music Artists
     "music_artists/Taylor_Swift.safetensors",
 
-    # Social Media
-    "social_media/Pokimane.safetensors",
+    # Content Creators
+    "content_creators/Pokimane.safetensors",
 ]

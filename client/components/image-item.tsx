@@ -100,6 +100,9 @@ export default function ImageItem({
   const [currIndex, setCurrIndex] = useState(index);
   const [direction, setDirection] = useState(0);
 
+  const currentImage: ImageDataType =
+    images[currIndex] || ({} as ImageDataType);
+
   const { scrollYProgress } = useScroll({
     offset: ["start start", "end start"], // remove this if your container is not fixed height
   });
@@ -214,9 +217,9 @@ export default function ImageItem({
               exit="exit"
               className={clsx(
                 "group relative max-w-2xl overflow-hidden rounded-md shadow-xl bg-neutral-two dark:bg-neutral-nine",
-                images[currIndex].ratio === "square"
+                currentImage?.ratio === "square"
                   ? "aspect-square"
-                  : images[currIndex].ratio === "landscape"
+                  : currentImage.ratio === "landscape"
                   ? "aspect-landscape"
                   : "aspect-portrait"
               )}
@@ -224,13 +227,11 @@ export default function ImageItem({
               <Image
                 width={1080}
                 height={720}
-                loading={
-                  images[currIndex].ratio === "portrait" ? "eager" : "lazy"
-                }
-                priority={images[currIndex].ratio === "portrait" ? true : false}
+                loading={currentImage.ratio === "portrait" ? "eager" : "lazy"}
+                priority={currentImage.ratio === "portrait" ? true : false}
                 sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
-                alt={images[currIndex].title}
-                src={images[currIndex].image_url}
+                alt={currentImage.title}
+                src={currentImage.image_url}
                 className={clsx(
                   "object-cover duration-700 ease-in-out h-full",
                   isLoading
@@ -255,19 +256,19 @@ export default function ImageItem({
                   <CardTitle className="mb-2">Imagine</CardTitle>
                   <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
                     <Link
-                      href={"/"}
+                      href={`/images?search=${currentImage.title}`}
                       className={clsx(
                         badgeVariants({ variant: "default" }),
                         "w-fit py-1 opacity-90 items-center"
                       )}
                     >
                       <PersonIcon className="mr-2 h-3 w-3" />
-                      {images[currIndex].title}
+                      {currentImage.title}
                     </Link>
                     <ScrollArea className="h-20">
-                      {images[currIndex].prompt.length > 500
-                        ? `${images[currIndex].prompt.substring(0, 500)}...`
-                        : images[currIndex].prompt}
+                      {currentImage.prompt?.length > 500
+                        ? `${currentImage.prompt.substring(0, 500)}...`
+                        : currentImage.prompt}
                     </ScrollArea>
                   </CardDescription>
                 </CardHeader>
@@ -283,8 +284,8 @@ export default function ImageItem({
                       <Textarea
                         disabled
                         id="negative_prompt"
-                        className="h-[80px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
-                        value={images[currIndex].negative_prompt}
+                        className="h-[60px] resize-none focus-visible:ring-0 bg-muted disabled:opacity-100 disabled:cursor-text shadow-none border-0 text-foreground overflow-auto scrollbar-hide"
+                        value={currentImage.negative_prompt}
                       />
                     </div>
 
@@ -292,12 +293,12 @@ export default function ImageItem({
                       <Field
                         id="style"
                         label="style"
-                        value={images[currIndex].style}
+                        value={currentImage.style}
                       />
                       <Field
                         id="model"
                         label="model"
-                        value={images[currIndex].model}
+                        value={currentImage.model}
                       />
                     </div>
 
@@ -305,24 +306,20 @@ export default function ImageItem({
                       <Field
                         id="cfg_scale"
                         label="cfg_scale"
-                        value={images[currIndex].cfg_scale}
+                        value={currentImage.cfg_scale}
                       />
                     </div>
                     <Field
                       id="steps"
                       label="steps"
-                      value={images[currIndex].steps}
+                      value={currentImage.steps}
                     />
                     <Field
                       id="sampler"
                       label="sampler"
-                      value={images[currIndex].sampler}
+                      value={currentImage.sampler}
                     />
-                    <Field
-                      id="seed"
-                      label="seed"
-                      value={images[currIndex].seed}
-                    />
+                    <Field id="seed" label="seed" value={currentImage.seed} />
                   </div>
                 </CardContent>
               </div>
