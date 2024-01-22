@@ -1,11 +1,4 @@
 export const checkpoints = {
-  Realism: [
-    "MajicMix",
-    "epiCPhotoGasm",
-    "ThisIsReal",
-    "RealisticVision",
-    "Era",
-  ],
   Digital: ["Aniverse", "DarkSushi", "DarkSun", "UnleashedDiffusion"],
   Anime: [
     "Hassaku",
@@ -15,6 +8,14 @@ export const checkpoints = {
     "Animeliner",
     "Pastel",
     "RichyRichMix",
+  ],
+  Realism: [
+    "MajicMix",
+    "epiCPhotoGasm",
+    "ChilloutMix",
+    "ThisIsReal",
+    "RealisticVision",
+    "Era",
   ],
 };
 

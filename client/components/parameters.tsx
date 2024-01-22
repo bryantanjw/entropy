@@ -27,6 +27,7 @@ import { SettingsSelectors } from "./settings-selectors";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { checkpoints } from "@/lib/constants";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import { ModelSelector } from "./selectors/model-selector";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
 const styles = ["Digital", "Realism", "Anime"];
@@ -127,60 +128,13 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
         <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 pt-5 py-6 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
           <Label htmlFor="model">Aesthetics</Label>
           <div className="grid w-full">
-            <div className="flex items-center justify-between space-x-6">
-              <Label htmlFor="Style" className="font-normal">
-                Style
-              </Label>
-              <ToggleGroup
-                key={"style"}
-                type="single"
-                variant="pill"
-                value={form.watch("style")}
-                className="flex gap-1"
-                onValueChange={handleStyleChange}
-              >
-                {styles.map((style) => (
-                  <ToggleGroupItem
-                    key={style}
-                    value={style}
-                    aria-label={`Toggle ${style}`}
-                    size={"sm"}
-                    className={cn(
-                      "font-light gap-2",
-                      "data-[state=on]:bg-gray-800 data-[state=on]:text-white bg-slate-100 text-slate-500",
-                      "dark:data-[state=on]:bg-slate-100 dark:hover:text-gray-50 dark:data-[state=on]:text-gray-800 dark:bg-transparent dark:text-opacity-70"
-                    )}
-                  >
-                    {style}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </div>
-            <Row className="my-6 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
             <div className="flex items-center justify-between space-x-8">
               <div className="flex items-center space-x-6">
                 <Label htmlFor="version" className="font-normal">
-                  Checkpoint
+                  Model
                 </Label>
               </div>
-              <Select
-                key={selectedCheckpoints[0]}
-                onValueChange={(value) =>
-                  form.setValue("checkpoint_model", value)
-                }
-                value={form.watch("checkpoint_model")}
-              >
-                <SelectTrigger className="justify-end border-none shadow-none h-7 hover:bg-muted focus:bg-muted focus:ring-0">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {selectedCheckpoints.map((checkpoint, index) => (
-                    <SelectItem key={index} value={checkpoint + ".safetensors"}>
-                      {checkpoint}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ModelSelector form={form} />
             </div>
             <Row className="my-6 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
             <FormField
@@ -248,10 +202,8 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                         align="start"
                         className="w-[260px] text-sm"
                       >
-                        <p>
-                          Randomizer to generate a random image. Leave as 0 to
-                          generate a random seed.
-                        </p>
+                        Randomizer to generate a random image. Leave as 0 to
+                        generate a random seed.
                       </HoverCardContent>
                     </HoverCard>
                   </FormItem>

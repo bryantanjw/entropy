@@ -36,6 +36,7 @@ import { badgeVariants } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
+import { CardContainer, CardItem } from "./ui/3d-card";
 
 type ImageItemProps = {
   index: number;
@@ -180,7 +181,7 @@ export default function ImageItem({
               alt={image.title}
               src={image.image_url}
               className={clsx(
-                "object-cover duration-700 ease-in-out group-hover:cursor-pointer group-hover:opacity-90",
+                "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
                 isLoading
                   ? "scale-120 blur-3xl grayscale"
                   : "scale-100 blur-0 grayscale-0"
