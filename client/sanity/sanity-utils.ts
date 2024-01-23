@@ -22,6 +22,7 @@ export async function getImages(
     }] | order(_updatedAt desc) [$start...${start + 60}] {
       _id,
       title,
+      lora_dir,
       ratio,
       category,
       style,

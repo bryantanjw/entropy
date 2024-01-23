@@ -1,16 +1,15 @@
 "use client";
 
 import { useInView } from "react-intersection-observer";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Suspense } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { Skeleton } from "./ui/skeleton";
 import { Icons } from "./ui/icons";
 import ImageItem from "./image-item";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { fetchImages } from "@/lib/actions";
+import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function ImageGrid({
   initialImages,
@@ -21,6 +20,7 @@ export default function ImageGrid({
   search?: string;
   style?: string;
 }) {
+  const topOfRef = useRef(null);
   const [images, setImages] = useState(initialImages);
   const [start, setStart] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -49,20 +49,14 @@ export default function ImageGrid({
   }, [inView, hasMore]);
 
   return (
-    <Suspense
-      fallback={
-        <div className="mt-12 flex flex-col items-center justify-center">
-          <p className="text-sm text-neutral-seven dark:text-neutral-four">
-            Loading...
-          </p>
-          <span className="sr-only">Loading</span>
-          <Icons.spinner className="animate-spin-fast stroke-neutral-seven stroke-[1.5] dark:stroke-neutral-four" />
-        </div>
-      }
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 my-10">
+    <>
+      <div
+        ref={topOfRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 py-12"
+      >
         {images.map((image, index) => (
           <ImageItem
+            gridRef={topOfRef}
             key={image._id}
             image={image}
             images={images}
@@ -70,21 +64,20 @@ export default function ImageGrid({
             total={images.length}
           />
         ))}
-        {hasMore && (
-          <div
-            ref={ref}
-            className={cn(
-              "h-[400px] w-full grid grid-cols-2 gap-x-4 gap-y-4",
-              "md:grid-cols-3",
-              "lg:grid-cols-4 lg:gap-x-8"
-            )}
-          >
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton key={index} className="h-full w-full" />
-            ))}
-          </div>
-        )}
       </div>
-    </Suspense>
+      {hasMore && (
+        <div
+          ref={ref}
+          className={cn(
+            "h-[400px] w-full grid grid-cols-2 gap-x-4 gap-y-4",
+            "md:grid-cols-3"
+          )}
+        >
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} className="h-full w-full" />
+          ))}
+        </div>
+      )}
+    </>
   );
 }

@@ -3,6 +3,8 @@
 "use client";
 
 import * as THREE from "three";
+import clsx from "clsx";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import isEqual from "lodash/isEqual";
@@ -51,15 +53,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-
-import clsx from "clsx";
-import Image from "next/image";
 
 const material = new THREE.LineBasicMaterial({ color: "white" });
 const geometry = new THREE.BufferGeometry().setFromPoints([

@@ -1,5 +1,6 @@
 export type ImageDataType = {
   _id: string;
+  lora_dir: string;
   title: string;
   ratio: string;
   image_url: string;

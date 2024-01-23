@@ -2,7 +2,6 @@ import { fetchImages } from "@/lib/actions";
 import ImageGrid from "./image-grid";
 import Filter from "./image-filter";
 import DreiGallery from "./ui/drei-image-grid";
-import { HorizontalTiles } from "./ui/horizontal-tiles";
 
 export async function Gallery() {
   const data = await fetchImages({ start: 0 });

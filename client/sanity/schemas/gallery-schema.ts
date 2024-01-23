@@ -38,6 +38,14 @@ const gallerySchema = {
       ],
     },
     {
+      title: "Model Directory",
+      name: "lora_dir",
+      type: "string",
+      validation: (Rule: any) => [
+        Rule.min(1).error("Title must be between 3 and 50 characters"),
+      ],
+    },
+    {
       title: "Image Ratio",
       name: "ratio",
       type: "string",

@@ -53,8 +53,8 @@ export const InputForm = ({
   const [open, setOpen] = useState(false);
   const [character, setCharacter] = useState(characters[0]);
   const [images, setImages] = useState(characters[0].images);
-  // Create a ref to store the last clicked character
-  const lastClickedCharacterRef = useRef(null);
+
+  const lastClickedCharacterRef = useRef(null); // Ref to store the last clicked character
 
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
@@ -99,7 +99,7 @@ export const InputForm = ({
     console.log(values);
     setSubmitting(true);
 
-    // // Make initial request to Lambda function to create a prediction
+    // Make initial request to Lambda function to create a prediction
     const res = await fetch("https://api.entropy.so/predictions", {
       method: "POST",
       headers: {
@@ -125,7 +125,7 @@ export const InputForm = ({
     // Extract the prediction ID from the returned URL for polling
     // When redirected to generation page, poll for progress
     const predictionId = response.url.split("/").pop();
-    router.push(`/e/${predictionId}`);
+    router.push(`/e/`);
   }
 
   useEffect(() => {
@@ -331,7 +331,7 @@ export const InputForm = ({
                                   setOpen(true);
                                   event.preventDefault();
                                 }}
-                                className="m-2 item-start"
+                                className="m-2 h-11 item-start"
                               >
                                 {form
                                   .watch("lora")
@@ -344,42 +344,15 @@ export const InputForm = ({
                                   </>
                                 )}
                               </Button>
-                              <div
-                                ref={inputPromptRef}
-                                role="textbox"
-                                contentEditable
-                                data-placeholder="Imagine..."
-                                className="flex-1 my-2 border-0 shadow-none bg-transparent outline-none"
-                                onKeyDown={(e) => {
-                                  if (
-                                    e.key === "Backspace" ||
-                                    e.key === "Delete"
-                                  ) {
-                                    if (
-                                      e.currentTarget.textContent &&
-                                      e.currentTarget.textContent.length === 1
-                                    ) {
-                                      e.preventDefault();
-                                      e.currentTarget.textContent = "";
-                                    }
-                                  }
-                                }}
-                                onPaste={(e) => {
-                                  e.preventDefault();
-                                  const text =
-                                    e.clipboardData.getData("text/plain");
-                                  document.execCommand(
-                                    "insertText",
-                                    false,
-                                    text
-                                  );
-                                }}
+                              <textarea
+                                className="flex-1 pt-4 h-[20px] border-0 shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
                                 onInput={(e) => {
-                                  form.setValue(
-                                    "input_prompt",
-                                    e.currentTarget.textContent
-                                  );
+                                  const target =
+                                    e.target as HTMLTextAreaElement;
+                                  target.style.height = "inherit"; // Reset the height so the scrollHeight includes only the new content
+                                  target.style.height = `${target.scrollHeight}px`; // Set the new height based on the content
                                 }}
+                                style={{ height: "auto", overflow: "hidden" }} // Start with auto height and hidden overflow
                                 {...field}
                               />
                               <div className="justify-end items-center">

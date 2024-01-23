@@ -10,7 +10,7 @@ import {
   useScroll,
 } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -33,16 +33,18 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { badgeVariants } from "./ui/badge";
+import { CardContainer, CardItem } from "./ui/3d-card";
 import { ScrollArea } from "./ui/scroll-area";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
-import { CardContainer, CardItem } from "./ui/3d-card";
+import { FormContext } from "@/lib/providers/form-provider";
 
 type ImageItemProps = {
   index: number;
   total: number;
   image: ImageDataType;
   images: Array<ImageDataType>;
+  gridRef?: React.RefObject<HTMLDivElement>;
 };
 
 type FieldProps = {
@@ -95,11 +97,16 @@ export default function ImageItem({
   index,
   total,
   images,
+  gridRef,
 }: ImageItemProps) {
+  const form = useContext(FormContext);
   const column = (index % 3) + 1;
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currIndex, setCurrIndex] = useState(index);
   const [direction, setDirection] = useState(0);
+
+  const toggleDialog = () => setDialogOpen(!isDialogOpen);
 
   const currentImage: ImageDataType =
     images[currIndex] || ({} as ImageDataType);
@@ -142,6 +149,35 @@ export default function ImageItem({
     };
   }, [currIndex, total]);
 
+  const handleUseCharacter = () => {
+    form.setValue("lora", currentImage.lora_dir);
+
+    setDialogOpen(false);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 300); // Sometimes, trying to scroll while a modal or dialog is closing, the animation can interfere with the scroll
+  };
+
+  const handleUseStyle = () => {
+    form.setValue("checkpoint_model", currentImage.model);
+    form.setValue("negative_prompt", currentImage.negative_prompt);
+    form.setValue("steps", currentImage.steps);
+    form.setValue("sample_name", currentImage.sampler);
+    form.setValue("seed", currentImage.seed);
+    form.setValue("cfg", currentImage.cfg_scale);
+
+    setDialogOpen(false);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 300);
+  };
+
+  const handleTweak = () => {
+    form.setValue("input_prompt", currentImage.prompt);
+    handleUseCharacter();
+    handleUseStyle();
+  };
+
   return (
     <MotionConfig
       transition={{
@@ -151,52 +187,49 @@ export default function ImageItem({
       }}
     >
       <Dialog
+        open={isDialogOpen}
         onOpenChange={(open) => {
           if (open) {
             setCurrIndex(index);
           }
         }}
       >
-        <CardContainer key={image._id}>
-          <CardItem translateZ="100" className="relative">
-            <motion.figure
+        <motion.figure
+          className={clsx(
+            "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
+            image.ratio === "square"
+              ? "aspect-square"
+              : image.ratio === "landscape"
+              ? "aspect-landscape"
+              : "aspect-portrait"
+          )}
+          style={{ y: translateY }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <DialogTrigger onClick={toggleDialog}>
+            <Image
+              fill={true}
+              loading={image.ratio === "portrait" ? "eager" : "lazy"}
+              priority={image.ratio === "portrait" ? true : false}
+              sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
+              alt={image.title}
+              src={image.image_url}
               className={clsx(
-                "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
-                image.ratio === "square"
-                  ? "aspect-square"
-                  : image.ratio === "landscape"
-                  ? "aspect-landscape"
-                  : "aspect-portrait"
+                "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
+                isLoading
+                  ? "scale-120 blur-3xl grayscale"
+                  : "scale-100 blur-0 grayscale-0"
               )}
-              style={{ y: translateY }}
-              key={image._id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <DialogTrigger>
-                <Image
-                  fill={true}
-                  loading={image.ratio === "portrait" ? "eager" : "lazy"}
-                  priority={image.ratio === "portrait" ? true : false}
-                  sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
-                  alt={image.title}
-                  src={image.image_url}
-                  className={clsx(
-                    "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
-                    isLoading
-                      ? "scale-120 blur-3xl grayscale"
-                      : "scale-100 blur-0 grayscale-0"
-                  )}
-                  onLoad={() => setIsLoading(false)}
-                />
-              </DialogTrigger>
-            </motion.figure>
-          </CardItem>
-        </CardContainer>
+              onLoad={() => setIsLoading(false)}
+            />
+          </DialogTrigger>
+        </motion.figure>
 
         <AnimatePresence initial={false} custom={direction}>
           <DialogContent
+            onEscapeKeyDown={toggleDialog}
             showCloseIcon={false}
             className={clsx(
               "grid-cols-[1fr_500px] gap-12 items-center justify-center max-w-6xl border-0"
@@ -335,6 +368,7 @@ export default function ImageItem({
                     variant={"secondary"}
                     className="w-full rounded-r-none"
                     size={"lg"}
+                    onClick={handleUseCharacter}
                   >
                     <PersonIcon className="mr-2 h-4 w-4" />
                     Use Character
@@ -343,17 +377,25 @@ export default function ImageItem({
                     variant={"secondary"}
                     className="w-full rounded-l-none"
                     size={"lg"}
+                    onClick={handleUseStyle}
                   >
                     <ImageIcon className="mr-2 h-4 w-4" />
                     Use Style
                   </Button>
                 </div>
-                <Button className="w-full h-11" size={"lg"}>
+                <Button
+                  className="w-full h-11"
+                  size={"lg"}
+                  onClick={handleTweak}
+                >
                   <MagicWandIcon className="mr-2 h-4 w-4" /> Tweak it
                 </Button>
               </CardFooter>
 
-              <DialogClose className="absolute right-4 top-4">
+              <DialogClose
+                onClick={toggleDialog}
+                className="absolute right-4 top-4"
+              >
                 <Cross2Icon className="h-4 w-4" />
                 <span className="sr-only">Close</span>
               </DialogClose>
