@@ -11,7 +11,6 @@ import ImageItem from "./image-item";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { fetchImages } from "@/lib/actions";
-import { CardContainer, CardItem } from "./ui/3d-card";
 
 export default function ImageGrid({
   initialImages,
@@ -63,16 +62,13 @@ export default function ImageGrid({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 my-10">
         {images.map((image, index) => (
-          <CardContainer key={image._id}>
-            <CardItem translateZ="100" className="relative">
-              <ImageItem
-                image={image}
-                images={images}
-                index={index}
-                total={images.length}
-              />
-            </CardItem>
-          </CardContainer>
+          <ImageItem
+            key={image._id}
+            image={image}
+            images={images}
+            index={index}
+            total={images.length}
+          />
         ))}
         {hasMore && (
           <div

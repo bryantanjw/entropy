@@ -98,6 +98,7 @@ const gallerySchema = {
           title: "Negative prompt",
           name: "negative_prompt",
           type: "text",
+          initialValue: "(worst quality:1.4), (low quality:1.4)",
         },
         {
           title: "Model",
