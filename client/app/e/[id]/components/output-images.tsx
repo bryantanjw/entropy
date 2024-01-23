@@ -14,7 +14,13 @@ export default function OutputImages({ id }) {
   const { theme } = useTheme();
   const pathname = usePathname();
 
-  const [predictions, setPredictions] = useState(null);
+  const [predictions, setPredictions] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedPredictions = localStorage.getItem(`predictions-${id}`);
+      return storedPredictions ? JSON.parse(storedPredictions) : null;
+    }
+    return null;
+  });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -23,6 +29,13 @@ export default function OutputImages({ id }) {
     async function pollAPI() {
       while (!predictions && id && !isCancelled) {
         try {
+          // Check if we have predictions in localStorage first
+          const storedPredictions = localStorage.getItem(`predictions-${id}`);
+          if (storedPredictions) {
+            setPredictions(JSON.parse(storedPredictions));
+            return;
+          }
+
           let pollRes = await fetch(
             `https://api.entropy.so/predictions/${id}`,
             {
@@ -36,8 +49,13 @@ export default function OutputImages({ id }) {
           let pollResponse = await pollRes.json();
 
           if (pollResponse.status === "succeeded") {
+            console.log("output", pollResponse);
             if (!isCancelled) {
               setPredictions(pollResponse);
+              localStorage.setItem(
+                `predictions-${id}`,
+                JSON.stringify(pollResponse)
+              );
             }
           } else if (pollResponse.status === "failed") {
             throw new Error("Prediction failed");
@@ -59,7 +77,7 @@ export default function OutputImages({ id }) {
     return () => {
       isCancelled = true;
     };
-  }, [id, predictions]);
+  }, [id]); // Removed predictions from the dependency array
 
   if (error || !id) {
     return notFound();
@@ -74,7 +92,7 @@ export default function OutputImages({ id }) {
       }}
     >
       {predictions ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {predictions.output.map((img, index) => {
             const path = img.split("/").slice(-2, -1)[0];
             return (

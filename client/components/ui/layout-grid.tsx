@@ -6,28 +6,26 @@ import Image from "next/image";
 
 type Card = {
   id: number;
-  content: JSX.Element | React.ReactNode | string;
-  className: string;
-  thumbnail: string;
+  url: string;
 };
 
-export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
+export const LayoutGrid = ({ data }: { data: Card[] }) => {
   const [selected, setSelected] = useState<Card | null>(null);
 
   return (
-    <div className="w-full h-full p-10 grid grid-cols-1 md:grid-cols-3  max-w-7xl mx-auto gap-4 ">
-      {cards.map((card, i) => (
-        <div key={i} className={cn(card.className, "")}>
+    <div className="w-full h-full pt-0 p-12 grid grid-cols-1 md:grid-cols-4 gap-5">
+      {data.map((card, i) => (
+        <div key={i} className={cn("col-span-1")}>
           <motion.div
             onClick={() => {
               setSelected(card);
             }}
             className={cn(
-              card.className,
+              "col-span-1",
               "relative overflow-hidden",
               selected?.id === card.id
-                ? "rounded-lg cursor-pointer absolute inset-0 h-1/2 w-full md:w-1/2 m-auto z-50 flex justify-center items-center flex-wrap flex-col"
-                : "bg-white rounded-xl h-full w-full"
+                ? "absolute inset-0 w-full md:w-1/2 m-auto z-50 justify-center items-center"
+                : "bg-white h-full w-full"
             )}
             layout
           >
@@ -54,12 +52,13 @@ const BlurImage = ({ card }: { card: Card }) => {
   const [loaded, setLoaded] = useState(false);
   return (
     <Image
-      src={card.thumbnail}
-      height="500"
-      width="500"
+      src={card.url}
+      height="1080"
+      width="720"
+      quality={100}
       onLoad={() => setLoaded(true)}
       className={cn(
-        "object-cover object-top absolute inset-0 h-full w-full transition duration-200",
+        "cursor-pointer object-cover object-top absolute inset-0 rounded-lg h-full w-full transition duration-200 hover:scale-95",
         loaded ? "blur-none" : "blur-md"
       )}
       alt="thumbnail"
@@ -77,7 +76,7 @@ const SelectedCard = ({ selected }: { selected: Card | null }) => {
         animate={{
           opacity: 0.6,
         }}
-        className="absolute inset-0 h-full w-full bg-black opacity-60 z-10"
+        className="absolute inset-0 h-full w-full z-10"
       />
       <motion.div
         initial={{
@@ -94,7 +93,7 @@ const SelectedCard = ({ selected }: { selected: Card | null }) => {
         }}
         className="relative px-8 pb-4 z-[70]"
       >
-        {selected?.content}
+        hi
       </motion.div>
     </div>
   );

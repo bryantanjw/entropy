@@ -33,7 +33,7 @@ const gallerySchema = {
       type: "string",
       validation: (Rule: any) => [
         Rule.required().error("Image Title is required"),
-        Rule.min(3).error("Title must be between 3 and 50 characters"),
+        Rule.min(1).error("Title must be between 3 and 50 characters"),
         Rule.max(50).warning("Shorter titles are usually better"),
       ],
     },

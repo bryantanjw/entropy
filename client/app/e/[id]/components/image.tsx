@@ -26,16 +26,17 @@ export default function OutputImage({ path, index }) {
         exit={!flag ? { opacity: 0 } : { y: 50, opacity: 0 }}
         transition={{ duration: 0.2 }}
         className={"relative w-full h-full"}
+        layout
       >
         <Image
           alt={"Entropy image"}
           className={cn(
-            "shadow-lg h-full w-full object-cover rounded-md",
+            "shadow-lg inset-0 h-full w-full object-cover rounded-md",
             "transition-all duration-200",
             { "hover:scale-95": !flag }
           )}
           width={720}
-          height={720}
+          height={1080}
           src={`https://replicate.delivery/pbxt/${path}/out-${index}.png`}
         />
       </motion.div>

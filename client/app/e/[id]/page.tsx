@@ -53,8 +53,8 @@ export default async function GenerationPage({
       <Navbar />
 
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
-        <Column className="items-center min-h-screen py-32 px-10">
-          <Column className="w-full lg:max-w-4xl xl:max-w-6xl">
+        <Column className="items-center min-h-screen pt-28 px-10">
+          <Column className="w-full h-full lg:max-w-4xl xl:max-w-6xl">
             <InputForm user={user} characters={characters} />
             <OutputImages id={params.id} />
           </Column>

@@ -21,12 +21,25 @@ import { Icons } from "@/components/ui/icons";
 export const Edits = ({ user, predictionId, path, index }) => {
   const { id, email } = user;
   const router = useRouter();
-  const [predictions, setPredictions] = useState(null);
+  const [predictions, setPredictions] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedPredictions = localStorage.getItem(
+        `predictions-${predictionId}`
+      );
+      return storedPredictions ? JSON.parse(storedPredictions) : null;
+    }
+    return null;
+  });
   const [uploading, setUploading] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     async function getPrediction() {
+      if (predictions) {
+        // If predictions are already loaded, no need to fetch them again
+        return;
+      }
+
       try {
         const response = await fetch(
           `https://api.entropy.so/predictions/${predictionId}`,
@@ -41,7 +54,13 @@ export const Edits = ({ user, predictionId, path, index }) => {
         const prediction = await response.json();
 
         if (prediction.status === "succeeded") {
+          console.log("edits", prediction);
           setPredictions(prediction);
+          // Store the predictions in localStorage
+          localStorage.setItem(
+            `predictions-${predictionId}`,
+            JSON.stringify(prediction)
+          );
         } else if (prediction.status === "failed") {
           throw new Error("Prediction failed");
         }
@@ -51,13 +70,12 @@ export const Edits = ({ user, predictionId, path, index }) => {
       }
     }
 
-    if (!predictions) {
-      getPrediction();
-    }
-  }, [predictions]);
+    getPrediction();
+  }, [predictionId]);
 
   const handleUpload = async () => {
     setUploading(true);
+    console.log(predictions);
 
     try {
       const response = await fetch("/api/upload-image", {
