@@ -35,7 +35,7 @@ export default function OutputImages({ id }) {
         setImageData(loadingImages[nextIndex]);
         return nextIndex;
       });
-    }, 8000);
+    }, 12000);
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);

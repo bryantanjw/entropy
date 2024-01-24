@@ -371,6 +371,7 @@ export const InputForm = ({
                                   </PopoverTrigger>
                                   <PopoverContent
                                     alignOffset={-140}
+                                    sideOffset={30}
                                     style={{ width: popoverWidth }}
                                   >
                                     <ScrollArea className="h-[700px] md:h-full">

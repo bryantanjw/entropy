@@ -30,6 +30,8 @@ export default async function Search({
       <Column className="w-full items-center min-h-screen py-44">
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
           <InputForm user={user} characters={characters} />
+          <Row className="my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+
           <div className="flex">
             <Filter search={search} style={style} />
           </div>
