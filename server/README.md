@@ -8,7 +8,6 @@ First, download the pre-trained weights:
 
 Then, you can run predictions:
 
-    ```
     cog predict r8.im/bryantanjw/entropy-lol@sha256:c5ee23596b3f22ba9a58242c0ae34d264e4eb6f599386a1577b37ed0243a1870 \
     -i 'cfg=7' \
     -i 'lora="gaming/Ahri.safetensors"' \
@@ -25,7 +24,7 @@ Then, you can run predictions:
 
 The workflow used for this repo is found under:
 
-    workflows/entropy_workflow.json
+    workflow/entropy_workflow.json
 
 ## Example:
 
