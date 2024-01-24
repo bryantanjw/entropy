@@ -162,7 +162,7 @@ export default function ImageItem({
     form.setValue("checkpoint_model", currentImage.model + ".safetensors");
     form.setValue("negative_prompt", currentImage.negative_prompt);
     form.setValue("steps", currentImage.steps);
-    form.setValue("sample_name", currentImage.sampler);
+    form.setValue("sampler_name", currentImage.sampler);
     form.setValue("seed", currentImage.seed);
     form.setValue("cfg", currentImage.cfg_scale);
 
@@ -194,38 +194,42 @@ export default function ImageItem({
           }
         }}
       >
-        <motion.figure
-          className={clsx(
-            "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
-            image.ratio === "square"
-              ? "aspect-square"
-              : image.ratio === "landscape"
-              ? "aspect-landscape"
-              : "aspect-portrait"
-          )}
-          style={{ y: translateY }}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-        >
-          <DialogTrigger onClick={toggleDialog}>
-            <Image
-              fill={true}
-              loading={image.ratio === "portrait" ? "eager" : "lazy"}
-              priority={image.ratio === "portrait" ? true : false}
-              sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
-              alt={image.title}
-              src={image.image_url}
+        <CardContainer>
+          <CardItem translateZ="100">
+            <motion.figure
               className={clsx(
-                "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
-                isLoading
-                  ? "scale-120 blur-3xl grayscale"
-                  : "scale-100 blur-0 grayscale-0"
+                "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
+                image.ratio === "square"
+                  ? "aspect-square"
+                  : image.ratio === "landscape"
+                  ? "aspect-landscape"
+                  : "aspect-portrait"
               )}
-              onLoad={() => setIsLoading(false)}
-            />
-          </DialogTrigger>
-        </motion.figure>
+              style={{ y: translateY }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <DialogTrigger onClick={toggleDialog}>
+                <Image
+                  fill={true}
+                  loading={image.ratio === "portrait" ? "eager" : "lazy"}
+                  priority={image.ratio === "portrait" ? true : false}
+                  sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
+                  alt={image.title}
+                  src={image.image_url}
+                  className={clsx(
+                    "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
+                    isLoading
+                      ? "scale-120 blur-3xl grayscale"
+                      : "scale-100 blur-0 grayscale-0"
+                  )}
+                  onLoad={() => setIsLoading(false)}
+                />
+              </DialogTrigger>
+            </motion.figure>
+          </CardItem>
+        </CardContainer>
 
         <AnimatePresence initial={false} custom={direction}>
           <DialogContent
