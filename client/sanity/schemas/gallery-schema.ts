@@ -116,7 +116,7 @@ const gallerySchema = {
         {
           title: "Inference steps",
           name: "steps",
-          type: "string",
+          type: "number",
           validation: (Rule: any) => [
             Rule.required().error("Inference steps is required"),
           ],

@@ -159,7 +159,7 @@ export default function ImageItem({
   };
 
   const handleUseStyle = () => {
-    form.setValue("checkpoint_model", currentImage.model);
+    form.setValue("checkpoint_model", currentImage.model + ".safetensors");
     form.setValue("negative_prompt", currentImage.negative_prompt);
     form.setValue("steps", currentImage.steps);
     form.setValue("sample_name", currentImage.sampler);

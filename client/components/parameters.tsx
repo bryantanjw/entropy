@@ -163,7 +163,7 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="euler_ancestral" />
+                          <RadioGroupItem value="euler_a" />
                         </FormControl>
                         <FormLabel className="font-normal">Euler A</FormLabel>
                       </FormItem>

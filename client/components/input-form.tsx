@@ -125,7 +125,7 @@ export const InputForm = ({
     // Extract the prediction ID from the returned URL for polling
     // When redirected to generation page, poll for progress
     const predictionId = response.url.split("/").pop();
-    router.push(`/e/`);
+    router.push(`/e/${predictionId}`);
   }
 
   useEffect(() => {
@@ -345,7 +345,8 @@ export const InputForm = ({
                                 )}
                               </Button>
                               <textarea
-                                className="flex-1 pt-4 h-[20px] border-0 shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
+                                placeholder="Imagine..."
+                                className="flex-1 pt-3 border-0 shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
                                 onInput={(e) => {
                                   const target =
                                     e.target as HTMLTextAreaElement;
@@ -399,6 +400,7 @@ export const InputForm = ({
                                     if (isValid) {
                                       onSubmit(form.getValues());
                                     } else {
+                                      console.log("errors", errors);
                                       const inputPromptError =
                                         errors.input_prompt?.message;
                                       const loraError = errors.lora?.message;
@@ -457,8 +459,6 @@ export const InputForm = ({
             </form>
           </Form>
         </div>
-
-        <Row className="my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
       </motion.div>
     </AnimatePresence>
   );

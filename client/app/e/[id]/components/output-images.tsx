@@ -2,17 +2,44 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { MotionConfig, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 
 import { SparklesCore } from "@/components/ui/sparkles";
 import { notFound, usePathname } from "next/navigation";
 import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
 import OutputImage from "./image";
+import { Progress } from "@/components/ui/progress";
+import { extractProgress } from "@/lib/helpers";
+import Image from "next/image";
+
+import { loadingImages } from "@/lib/constants";
 
 export default function OutputImages({ id }) {
-  const { theme } = useTheme();
   const pathname = usePathname();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageData, setImageData] = useState(loadingImages[currentImageIndex]);
+
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Randomize the initial image
+    const randomIndex = Math.floor(Math.random() * loadingImages.length);
+    setCurrentImageIndex(randomIndex);
+    setImageData(loadingImages[randomIndex]);
+
+    // Set interval to cycle images every 8 seconds
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % loadingImages.length;
+        setImageData(loadingImages[nextIndex]);
+        return nextIndex;
+      });
+    }, 8000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const [predictions, setPredictions] = useState(() => {
     if (typeof window !== "undefined") {
@@ -47,9 +74,14 @@ export default function OutputImages({ id }) {
             }
           );
           let pollResponse = await pollRes.json();
+          const { status, logs } = pollResponse;
+
+          const newProgress = extractProgress(logs);
+          if (newProgress !== null) {
+            setProgress(newProgress);
+          }
 
           if (pollResponse.status === "succeeded") {
-            console.log("output", pollResponse);
             if (!isCancelled) {
               setPredictions(pollResponse);
               localStorage.setItem(
@@ -60,7 +92,7 @@ export default function OutputImages({ id }) {
           } else if (pollResponse.status === "failed") {
             throw new Error("Prediction failed");
           } else {
-            // Delay to make requests to API Gateway every 3 seconds
+            // Delay to make requests to API Gateway every 8 seconds
             await new Promise((resolve) => setTimeout(resolve, 3000));
           }
         } catch (error) {
@@ -84,52 +116,74 @@ export default function OutputImages({ id }) {
   }
 
   return (
-    <MotionConfig
-      transition={{
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        y: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
-      }}
-    >
-      {predictions ? (
-        <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {predictions.output.map((img, index) => {
-            const path = img.split("/").slice(-2, -1)[0];
-            return (
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                key={index}
-              >
-                <Link key={index} href={`${pathname}/${path}${index}`}>
-                  <OutputImage path={path} index={index} />
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex flex-col -mt-24">
-          <div className="h-40 relative">
-            {/* Gradients */}
-            <SparklesCore
-              background="transparent"
-              minSize={0.4}
-              maxSize={1}
-              particleDensity={1200}
-              className="w-full h-[78%]"
-              particleColor={theme === "dark" ? "#fff" : "#000"}
-            />
-            {/* Radial Gradient to prevent sharp edges */}
-            <div className="absolute inset-0 w-full h-full bg-background [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
-            <div className="flex items-center justify-center mt-10">
-              <Icons.spinner className="animate-spin h-3 w-3 mr-2" />
-              <span className="z-20 items-center italic">Loading</span>
-            </div>
+    <AnimatePresence mode="wait">
+      <MotionConfig
+        transition={{
+          x: { type: "spring", stiffness: 300, damping: 30 },
+          y: { type: "spring", stiffness: 300, damping: 30 },
+        }}
+      >
+        {predictions ? (
+          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-10 mt-32">
+            {predictions.output.map((img, index) => {
+              const path = img.split("/").slice(-2, -1)[0];
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  key={index}
+                >
+                  <Link key={index} href={`${pathname}/${path}${index}`}>
+                    <OutputImage path={path} index={index} />
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
-        </div>
-      )}
-    </MotionConfig>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col items-center justify-center gap-8 w-full px-12 md:px-32 mt-32"
+          >
+            <Progress className="h-1.5" value={progress} />
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col md:flex-row"
+            >
+              <Image
+                alt={`${imageData.character} - Generated by Entropy`}
+                src={imageData.imageUrl}
+                width={400}
+                height={500}
+                className="object-cover"
+              />
+              <div className="bg-muted flex flex-col items-start justify-start h-full p-11 pb-16 gap-10">
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-muted-foreground font-semibold">Tip</h4>
+                  <h4 className="text-muted-foreground">{imageData.tip}</h4>
+                </div>
+                <div className="inline-flex text-2xl">
+                  <span>&quot;</span>
+                  <h2 className="">{imageData.input_prompt}&quot;</h2>
+                </div>
+                <div className="mt-auto">
+                  <h4 className="text-muted-foreground italic tracking-wide">
+                    {imageData.character}
+                  </h4>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </MotionConfig>
+    </AnimatePresence>
   );
 }
