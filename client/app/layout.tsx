@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
 import Transition from "@/app/transition";
 import { Toaster } from "@/components/ui/sonner";
@@ -37,6 +38,7 @@ export default function RootLayout({
           </FormProvider>
         </SupabaseProvider>
       </body>
+      <GoogleAnalytics gaId="G-4089SN7XBE" />
     </html>
   );
 }

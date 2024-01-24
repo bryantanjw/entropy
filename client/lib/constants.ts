@@ -11,12 +11,12 @@ export const checkpoints = {
     "RichyRichMix",
   ],
   Realism: [
-    "MajicMix",
-    "epiCPhotoGasm",
-    "ChilloutMix",
-    "ThisIsReal",
-    "RealisticVision",
     "Era",
+    "epiCPhotoGasm",
+    "ThisIsReal",
+    "ChilloutMix",
+    "MajicMix",
+    "RealisticVision",
   ],
 };
 
@@ -50,7 +50,7 @@ export const loadingImages = [
     imageUrl:
       "https://cdn.sanity.io/images/6jp747p1/production/4ee9547ad8711a4570f664b66075db5fecec4b85-1024x1536.png",
     input_prompt:
-      "1girl, dolphin shorts, miyamoto rei,, masterpiece, best quality, highly detailed",
+      "1girl, dolphin shorts, miyamoto rei, masterpiece, best quality, highly detailed",
     character: "Miyamoto Rei from High School of the Dead",
   },
   {
@@ -67,6 +67,14 @@ export const loadingImages = [
       "https://cdn.sanity.io/images/6jp747p1/production/5ca90db5f4bb35541af082a4a0e6eaca155aeb42-720x1080.png",
     input_prompt: "anamr, ana de armas, dslr, soft lighting, film grain",
     character: "Ana de Armas",
+  },
+  {
+    tip: "Don't see a character you want? Request it!",
+    imageUrl:
+      "https://cdn.sanity.io/images/6jp747p1/production/ab352aff20a17b716e73599aca6083711ee526a7-720x1080.png",
+    input_prompt:
+      "pool party miss fortune, 1girl, one-piece swimsuit, red hair, smile, closed mounth, solo, detailed face, looking at viewer, cowboy shot, upper body, pool, (masterpiece:1.2, best quality)",
+    character: "Pool Party Miss Fortune from League of Legends",
   },
 ];
 
