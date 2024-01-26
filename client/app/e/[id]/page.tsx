@@ -15,7 +15,7 @@ export async function generateMetadata({
     id: string;
   };
 }): Promise<Metadata | undefined> {
-  const title = `Entropy`;
+  const title = `Output | Entropy`;
   const description = `Check out my character generated using Entropy!`;
 
   return {

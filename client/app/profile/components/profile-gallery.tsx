@@ -19,11 +19,13 @@ const HorizontalTiles = dynamic(
 
 export const ProfileGallery = ({ userId }) => {
   const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (userId) {
       const fetchImages = async () => {
         const response = await fetch(`/api/list-images?userId=${userId}`);
+        setIsLoading(true);
         if (response.ok) {
           const data = await response.json();
           console.log("data", data);
@@ -31,6 +33,7 @@ export const ProfileGallery = ({ userId }) => {
         } else {
           console.error("Failed to fetch images");
         }
+        setIsLoading(false);
       };
 
       fetchImages();
@@ -46,12 +49,17 @@ export const ProfileGallery = ({ userId }) => {
 
   return (
     <>
-      {images && (
+      {images.length > 0 ? (
         <HorizontalTiles
           images={images}
           userId={userId}
           removeImageFromState={removeImageFromState}
         />
+      ) : (
+        !isLoading &&
+        images.length <= 0 && (
+          <span className="text-center text-gray-500">No favourites yet!</span>
+        )
       )}
       {/* <InterstellarScroll
         images={images}

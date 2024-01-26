@@ -2,7 +2,7 @@ import Transition from "@/app/transition";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Entropy | Generated Image",
+  title: "Generated Image | Entropy",
   description: "Generate images.",
 };
 

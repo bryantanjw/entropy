@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
 import { InputForm } from "@/components/input-form";
@@ -8,8 +9,35 @@ import ImageGrid from "@/components/image-grid";
 import { fetchImages } from "@/lib/actions";
 import { getCharacters, getSession } from "@/lib/supabase-server";
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: {
+    search: string;
+    style: string;
+  };
+}): Promise<Metadata | undefined> {
+  const title = `${searchParams.search} | Entropy AI`;
+  const description = `Imagine your favourite characters.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      creator: "@bryantanjw",
+    },
+  };
+}
+
 export default async function Search({
-  searchParams, // has to be searchParams. i think it's a next.js thing to recognize the query params
+  searchParams,
 }: {
   searchParams: { search: string; style: string };
 }) {

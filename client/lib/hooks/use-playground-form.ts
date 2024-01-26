@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const playgroundFormSchema = z.object({
   checkpoint_model: z.string().default("Aniverse.safetensors"),
-  input_prompt: z.string().min(1, {
-    message: "Type a prompt.",
-  }),
+  input_prompt: z.string().optional(),
   negative_prompt: z
     .string()
     .default("lowres, worst quality, ugly, blurry, bad fingers"),
@@ -17,6 +15,7 @@ export const playgroundFormSchema = z.object({
   lora: z.string().min(1, {
     message: "Select a character.",
   }),
+  custom_lora_file: z.record(z.any()).optional(), // only used to store the state for dropzone
   custom_lora: z.string().optional(),
   lora_strength: z.number().min(0.0).max(1.0).default(1.0),
   width: z.number().default(800),
@@ -37,14 +36,12 @@ export function usePlaygroundForm() {
       seed: 0,
       cfg: 6.0,
       lora: "",
+      custom_lora_file: null,
       custom_lora: "",
       lora_strength: 1,
       width: 720,
       height: 1080,
       batch_size: 4,
-
-      // Not important
-      style: "Digital",
     },
   });
 

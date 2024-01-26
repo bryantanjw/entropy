@@ -45,7 +45,7 @@ export function ModelSelector({ form }: ModelSelectorProps) {
         control={form.control}
         name="checkpoint_model"
         render={({ field }) => (
-          <FormItem className="flex flex-col">
+          <FormItem className="col-span-3">
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -53,7 +53,7 @@ export function ModelSelector({ form }: ModelSelectorProps) {
                     variant="outline"
                     role="combobox"
                     className={cn(
-                      "w-[200px] justify-between",
+                      "w-full justify-between",
                       !field.value && "text-muted-foreground"
                     )}
                   >
