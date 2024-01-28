@@ -38,14 +38,14 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
     if (value) {
       setSize(value);
       if (value === "Portrait") {
-        form.setValue("height", 1080);
-        form.setValue("width", 720);
+        form.setValue("height", 512);
+        form.setValue("width", 340);
       } else if (value === "Square") {
-        form.setValue("height", 720);
-        form.setValue("width", 720);
+        form.setValue("height", 340);
+        form.setValue("width", 340);
       } else if (value === "Landscape") {
-        form.setValue("height", 720);
-        form.setValue("width", 1080);
+        form.setValue("height", 340);
+        form.setValue("width", 512);
       }
     }
   };

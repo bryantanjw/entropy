@@ -1,0 +1,173 @@
+{
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": ["50", 1],
+      "vae": ["50", 2]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "39": {
+    "inputs": {
+      "scale_method": "nearest-exact",
+      "seed": 180735103488546,
+      "steps": 20,
+      "cfg": 9,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "denoise": 0.4,
+      "use_tiled_vae": false,
+      "tile_size": 512,
+      "basic_pipe": ["93:5", 0],
+      "upscale_model_opt": ["40", 0]
+    },
+    "class_type": "PixelKSampleUpscalerProviderPipe",
+    "_meta": {
+      "title": "PixelKSampleUpscalerProviderPipe"
+    }
+  },
+  "40": {
+    "inputs": {
+      "model_name": "RealESRGAN_x4plus.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Load Upscale Model"
+    }
+  },
+  "41": {
+    "inputs": {
+      "upscale_factor": 3,
+      "steps": 3,
+      "temp_prefix": "",
+      "samples": ["50", 1],
+      "upscaler": ["39", 0]
+    },
+    "class_type": "IterativeLatentUpscale",
+    "_meta": {
+      "title": "Iterative Upscale (Latent/on Pixel Space)"
+    }
+  },
+  "43": {
+    "inputs": {
+      "samples": ["41", 0],
+      "vae": ["41", 1]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "50": {
+    "inputs": {
+      "seed": 279593288936498,
+      "steps": 20,
+      "cfg": 7,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "basic_pipe": ["93:5", 0],
+      "latent_image": ["5", 0]
+    },
+    "class_type": "ImpactKSamplerBasicPipe",
+    "_meta": {
+      "title": "KSampler (pipe)"
+    }
+  },
+  "82": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": ["43", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "85": {
+    "inputs": {
+      "images": ["8", 0]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Original"
+    }
+  },
+  "93:0": {
+    "inputs": {
+      "ckpt_name": "pasteldiffusedmix_v22.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "93:1": {
+    "inputs": {
+      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "93:2": {
+    "inputs": {
+      "lora_name": "Ahri.safetensors",
+      "strength_model": 1,
+      "strength_clip": 1,
+      "model": ["93:0", 0],
+      "clip": ["93:0", 1]
+    },
+    "class_type": "LoraLoader",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "93:3": {
+    "inputs": {
+      "text": "best quality,masterpiece,highres,original,extremely detailed wallpaper,perfect lighting,extremely detailed CG,blurry background, pbcmf,bodysuit,cleavage,pink hair,coif,bcmf,jacket,red hair,black coif,",
+      "clip": ["93:2", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "93:4": {
+    "inputs": {
+      "text": "(low quality:1.4), (worst quality:1.4), bad anatomy",
+      "clip": ["93:2", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "93:5": {
+    "inputs": {
+      "model": ["93:2", 0],
+      "clip": ["93:2", 1],
+      "vae": ["93:1", 0],
+      "positive": ["93:3", 0],
+      "negative": ["93:4", 0]
+    },
+    "class_type": "ToBasicPipe",
+    "_meta": {
+      "title": "ToBasicPipe"
+    }
+  }
+}

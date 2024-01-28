@@ -48,6 +48,17 @@ class Predictor(BasePredictor):
 
         def download_models(model_type, model_names):
             print(f"Now downloading {model_type}")
+            upscale_model_path = f"ComfyUI/models/upscale_models/RealESRGAN_x4plus.pth"
+            if not os.path.exists(upscale_model_path):
+                upscale_model_url = f"{base_url}/upscale_models/RealESRGAN_x4plus.pth"
+                print(
+                    f"Upscale model not found, downloading from {upscale_model_url}")
+                urllib.request.urlretrieve(
+                    upscale_model_url, upscale_model_path)
+                print(f"\nDownloaded upscale model to {upscale_model_path}")
+            else:
+                print(
+                    f"Upscale model {upscale_model_path} already exists, skipping download")
             for model_name in model_names:
                 path = f"ComfyUI/models/{model_type}/{os.path.basename(model_name)}"
                 if not os.path.exists(path):
@@ -137,7 +148,7 @@ class Predictor(BasePredictor):
         ),
         cfg: float = Input(
             description="CFG Scale",
-            default=5.0,
+            default=7.0,
             ge=1.0,
             le=20.0
         ),
@@ -158,17 +169,23 @@ class Predictor(BasePredictor):
         ),
         width: int = Input(
             description="Image Width",
-            default=720
+            default=512
         ),
         height: int = Input(
             description="Image Height",
-            default=1080
+            default=720
         ),
         batch_size: int = Input(
             description="Batch Size",
             default=1,
             ge=1,
             le=4
+        ),
+        upscale_factor: int = Input(
+            description="Upscale Factor",
+            default=3,
+            ge=0,
+            le=3
         )
     ) -> List[Path]:
         """Run a single prediction on the model"""
@@ -190,7 +207,8 @@ class Predictor(BasePredictor):
             height=height,
             batch_size=batch_size,
             lora_strength=lora_strength,
-            custom_lora=custom_lora
+            custom_lora=custom_lora,
+            upscale_factor=upscale_factor
         )
         return img_output_path
 
@@ -208,10 +226,11 @@ class Predictor(BasePredictor):
         cfg,
         lora_strength,
         custom_lora,
+        upscale_factor
     ):
         # load config
         prompt = None
-        workflow_config = "./workflow/entropy_workflow.json"
+        workflow_config = "./workflows/entropy_v2.json"
         with open(workflow_config, 'r') as file:
             prompt = json.load(file)
 
@@ -239,20 +258,19 @@ class Predictor(BasePredictor):
                     f"Failed to download LoRA file from S3. Status code: {response.status_code}")
 
         # set input variables
-        prompt["4"]["inputs"]["ckpt_name"] = checkpoint_model
-        prompt["6"]["inputs"]["text"] = input_prompt
-        prompt["7"]["inputs"]["text"] = negative_prompt
-        prompt["10"]["inputs"]["lora_name"] = os.path.basename(lora_to_use)
-        prompt["3"]["inputs"]["seed"] = seed
-        prompt["3"]["inputs"]["steps"] = steps
-        prompt["3"]["inputs"]["cfg"] = cfg
-        prompt["3"]["inputs"]["sampler_name"] = sampler_name
-
-        # Add lora strength, width, height, batch size
+        prompt["93:0"]["inputs"]["ckpt_name"] = checkpoint_model
+        prompt["93:3"]["inputs"]["text"] = input_prompt
+        prompt["93:4"]["inputs"]["text"] = negative_prompt
+        prompt["93:2"]["inputs"]["lora_name"] = os.path.basename(lora_to_use)
+        prompt["50"]["inputs"]["seed"] = seed
+        prompt["50"]["inputs"]["steps"] = steps
+        prompt["50"]["inputs"]["cfg"] = cfg
+        prompt["50"]["inputs"]["sampler_name"] = sampler_name
         prompt["5"]["inputs"]["batch_size"] = batch_size
         prompt["5"]["inputs"]["width"] = width
         prompt["5"]["inputs"]["height"] = height
-        prompt["10"]["inputs"]["lora_strength"] = lora_strength
+        prompt["93:2"]["inputs"]["strength_model"] = lora_strength
+        prompt["41"]["inputs"]["upscale_factor"] = upscale_factor
 
         # start the process
         client_id = str(uuid.uuid4())
