@@ -51,10 +51,10 @@ export async function POST(request: Request) {
       expiresIn: 3600, // URL expires in 1 hour
     });
 
-    return {
-      key: key,
-      url: url,
-    };
+    return new Response(JSON.stringify({ key, url }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
