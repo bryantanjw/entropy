@@ -50,6 +50,7 @@ function useDragDrop() {
 
 export default function Dropzone({ form }) {
   const uploadedFile = form.watch("custom_lora_file");
+  console.log("uploadedFile", uploadedFile);
   const [isLoading, setIsLoading] = useState(false);
 
   const { dragOver, setDragOver, onDragOver, onDragLeave, setFileDropError } =
@@ -62,10 +63,16 @@ export default function Dropzone({ form }) {
         .then((blob) => {
           if (blob && blob.url) {
             form.setValue("custom_lora", blob.url);
-            console.log("blob", blob);
+            form.setValue(
+              "lora",
+              file.name.length > 30
+                ? file.name.substring(0, 20) + "..."
+                : file.name
+            );
           } else {
             console.error("Failed to get the URL from the uploaded blob.");
             toast.error("Failed to upload file.");
+            form.setValue("custom_lora_file", {});
           }
           setIsLoading(false);
         })
@@ -86,6 +93,8 @@ export default function Dropzone({ form }) {
 
     const selectedFiles = e.dataTransfer.files;
     if (selectedFiles.length) {
+      setFileDropError("");
+      form.setValue("custom_lora_file", selectedFiles[0]);
       handleFile(selectedFiles[0]);
     }
   };
@@ -96,11 +105,9 @@ export default function Dropzone({ form }) {
       return setFileDropError("No file selected!");
     }
 
-    const file = files[0];
-    console.log("file", file);
-    form.setValue("custom_lora_file", file);
     setFileDropError("");
-    handleFile(file);
+    form.setValue("custom_lora_file", files[0]);
+    handleFile(files[0]);
   };
 
   const handleDelete = () => {
@@ -108,15 +115,11 @@ export default function Dropzone({ form }) {
     form.setValue("custom_lora_file", null);
   };
 
-  // useEffect(() => {
-  //   if (uploadedFile) handleFile(uploadedFile);
-  // }, [uploadedFile]);
-
   return (
     <>
       {/* Uploader */}
       <div className="dark:bg-muted bg-white w-full max-w-lg rounded-xl">
-        {!uploadedFile ? (
+        {!uploadedFile.name ? (
           <form>
             <label
               htmlFor="file"
@@ -127,7 +130,7 @@ export default function Dropzone({ form }) {
               <div
                 className={cn(
                   "px-4 py-4 h-full border-[1.5px] border-dashed dark:border-neutral-700 rounded-xl flex flex-col items-center hover:cursor-pointer",
-                  dragOver && "border-blue-600 bg-blue-50"
+                  dragOver && "border-blue-600 bg-blue-50 dark:bg-blue-900"
                 )}
               >
                 <div className="h-full flex flex-col justify-start items-center gap-2">
@@ -175,7 +178,8 @@ export default function Dropzone({ form }) {
                       <Icons.spinner className="h-4 w-4 animate-spin text-neutral-500" />
                     </div>
                   ) : (
-                    uploadedFile && (
+                    uploadedFile &&
+                    uploadedFile.name && (
                       <FileIcon className="h-6 w-6 text-neutral-500" />
                     )
                   )}
@@ -187,7 +191,9 @@ export default function Dropzone({ form }) {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <p className="truncate text-sm">
-                              {uploadedFile.name}
+                              {uploadedFile.name.length > 30
+                                ? uploadedFile.name.substring(0, 20) + "..."
+                                : uploadedFile.name}
                             </p>
                           </TooltipTrigger>
                           <TooltipContent>

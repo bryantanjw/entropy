@@ -2,10 +2,11 @@ checkpoints = [
     # Realism
     "MajicMix.safetensors",
     "epiCPhotoGasm.safetensors",
+    "Era.safetensors",
+    "Paragon.safetensors",
     "ThisIsReal.safetensors",
     "ChilloutMix.safetensors",
     "RealisticVision.safetensors",
-    "Era.safetensors",
 
     # Digital
     "Aniverse.safetensors",
@@ -15,7 +16,11 @@ checkpoints = [
 
     # Anime
     "Hassaku.safetensors",
+    "GhostMix.safetensors",
+    "KawaiiRealisticAnime.safetensors",
+    "MeinaAlter.safetensors",
     "OrangeMixs.safetensors",
+    "YabalMix.safetensors",
     "CamelliaMix.safetensors",
     "Counterfeit.safetensors",
     "Animeliner.safetensors",
@@ -39,6 +44,10 @@ loras = [
     "gaming/Battle_Bunny_Riven.safetensors",
     "gaming/Winterblessed_Diana.safetensors",
     "gaming/Kitty_Cat_Katarina.safetensors",
+    "gaming/Crystal_Rose_Sona.safetensors",
+    "gaming/Mythmaker_Irelia.safetensors",
+    "gaming/Jinx.safetensors",
+    "gaming/Akali.safetensors",
 
     "gaming/Jett.safetensors",
 
@@ -48,6 +57,7 @@ loras = [
     "anime/Himejima_Akeno.safetensors",
     "anime/Highschool_of_the_Dead.safetensors",
     "anime/Yor_Forger.safetensors",
+    "anime/2B.safetensors",
 
     # Hollywood
     "hollywood/Jenna_Ortega.safetensors",

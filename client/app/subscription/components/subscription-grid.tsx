@@ -105,7 +105,7 @@ export function SubscriptionGrid({ userDetails }) {
             <div className="p-1.5 pt-0 text-sm px-0 group-hover/bento:translate-x-2 transition duration-200">
               <div className="font-light text-sm">No payment method added.</div>
             </div>
-            <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-2 transition duration-200">
+            <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-4 transition duration-200">
               <PaymentCard userDetails={userDetails} />
             </div>
           </div>

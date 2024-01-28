@@ -36,12 +36,12 @@ export function usePlaygroundForm() {
       seed: 0,
       cfg: 6.0,
       lora: "",
-      custom_lora_file: null,
+      custom_lora_file: {},
       custom_lora: "",
       lora_strength: 1,
       width: 720,
       height: 1080,
-      batch_size: 4,
+      batch_size: 3,
     },
   });
 

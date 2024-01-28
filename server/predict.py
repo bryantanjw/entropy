@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import time
+import requests
 from cog import BasePredictor, Input, Path
 from typing import List
 import os
@@ -8,6 +9,7 @@ import torch
 import uuid
 import json
 import urllib
+import shutil
 import websocket
 from urllib.error import URLError
 from models import checkpoints, loras
@@ -142,15 +144,14 @@ class Predictor(BasePredictor):
         lora: str = Input(
             description="LoRA Model",
             choices=loras,
-            default=None
+            default="gaming/Ahri.safetensors"
         ),
-        # Inserts blob url
         custom_lora: str = Input(
-            description="Insert URL to LoRA file (.safetensors)",
+            description="Link to LoRA file (.safetensors). Replicate doesn't allow .safetensors file uploads :(, but you can upload it on app.entropy.so.",
             default=None
         ),
         lora_strength: float = Input(
-            description="LoRA Model",
+            description="LoRA Strength",
             default=1.0,
             ge=0.0,
             le=1.0
@@ -188,7 +189,8 @@ class Predictor(BasePredictor):
             width=width,
             height=height,
             batch_size=batch_size,
-            lora_strength=lora_strength
+            lora_strength=lora_strength,
+            custom_lora=custom_lora
         )
         return img_output_path
 
@@ -205,6 +207,7 @@ class Predictor(BasePredictor):
         height,
         cfg,
         lora_strength,
+        custom_lora,
     ):
         # load config
         prompt = None
@@ -215,11 +218,31 @@ class Predictor(BasePredictor):
         if not prompt:
             raise Exception('no workflow config found')
 
+        # If custom_lora is provided, save it to the desired directory
+        lora_to_use = lora
+        lora_path = None
+        if custom_lora is not None and custom_lora != "":
+            lora_directory = "ComfyUI/models/loras/custom"
+            # Ensure the directory exists
+            os.makedirs(lora_directory, exist_ok=True)
+            lora_path = os.path.join(
+                lora_directory, os.path.basename(custom_lora))
+
+            # Download the file from the S3 presigned URL
+            response = requests.get(custom_lora)
+            if response.status_code == 200:
+                with open(lora_path, 'wb') as f:
+                    f.write(response.content)
+                lora_to_use = lora_path
+            else:
+                raise Exception(
+                    f"Failed to download LoRA file from S3. Status code: {response.status_code}")
+
         # set input variables
         prompt["4"]["inputs"]["ckpt_name"] = checkpoint_model
         prompt["6"]["inputs"]["text"] = input_prompt
         prompt["7"]["inputs"]["text"] = negative_prompt
-        prompt["10"]["inputs"]["lora_name"] = os.path.basename(lora)
+        prompt["10"]["inputs"]["lora_name"] = os.path.basename(lora_to_use)
         prompt["3"]["inputs"]["seed"] = seed
         prompt["3"]["inputs"]["steps"] = steps
         prompt["3"]["inputs"]["cfg"] = cfg
@@ -239,6 +262,13 @@ class Predictor(BasePredictor):
 
         images = self.get_images(ws, prompt, client_id)
         print(f"{len(images)} images generated successfully")
+
+        # Delete the custom_lora file after generating images
+        if custom_lora:
+            os.remove(lora_path)
+            print(
+                f"Custom LoRA file {lora_path} deleted after generating images.")
+
         image_paths = []
         for node_id in images:
             for image_data in images[node_id]:

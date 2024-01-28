@@ -25,5 +25,6 @@ build:
     - tqdm
     - psutil
     - websocket-client==1.6.3
+    - requests
 
 predict: "predict.py:Predictor"

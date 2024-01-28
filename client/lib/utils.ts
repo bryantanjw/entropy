@@ -31,10 +31,13 @@ export async function getBlobs() {
 export async function uploadBlob(file) {
   let blob: PutBlobResult;
   try {
-    const blobResponse = await fetch(`/api/blob/upload?filename=${file.name}`, {
-      method: "POST",
-      body: file,
-    });
+    const blobResponse = await fetch(
+      `/api/blob/upload-blob?filename=${file.name}`,
+      {
+        method: "POST",
+        body: file,
+      }
+    );
 
     if (!blobResponse.ok) {
       throw new Error("Failed to upload file");
@@ -52,7 +55,7 @@ export async function uploadBlob(file) {
 export const deleteBlob = async (blob) => {
   const urls = [blob.url];
 
-  const delBlobResponse = await fetch("/api/blob/delete", {
+  const delBlobResponse = await fetch("/api/blob-blob", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

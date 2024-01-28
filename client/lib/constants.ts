@@ -1,6 +1,8 @@
 export const checkpoints = {
   Digital: ["Aniverse", "DarkSushi", "DarkSun", "UnleashedDiffusion"],
   Anime: [
+    "KawaiiRealisticAnime",
+    "MeinaAlter",
     "GhostMix",
     "Hassaku",
     "OrangeMixs",
@@ -14,6 +16,7 @@ export const checkpoints = {
     "Era",
     "epiCPhotoGasm",
     "ThisIsReal",
+    "Paragon",
     "ChilloutMix",
     "MajicMix",
     "RealisticVision",
@@ -58,7 +61,7 @@ export const loadingImages = [
     imageUrl:
       "https://cdn.sanity.io/images/6jp747p1/production/1f7c880ecbf77f9a6e1702278f31f44c76712ba3-720x1080.png",
     input_prompt:
-      "A photo of a girl, IncrsAhriKDAAllOut, whisker mar…hiny hair, shiny skin, shiny clothes, masterpiece",
+      "A photo of a girl, IncrsAhriKDAAllOut, whisker marks, shiny hair, shiny skin, shiny clothes, masterpiece",
     character: "KDA ALL OUT Ahri from League of Legends",
   },
   {

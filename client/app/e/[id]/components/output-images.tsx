@@ -1,12 +1,10 @@
 "use client";
 
+import clsx from "clsx";
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 
-import { SparklesCore } from "@/components/ui/sparkles";
 import { notFound, usePathname } from "next/navigation";
-import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
 import OutputImage from "./image";
 import { Progress } from "@/components/ui/progress";
@@ -14,7 +12,6 @@ import { extractProgress } from "@/lib/helpers";
 import Image from "next/image";
 
 import { loadingImages } from "@/lib/constants";
-import clsx from "clsx";
 
 export default function OutputImages({ id }) {
   const pathname = usePathname();
@@ -65,16 +62,7 @@ export default function OutputImages({ id }) {
             return;
           }
 
-          let pollRes = await fetch(
-            `https://api.entropy.so/predictions/${id}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Token " + process.env.REPLICATE_API_KEY,
-              },
-            }
-          );
+          let pollRes = await fetch(`https://api.entropy.so/predictions/${id}`);
           let pollResponse = await pollRes.json();
           const { status, logs } = pollResponse;
 
@@ -94,8 +82,8 @@ export default function OutputImages({ id }) {
           } else if (pollResponse.status === "failed") {
             throw new Error("Prediction failed");
           } else {
-            // Delay to make requests to API Gateway every 8 seconds
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            // Delay to make requests to API Gateway every 3 seconds
+            await new Promise((resolve) => setTimeout(resolve, 6000));
           }
         } catch (error) {
           if (!isCancelled) {
@@ -126,7 +114,7 @@ export default function OutputImages({ id }) {
         }}
       >
         {predictions ? (
-          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-10 mt-32">
+          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-10 mt-32">
             {predictions.output.map((img, index) => {
               const path = img.split("/").slice(-2, -1)[0];
               return (

@@ -267,8 +267,8 @@ export default function ImageItem({
               )}
             >
               <Image
-                width={1080}
-                height={720}
+                width={1536}
+                height={1032}
                 loading={currentImage.ratio === "portrait" ? "eager" : "lazy"}
                 priority={currentImage.ratio === "portrait" ? true : false}
                 sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
