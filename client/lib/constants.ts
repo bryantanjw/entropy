@@ -18,7 +18,7 @@ export const checkpoints = {
     "ThisIsReal",
     "Paragon",
     "ChilloutMix",
-    "MajicMix",
+    "MajicMixReverie",
     "RealisticVision",
   ],
 };

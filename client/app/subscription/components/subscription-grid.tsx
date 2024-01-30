@@ -23,6 +23,7 @@ import { Meteors } from "@/components/ui/meteors";
 import { Illustration } from "@/components/ui/glowing-stars";
 import { useState } from "react";
 import { PaymentCard } from "./payment-card";
+import { UpgradePlanDialog } from "./upgrade-plan-dialog";
 
 export const BentoGrid = ({
   className,
@@ -53,7 +54,7 @@ export function SubscriptionGrid({ userDetails }) {
         <div className="lg:col-span-3 space-y-4">
           <div
             className={cn(
-              "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
+              "row-span-1 rounded-lg group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
           >
             <div className="flex p-1.5 items-center gap-3 px-5 pt-5 group-hover/bento:translate-x-2 transition duration-200">
@@ -90,11 +91,14 @@ export function SubscriptionGrid({ userDetails }) {
                 </div>
               </div>
             </div>
+            <div className="flex px-5 py-2.5 bg-muted justify-end rounded-b-lg border-t">
+              <UpgradePlanDialog />
+            </div>
           </div>
 
           <div
             className={cn(
-              "row-span-1 relative isolate overflow-hidden rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
+              "row-span-1 relative isolate overflow-hidden rounded-lg group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
           >
             <div className="flex p-1.5 px-0 group-hover/bento:translate-x-2 transition duration-200">
@@ -112,7 +116,7 @@ export function SubscriptionGrid({ userDetails }) {
 
           <div
             className={cn(
-              "relative overflow-hidden row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
+              "relative overflow-hidden row-span-1 rounded-lg group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md p-5 dark:bg-black dark:border-white/[0.1] bg-white border justify-between flex flex-col space-y-2"
             )}
             onMouseEnter={() => {
               setMouseEnterInvoices(true);
@@ -141,7 +145,7 @@ export function SubscriptionGrid({ userDetails }) {
         <div
           className={cn(
             "lg:col-span-2",
-            "row-span-1 flex flex-col rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border space-y-2"
+            "row-span-1 flex flex-col rounded-lg group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-md px-3 py-5 dark:bg-black dark:border-white/[0.1] bg-white border space-y-2"
           )}
           onMouseEnter={() => {
             setMouseEnterCredits(true);

@@ -29,7 +29,6 @@ export async function POST(request: Request) {
       prediction_input: encodedPredictionInput,
     };
 
-    // Upload the image buffer to S3
     await client.send(
       new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,

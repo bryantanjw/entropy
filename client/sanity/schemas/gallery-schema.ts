@@ -139,6 +139,12 @@ const gallerySchema = {
           ],
         },
         {
+          title: "LoRA Strength",
+          name: "lora_strength",
+          type: "number",
+          initialValue: 1,
+        },
+        {
           title: "Sampler",
           name: "sampler",
           type: "string",

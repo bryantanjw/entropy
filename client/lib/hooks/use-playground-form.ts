@@ -7,7 +7,9 @@ export const playgroundFormSchema = z.object({
   input_prompt: z.string().optional(),
   negative_prompt: z
     .string()
-    .default("lowres, worst quality, ugly, blurry, bad fingers"),
+    .default(
+      "(worst quality:1.4), (low quality:1.4), simple background, bad anatomy"
+    ),
   steps: z.number().min(1).max(80).default(30),
   sampler_name: z.string().default("dpmpp_2m"),
   seed: z.number().optional(),
@@ -30,8 +32,9 @@ export function usePlaygroundForm() {
     defaultValues: {
       checkpoint_model: "Aniverse.safetensors",
       input_prompt: "",
-      negative_prompt: "(worst quality:1.4), (low quality:1.4)",
-      steps: 25,
+      negative_prompt:
+        "(worst quality:1.4), (low quality:1.4), simple background, bad anatomy",
+      steps: 20,
       sampler_name: "dpmpp_2m",
       seed: 0,
       cfg: 7.0,
@@ -39,8 +42,8 @@ export function usePlaygroundForm() {
       custom_lora_file: {},
       custom_lora: "",
       lora_strength: 1,
-      width: 340,
-      height: 512,
+      width: 360,
+      height: 540,
       batch_size: 3,
     },
   });
