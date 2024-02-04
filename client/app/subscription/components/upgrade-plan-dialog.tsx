@@ -25,7 +25,7 @@ import { Price } from "./subscription-grid";
 
 import { getStripe, postData } from "@/lib/stripe-client";
 
-export function UpgradePlanDialog({ userDetails, products }) {
+export function UpgradePlanDialog({ subscription, products }) {
   const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [isAnnual, setIsAnnual] = useState(true);
@@ -72,13 +72,14 @@ export function UpgradePlanDialog({ userDetails, products }) {
         <Button>Upgrade</Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[480px] border-none"
+        className="sm:max-w-[500px] border-none"
         showCloseIcon={false}
       >
         <Card className="justify-center text-center p-4 px-0 pb-0">
           <CardHeader className="px-8 pt-4">
             <CardTitle className="text-2xl">
-              You&apos;re currently on the Free plan
+              You&apos;re currently on the {subscription?.prices.products.name}{" "}
+              plan
             </CardTitle>
             <CardDescription>
               Choose from the plan options below.

@@ -170,7 +170,7 @@ export default function Nav({ user, userDetails, dark = false }: NavbarProps) {
             <div className="sticky inset-x-0 bottom-0 border-t border-slate-400 border-opacity-20 px-2">
               {user ? (
                 <Link
-                  href="/account"
+                  href="/subscription"
                   className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
                 >
                   <div className="flex flex-row items-center">

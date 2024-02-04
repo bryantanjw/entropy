@@ -60,7 +60,7 @@ export function UserNav({ user, userDetails }: Props) {
       >
         <DropdownMenuLabel className="flex font-normal mt-1 justify-between items-center">
           <Link
-            href={"/account"}
+            href={"/subscription"}
             className="hover:underline underline-offset-2 text-sm"
           >
             {userDetails?.full_name ?? user.email}
