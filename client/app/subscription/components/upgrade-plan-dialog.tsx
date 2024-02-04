@@ -18,15 +18,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { useRouter } from "next/navigation";
-import { Price } from "./subscription-grid";
+import { Price, Product } from "./subscription-grid";
 import { toast } from "sonner";
 import { getStripe } from "@/lib/stripe-client";
+import { Icons } from "@/components/ui/icons";
 
 export function UpgradePlanDialog({ user, products }) {
   const router = useRouter();
   const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [isAnnual, setIsAnnual] = useState(true);
+  const [selectedPrice, setSelectedPrice] = useState<Price | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const redirectToCustomerPortal = async (price) => {
@@ -109,6 +111,7 @@ export function UpgradePlanDialog({ user, products }) {
                     product={product}
                     isAnnual={isAnnual}
                     setIsAnnual={setIsAnnual}
+                    setSelectedPrice={setSelectedPrice}
                     theme={theme}
                   />
                 </TabsContent>
@@ -130,19 +133,26 @@ export function UpgradePlanDialog({ user, products }) {
             >
               Cancel
             </Button>
-            <Button className="h-10">
+            <Button
+              className="h-10 min-w-[120px]"
+              onClick={() => handleCheckout(selectedPrice)}
+            >
               <div className="w-full absolute inset-0 h-full">
                 <SparklesCore
                   id="tsparticlesfullpage"
                   background="transparent"
                   minSize={0.6}
                   maxSize={1.4}
-                  particleDensity={30}
+                  particleDensity={25}
                   className="w-full h-full"
                   particleColor={theme === "dark" ? "#000" : "#fff"}
                 />
               </div>
-              Confirm and Pay
+              {isLoading ? (
+                <Icons.spinner className="w-4 h-4 animate-spin" />
+              ) : (
+                "Confirm and Pay"
+              )}
             </Button>
           </CardFooter>
         </Card>
@@ -151,7 +161,18 @@ export function UpgradePlanDialog({ user, products }) {
   );
 }
 
-const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
+const PlanTabs = ({
+  product,
+  isAnnual,
+  setIsAnnual,
+  setSelectedPrice,
+  theme,
+}) => {
+  setSelectedPrice(
+    isAnnual
+      ? product.prices.find((p) => p.interval === "year")
+      : product.prices.find((p) => p.interval === "month")
+  );
   // Find the correct price based on the isAnnual flag
   const price = product.prices.find(
     (p) => p.interval === (isAnnual ? "year" : "month")
@@ -161,7 +182,7 @@ const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
     <div className="divide-y divide-gray-200 dark:divide-gray-600 rounded-lg border text-left">
       <div className="flex justify-between p-5 mb-1">
         <AnimatePresence mode="wait">
-          <div className="relative inline-flex gap-2">
+          <div className="relative inline-flex gap-3">
             <motion.span
               key={isAnnual ? "annually" : "monthly"}
               initial={{ opacity: 0, x: -20 }}
@@ -184,7 +205,7 @@ const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
                 transition={{ duration: 0.3 }}
                 className="relative"
               >
-                <span className="opacity-70">
+                <span className="opacity-60">
                   Billed {isAnnual ? "annually" : "monthly"}
                 </span>
                 {isAnnual ? (
@@ -214,7 +235,12 @@ const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
             </div>
           </div>
         </AnimatePresence>
-        <Switch checked={isAnnual} setChecked={setIsAnnual} />
+        <Switch
+          isAnnual={isAnnual}
+          setIsAnnual={setIsAnnual}
+          product={product}
+          setSelectedPrice={setSelectedPrice}
+        />
       </div>
 
       <div className="min-h-[165px] p-4 bg-muted rounded-b-lg">
@@ -250,11 +276,15 @@ const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
 };
 
 export const Switch = ({
-  checked,
-  setChecked,
+  isAnnual,
+  setIsAnnual,
+  product,
+  setSelectedPrice,
 }: {
-  checked: boolean;
-  setChecked: (checked: boolean) => void;
+  isAnnual: boolean;
+  setIsAnnual: (isAnnual: boolean) => void;
+  product: any;
+  setSelectedPrice: (price: Price) => void;
 }) => {
   return (
     <form className="flex space-x-4  antialiased">
@@ -262,7 +292,7 @@ export const Switch = ({
         htmlFor="checkbox"
         className={twMerge(
           "h-6  px-1  flex items-center bg-opacity-100 dark:bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 shadow-[inset_0px_0px_14px_rgba(0,0,0,0.25)] rounded-full w-[40px] relative cursor-pointer transition duration-200",
-          checked
+          isAnnual
             ? "bg-slate-900 dark:bg-slate-800"
             : "bg-slate-100 dark:bg-slate-500"
         )}
@@ -270,26 +300,35 @@ export const Switch = ({
         <motion.div
           initial={{
             width: "20px",
-            x: checked ? 0 : 17,
+            x: isAnnual ? 0 : 17,
           }}
           animate={{
             height: ["14px", "6px", "14px"],
             width: ["14px", "20px", "14px", "14px"],
-            x: checked ? 17 : 0,
+            x: isAnnual ? 17 : 0,
           }}
           transition={{
             duration: 0.3,
             delay: 0.1,
           }}
-          key={String(checked)}
+          key={String(isAnnual)}
           className={twMerge(
             "h-[20px] block rounded-full bg-gradient-to-b from-white to-blue-100 shadow-md z-10"
           )}
         ></motion.div>
         <input
           type="checkbox"
-          checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
+          checked={isAnnual}
+          onChange={(e) => {
+            const newIsAnnual = e.target.checked;
+            setIsAnnual(newIsAnnual);
+            console.log("isAnnual", newIsAnnual);
+            setSelectedPrice(
+              newIsAnnual
+                ? product.prices.find((p) => p.interval === "year")
+                : product.prices.find((p) => p.interval === "month")
+            );
+          }}
           className="hidden"
           id="checkbox"
         />

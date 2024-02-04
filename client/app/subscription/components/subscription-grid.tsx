@@ -13,7 +13,7 @@ import { User } from "@supabase/supabase-js";
 import { Database } from "@/types_db";
 
 type Subscription = Database["public"]["Tables"]["subscriptions"]["Row"];
-type Product = Database["public"]["Tables"]["products"]["Row"];
+export type Product = Database["public"]["Tables"]["products"]["Row"];
 export type Price = Database["public"]["Tables"]["prices"]["Row"];
 interface ProductWithPrices extends Product {
   prices: Price[];
@@ -36,10 +36,6 @@ export function SubscriptionGrid({
   products,
   subscription,
 }: PricingProps) {
-  console.log("products", products);
-  console.log("prices", products[0]?.prices);
-  console.log("subscription", subscription);
-
   return (
     <div className="mx-auto z-10">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">

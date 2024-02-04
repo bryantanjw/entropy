@@ -137,8 +137,8 @@ export default function Nav({ user, userDetails, dark = false }: NavbarProps) {
           >
             <div className="flex flex-col px-6 py-6">
               <div className="flex flex-col gap-5">
-                <Link href="/pricing" className="flex items-center gap-3">
-                  <RocketIcon /> Pricing
+                <Link href="/subscription" className="flex items-center gap-3">
+                  <RocketIcon /> Subscription
                 </Link>
                 <Link href="/gallery" className="flex items-center gap-3">
                   <CameraIcon /> Gallery

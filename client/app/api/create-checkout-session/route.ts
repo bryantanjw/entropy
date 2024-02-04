@@ -48,7 +48,7 @@ export async function POST(req: Request) {
             metadata,
           },
           success_url: `${getURL()}order/{CHECKOUT_SESSION_ID}`,
-          cancel_url: `${getURL()}pricing`,
+          cancel_url: `${getURL()}subscription`,
         });
       } else if (price.type === "one_time") {
         session = await stripe.checkout.sessions.create({
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
           mode: "payment",
           allow_promotion_codes: true,
           success_url: `${getURL()}order/{CHECKOUT_SESSION_ID}`,
-          cancel_url: `${getURL()}pricing`,
+          cancel_url: `${getURL()}subscription`,
         });
       }
 
