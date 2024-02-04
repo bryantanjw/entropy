@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { twMerge } from "tailwind-merge";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
@@ -16,11 +17,55 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SparklesCore } from "@/components/ui/sparkles";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Price } from "./subscription-grid";
+import { toast } from "sonner";
+import { getStripe } from "@/lib/stripe-client";
 
-export function UpgradePlanDialog() {
+export function UpgradePlanDialog({ user, products }) {
+  const router = useRouter();
   const { theme } = useTheme();
   const [open, setOpen] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const redirectToCustomerPortal = async (price) => {
+    setIsLoading(true);
+    try {
+      const { url } = await postData({
+        url: "/api/create-portal-link",
+      });
+      router.push(url);
+    } catch (error) {
+      toast.error("Couldn't access customer protal link.", {
+        description: error.message ?? `Please try again`,
+      });
+    }
+    setIsLoading(false);
+  };
+
+  const handleCheckout = async (price: Price) => {
+    setIsLoading(true);
+    if (!user) {
+      return router.push("/signin");
+    }
+
+    try {
+      const { sessionId } = await postData({
+        url: "/api/create-checkout-session",
+        data: { price },
+      });
+
+      const stripe = await getStripe();
+      stripe?.redirectToCheckout({ sessionId });
+    } catch (error) {
+      toast.error("Something went wrong with your checkout", {
+        description: (error as Error)?.message ?? "Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   function toggleDialog() {
     setOpen(!open);
@@ -50,17 +95,22 @@ export function UpgradePlanDialog() {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-8">
-            <Tabs defaultValue="standard" className="space-y-4">
+            <Tabs defaultValue={products[1].id} className="space-y-4">
               <TabsList className="grid w-full grid-cols-3">
-                {Object.keys(plans).map((planKey) => (
-                  <TabsTrigger key={planKey} value={planKey}>
-                    {planKey.charAt(0).toUpperCase() + planKey.slice(1)}
+                {products.map((product) => (
+                  <TabsTrigger key={product.id} value={product.id}>
+                    {product.name}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {Object.keys(plans).map((planKey) => (
-                <TabsContent key={planKey} value={planKey}>
-                  <PlanTabs value={planKey} />
+              {products.map((product) => (
+                <TabsContent key={product.id} value={product.id}>
+                  <PlanTabs
+                    product={product}
+                    isAnnual={isAnnual}
+                    setIsAnnual={setIsAnnual}
+                    theme={theme}
+                  />
                 </TabsContent>
               ))}
             </Tabs>
@@ -75,7 +125,7 @@ export function UpgradePlanDialog() {
           <CardFooter className="flex justify-between py-4 bg-muted rounded-b-xl border-t">
             <Button
               variant="secondary"
-              className="bg-white h-10 dark:bg-gray-800 border"
+              className="bg-white h-10 dark:bg-transparent border"
               onClick={toggleDialog}
             >
               Cancel
@@ -101,27 +151,75 @@ export function UpgradePlanDialog() {
   );
 }
 
-const PlanTabs = ({ value }: { value: string }) => {
-  const [checked, setChecked] = useState(false);
-  const plan = plans[value];
-
-  if (!plan) return null;
+const PlanTabs = ({ product, isAnnual, setIsAnnual, theme }) => {
+  // Find the correct price based on the isAnnual flag
+  const price = product.prices.find(
+    (p) => p.interval === (isAnnual ? "year" : "month")
+  );
 
   return (
-    <div className="divide-y divide-gray-200 rounded-lg border text-left">
-      <div className="flex p-4 gap-2 justify-between">
-        <p>
-          <strong className="text-3xl font-semibold text-gray-900">
-            ${plan.prices.monthly}
-          </strong>
-          <span className="text-sm font-light opacity-60">/ month</span>
-        </p>
-        <Switch checked={checked} setChecked={setChecked} />
+    <div className="divide-y divide-gray-200 dark:divide-gray-600 rounded-lg border text-left">
+      <div className="flex justify-between p-5 mb-1">
+        <AnimatePresence mode="wait">
+          <div className="relative inline-flex gap-2">
+            <motion.span
+              key={isAnnual ? "annually" : "monthly"}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-4xl font-semibold"
+            >
+              $
+              {isAnnual
+                ? price.unit_amount / 100 / 12
+                : price.unit_amount / 100}
+              {/* Adjusted to display in dollars */}
+            </motion.span>
+            <div className="flex flex-col text-sm tracking-wide">
+              <span className="text-sm font-light">/ month</span>
+              <motion.div
+                key={isAnnual ? "annually" : "monthly"}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative"
+              >
+                <span className="opacity-70">
+                  Billed {isAnnual ? "annually" : "monthly"}
+                </span>
+                {isAnnual ? (
+                  <motion.div className="absolute -bottom-[1px] right-3 h-[1px]">
+                    <svg width="37" height="8" viewBox="0 0 37 8" fill="none">
+                      <motion.path
+                        d="M1 5.39971C7.48565 -1.08593 6.44837 -0.12827 8.33643 6.47992C8.34809 6.52075 11.6019 2.72875 12.3422 2.33912C13.8991 1.5197 16.6594 2.96924 18.3734 2.96924C21.665 2.96924 23.1972 1.69759 26.745 2.78921C29.7551 3.71539 32.6954 3.7794 35.8368 3.7794"
+                        stroke={theme === "light" ? "#000" : "#fff"}
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        initial={{
+                          strokeDasharray: 84.20591735839844,
+                          strokeDashoffset: 84.20591735839844,
+                        }}
+                        animate={{
+                          strokeDashoffset: 0,
+                        }}
+                        transition={{
+                          duration: 1,
+                        }}
+                      />
+                    </svg>
+                  </motion.div>
+                ) : null}
+              </motion.div>
+            </div>
+          </div>
+        </AnimatePresence>
+        <Switch checked={isAnnual} setChecked={setIsAnnual} />
       </div>
 
-      <div className="min-h-[165px] p-4 bg-muted">
+      <div className="min-h-[165px] p-4 bg-muted rounded-b-lg">
         <ul className="space-y-4">
-          {plan.items.map((item, index) => (
+          {product.features.map((feature, index) => (
             <li key={index} className="flex items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -142,51 +240,13 @@ const PlanTabs = ({ value }: { value: string }) => {
                   fill="#57F0D4"
                 />
               </svg>
-              <span className="ml-2 opacity-80 text-sm">{item}</span>
+              <span className="ml-2 opacity-80 text-sm">{feature}</span>
             </li>
           ))}
         </ul>
       </div>
     </div>
   );
-};
-
-const plans = {
-  basic: {
-    prices: {
-      monthly: 10,
-      yearly: 8,
-    },
-    items: [
-      "800 Credits/month (~240 images)",
-      "General Commercial Terms",
-      "Optional credit purchase",
-    ],
-  },
-  standard: {
-    prices: {
-      monthly: 30,
-      yearly: 24,
-    },
-    items: [
-      "5000 Credits/month (~1,500 images)",
-      "General Commercial Terms",
-      "Optional credit purchase",
-      "Character requests",
-    ],
-  },
-  pro: {
-    prices: {
-      monthly: 60,
-      yearly: 48,
-    },
-    items: [
-      "12,000 Credits/month (~3,600 images)",
-      "General Commercial Terms",
-      "Optional credit purchase",
-      "Character requests",
-    ],
-  },
 };
 
 export const Switch = ({
@@ -201,19 +261,21 @@ export const Switch = ({
       <label
         htmlFor="checkbox"
         className={twMerge(
-          "h-7  px-1  flex items-center border border-transparent shadow-[inset_0px_0px_12px_rgba(0,0,0,0.25)] rounded-full w-[60px] relative cursor-pointer transition duration-200",
-          checked ? "bg-cyan-500" : "bg-slate-700 border-slate-500"
+          "h-6  px-1  flex items-center bg-opacity-100 dark:bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 shadow-[inset_0px_0px_14px_rgba(0,0,0,0.25)] rounded-full w-[40px] relative cursor-pointer transition duration-200",
+          checked
+            ? "bg-slate-900 dark:bg-slate-800"
+            : "bg-slate-100 dark:bg-slate-500"
         )}
       >
         <motion.div
           initial={{
             width: "20px",
-            x: checked ? 0 : 32,
+            x: checked ? 0 : 17,
           }}
           animate={{
-            height: ["20px", "10px", "20px"],
-            width: ["20px", "30px", "20px", "20px"],
-            x: checked ? 32 : 0,
+            height: ["14px", "6px", "14px"],
+            width: ["14px", "20px", "14px", "14px"],
+            x: checked ? 17 : 0,
           }}
           transition={{
             duration: 0.3,
@@ -221,7 +283,7 @@ export const Switch = ({
           }}
           key={String(checked)}
           className={twMerge(
-            "h-[20px] block rounded-full bg-white shadow-md z-10"
+            "h-[20px] block rounded-full bg-gradient-to-b from-white to-blue-100 shadow-md z-10"
           )}
         ></motion.div>
         <input
@@ -234,4 +296,29 @@ export const Switch = ({
       </label>
     </form>
   );
+};
+
+const postData = async ({
+  url,
+  data,
+}: {
+  url: string;
+  data?: { price: Price };
+}) => {
+  console.log("posting,", url, data);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    credentials: "same-origin",
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    console.log("Error in postData", { url, data, res });
+
+    throw Error(res.statusText);
+  }
+
+  return res.json();
 };

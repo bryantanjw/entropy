@@ -63,7 +63,7 @@ export const GlowingStarsTitle = ({
 };
 
 export const Illustration = ({ mouseEnter }: { mouseEnter: boolean }) => {
-  const stars = 80;
+  const stars = 50;
   const columns = 10;
 
   const [glowingStars, setGlowingStars] = useState<number[]>([]);
@@ -83,7 +83,7 @@ export const Illustration = ({ mouseEnter }: { mouseEnter: boolean }) => {
 
   return (
     <div
-      className="h-32 p-1 w-full"
+      className="h-24 w-full"
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${columns}, 1fr)`,

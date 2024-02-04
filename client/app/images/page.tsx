@@ -17,7 +17,7 @@ export async function generateMetadata({
     style: string;
   };
 }): Promise<Metadata | undefined> {
-  const title = `${searchParams.search} | Entropy AI`;
+  const title = `${searchParams.search} | Search`;
   const description = `Imagine your favourite characters.`;
 
   return {

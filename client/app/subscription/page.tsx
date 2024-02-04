@@ -1,25 +1,57 @@
-import { getUserDetails } from "@/lib/supabase-server";
+import {
+  getActiveProductsWithPrices,
+  getSession,
+  getSubscription,
+} from "@/lib/supabase-server";
 import Navbar from "@/components/navbar";
 import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
 import { SubscriptionGrid } from "./components/subscription-grid";
+import { BoxesContainer } from "@/components/ui/interactive-bg-boxes";
 
-export default function SettingsBillingPage() {
-  const userDetails = getUserDetails();
+export default async function SubscriptionPage() {
+  const [session, products, subscription] = await Promise.all([
+    getSession(),
+    getActiveProductsWithPrices(),
+    getSubscription(),
+  ]);
+
+  const user = session?.user;
 
   return (
     <div>
       <Navbar />
-      <Column className="w-full items-center min-h-screen py-32">
-        <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
-          <div className="space-y-0.5">
-            <h2 className="text-3xl font-semibold tracking-tight">
+
+      <Column className="w-full items-center min-h-screen py-18">
+        <Column className="w-full max-w-4xl xl:max-w-7xl">
+          <div className="relative w-full overflow-hidden bg-background flex flex-col justify-start rounded-lg pt-32 pb-14">
+            <div
+              className="absolute inset-0 w-full h-full bg-background z-20 pointer-events-none"
+              style={{
+                maskImage:
+                  "radial-gradient(circle at center, transparent, white)",
+              }}
+            />
+            <BoxesContainer />
+            <h1
+              className={
+                "w-fit md:text-4xl text-xl font-semibold relative z-20"
+              }
+            >
               Subscription & Billing
-            </h2>
-            <p className="text-muted-foreground">bryantanjw01@gmail.com</p>
+            </h1>
+            <p className="w-fit text-muted-foreground font-light mt-2 relative z-20 tracking-wide">
+              bryantanjw01@gmail.com
+            </p>
           </div>
-          <Row className="my-14 w-full h-[1px] bg-gradient-to-r from-gray-200 dark:from-gray-800 to-transparent" />
-          <SubscriptionGrid userDetails={userDetails} />
+
+          <Row className="mb-14 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+
+          <SubscriptionGrid
+            user={user}
+            products={products}
+            subscription={subscription}
+          />
         </Column>
       </Column>
     </div>
