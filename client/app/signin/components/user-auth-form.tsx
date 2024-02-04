@@ -21,10 +21,10 @@ import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 
 import { useSupabase } from "@/lib/providers/supabase-provider";
 import { signInFormSchema } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -71,7 +71,6 @@ const FadeInUp = ({ children, className }: AnimatedDivProps) => (
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const { supabase } = useSupabase();
-  const { toast } = useToast();
 
   const [passwordShown, setPasswordShown] = React.useState<boolean>(false);
   const [isSignUp, setIsSignUp] = React.useState<boolean>(false);
@@ -104,8 +103,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       console.error(error);
       throw new Error(error.message);
     } else {
-      toast({
-        title: `A confirmation email has been sent to ${email}.`,
+      toast.success(`A confirmation email has been sent to ${email}.`, {
         description: `Please check your inbox to confirm your new email address to finish signing up.`,
       });
     }
@@ -122,15 +120,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     if (error) {
       console.error(error);
-      toast({
-        variant: "destructive",
-        title: "Failed to sign in.",
+      toast.error("Failed to sign in.", {
         description: `${error.message}.` || "Uh oh! Something went wrong.",
       });
     } else {
-      toast({
-        title: "Succesfully signed in!",
-      });
+      toast("Succesfully signed in!");
     }
     setIsLoading(false);
   };
@@ -156,9 +150,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     if (error) {
       setIsGoogleAuthLoading(false);
       console.error(error);
-      toast({
-        variant: "destructive",
-        title: "Failed to sign in.",
+      toast.error("Failed to sign in.", {
         description: `${error.message}.` || "Uh oh! Something went wrong.",
       });
     }

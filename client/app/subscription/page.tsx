@@ -2,6 +2,7 @@ import {
   getActiveProductsWithPrices,
   getSession,
   getSubscription,
+  getUserDetails,
 } from "@/lib/supabase-server";
 import Navbar from "@/components/navbar";
 import { Column } from "@/components/ui/column";
@@ -10,12 +11,12 @@ import { SubscriptionGrid } from "./components/subscription-grid";
 import { BoxesContainer } from "@/components/ui/interactive-bg-boxes";
 
 export default async function SubscriptionPage() {
-  const [session, products, subscription] = await Promise.all([
+  const [session, userDetails, products, subscription] = await Promise.all([
     getSession(),
+    getUserDetails(),
     getActiveProductsWithPrices(),
     getSubscription(),
   ]);
-
   const user = session?.user;
 
   return (
@@ -41,14 +42,14 @@ export default async function SubscriptionPage() {
               Subscription & Billing
             </h1>
             <p className="w-fit text-muted-foreground font-light mt-2 relative z-20 tracking-wide">
-              bryantanjw01@gmail.com
+              {user?.email}
             </p>
           </div>
 
           <Row className="mb-14 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
 
           <SubscriptionGrid
-            user={user}
+            userDetails={userDetails}
             products={products}
             subscription={subscription}
           />

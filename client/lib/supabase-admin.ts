@@ -125,6 +125,10 @@ const manageSubscriptionStatusChange = async (
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["default_payment_method"],
   });
+  const paymentMethod = await stripe.paymentMethods.retrieve(
+    // @ts-ignore
+    subscription.default_payment_method
+  );
   // Upsert the latest status of the subscription object.
   const subscriptionData: Database["public"]["Tables"]["subscriptions"]["Insert"] =
     {
@@ -160,6 +164,11 @@ const manageSubscriptionStatusChange = async (
       trial_end: subscription.trial_end
         ? toDateTime(subscription.trial_end).toISOString()
         : null,
+      payment_method_id: subscription.default_payment_method
+        ? (subscription.default_payment_method as Stripe.PaymentMethod).id
+        : null,
+      card_brand: paymentMethod.card?.brand ?? null,
+      card_last4: paymentMethod.card?.last4 ?? null,
     };
 
   const { error } = await supabaseAdmin
@@ -202,7 +211,7 @@ const creditUserForOneTimePayment = async (
   const userId = customer.id;
   const priceId = lineItems[0].price.id;
   const price = await stripe.prices.retrieve(priceId);
-  // Get the number of credits from the Price metadata
+
   const creditsToAdd = parseInt(price.metadata.credits);
 
   const { data: user, error: getUserError } = await supabaseAdmin
@@ -245,6 +254,7 @@ const creditUserForOneTimePayment = async (
       { status: 500 }
     );
   }
+  console.log(`Credited user [${userId}] with [${creditsToAdd}] credits`);
 };
 
 const creditUserForRecurringPayment = async (invoice: Stripe.Invoice) => {
@@ -265,7 +275,7 @@ const creditUserForRecurringPayment = async (invoice: Stripe.Invoice) => {
   const userId = customer.id;
   const priceId = invoice.lines.data[0].price.id;
   const price = await stripe.prices.retrieve(priceId);
-  // Get the number of credits from the Price metadata
+
   const creditsToAdd = parseInt(price.metadata.credits);
 
   const { data: user, error: getUserError } = await supabaseAdmin

@@ -178,6 +178,9 @@ export interface Database {
           trial_end: string | null;
           trial_start: string | null;
           user_id: string;
+          payment_method_id: string | null;
+          card_brand: string | null;
+          card_last4: string | null;
         };
         Insert: {
           cancel_at?: string | null;
@@ -195,6 +198,9 @@ export interface Database {
           trial_end?: string | null;
           trial_start?: string | null;
           user_id: string;
+          payment_method_id: string | null;
+          card_brand: string | null;
+          card_last4: string | null;
         };
         Update: {
           cancel_at?: string | null;
@@ -212,6 +218,9 @@ export interface Database {
           trial_end?: string | null;
           trial_start?: string | null;
           user_id?: string;
+          default_payment_method: string | null;
+          card_brand: string | null;
+          card_last4: string | null;
         };
         Relationships: [
           {

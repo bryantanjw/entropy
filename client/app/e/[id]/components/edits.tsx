@@ -47,7 +47,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Token " + process.env.REPLICATE_API_KEY,
+              Authorization: "Token " + process.env.REPLICATE_API_TOKEN,
             },
           }
         );

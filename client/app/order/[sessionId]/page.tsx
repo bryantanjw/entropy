@@ -53,8 +53,8 @@ export default async function SuccessPage({ params }: SuccessPageProps) {
               <p className="px-8 text-center text-sm text-muted-foreground w-full">
                 or continue to{" "}
                 <Link
-                  href="/account"
-                  className="underline underline-offset-2 hover:text-muted-foreground text-black cursor-pointer"
+                  href="/subscription"
+                  className="underline underline-offset-2 hover:text-muted-foreground cursor-pointer"
                 >
                   view your account
                 </Link>

@@ -1,10 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { twMerge } from "tailwind-merge";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
+
+import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
@@ -17,40 +21,24 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SparklesCore } from "@/components/ui/sparkles";
-import { useRouter } from "next/navigation";
-import { Price, Product } from "./subscription-grid";
-import { toast } from "sonner";
-import { getStripe } from "@/lib/stripe-client";
-import { Icons } from "@/components/ui/icons";
+import { Price } from "./subscription-grid";
 
-export function UpgradePlanDialog({ user, products }) {
-  const router = useRouter();
+import { getStripe, postData } from "@/lib/stripe-client";
+
+export function UpgradePlanDialog({ userDetails, products }) {
   const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [isAnnual, setIsAnnual] = useState(true);
   const [selectedPrice, setSelectedPrice] = useState<Price | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const redirectToCustomerPortal = async (price) => {
-    setIsLoading(true);
-    try {
-      const { url } = await postData({
-        url: "/api/create-portal-link",
-      });
-      router.push(url);
-    } catch (error) {
-      toast.error("Couldn't access customer protal link.", {
-        description: error.message ?? `Please try again`,
-      });
-    }
-    setIsLoading(false);
-  };
+  // Filter products to only include those with more than one price, i.e. those that have both monthly and annual prices
+  const eligibleProducts = products.filter(
+    (product) => product.prices.length > 1
+  );
 
   const handleCheckout = async (price: Price) => {
     setIsLoading(true);
-    if (!user) {
-      return router.push("/signin");
-    }
 
     try {
       const { sessionId } = await postData({
@@ -97,15 +85,15 @@ export function UpgradePlanDialog({ user, products }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-8">
-            <Tabs defaultValue={products[1].id} className="space-y-4">
+            <Tabs defaultValue={eligibleProducts[1].id} className="space-y-4">
               <TabsList className="grid w-full grid-cols-3">
-                {products.map((product) => (
+                {eligibleProducts.map((product) => (
                   <TabsTrigger key={product.id} value={product.id}>
                     {product.name}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {products.map((product) => (
+              {eligibleProducts.map((product) => (
                 <TabsContent key={product.id} value={product.id}>
                   <PlanTabs
                     product={product}
@@ -134,7 +122,7 @@ export function UpgradePlanDialog({ user, products }) {
               Cancel
             </Button>
             <Button
-              className="h-10 min-w-[120px]"
+              className="h-10 min-w-[140px]"
               onClick={() => handleCheckout(selectedPrice)}
             >
               <div className="w-full absolute inset-0 h-full">
@@ -322,7 +310,6 @@ export const Switch = ({
           onChange={(e) => {
             const newIsAnnual = e.target.checked;
             setIsAnnual(newIsAnnual);
-            console.log("isAnnual", newIsAnnual);
             setSelectedPrice(
               newIsAnnual
                 ? product.prices.find((p) => p.interval === "year")
@@ -335,29 +322,4 @@ export const Switch = ({
       </label>
     </form>
   );
-};
-
-const postData = async ({
-  url,
-  data,
-}: {
-  url: string;
-  data?: { price: Price };
-}) => {
-  console.log("posting,", url, data);
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    credentials: "same-origin",
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    console.log("Error in postData", { url, data, res });
-
-    throw Error(res.statusText);
-  }
-
-  return res.json();
 };

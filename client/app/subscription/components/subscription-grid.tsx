@@ -7,12 +7,11 @@ import { PaymentCard } from "./payment-card";
 import { UpgradePlanDialog } from "./upgrade-plan-dialog";
 
 import { InvoiceGrid } from "./invoice-grid";
-import { CreditsGrid } from "./credits-grid";
+import { CreditsGrid } from "./optional-credits-grid";
 
-import { User } from "@supabase/supabase-js";
 import { Database } from "@/types_db";
 
-type Subscription = Database["public"]["Tables"]["subscriptions"]["Row"];
+export type Subscription = Database["public"]["Tables"]["subscriptions"]["Row"];
 export type Product = Database["public"]["Tables"]["products"]["Row"];
 export type Price = Database["public"]["Tables"]["prices"]["Row"];
 interface ProductWithPrices extends Product {
@@ -26,16 +25,26 @@ interface SubscriptionWithProduct extends Subscription {
 }
 
 interface PricingProps {
-  user: User;
+  userDetails: any;
   products: ProductWithPrices[];
   subscription: SubscriptionWithProduct | null;
 }
 
 export function SubscriptionGrid({
-  user,
+  userDetails,
   products,
   subscription,
 }: PricingProps) {
+  const { credits } = userDetails;
+  const renewal = new Date(
+    subscription?.cancel_at || subscription?.current_period_end
+  ).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const pricingCredits = subscription?.prices.products.metadata["credits"];
+
   return (
     <div className="mx-auto z-10">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
@@ -55,32 +64,47 @@ export function SubscriptionGrid({
             </div>
             <div className="grid grid-cols-5 gap-16 p-1.5 pt-0 text-sm items-center px-5 pb-5 group-hover/bento:translate-x-2 transition duration-200">
               <div className="col-span-2 flex flex-col gap-2">
-                <div className="font-light text-xs">
-                  <span className="font-semibold text-sm">200 </span>
-                  <span className="opacity-70">credits left</span>
+                <div className="font-light text-xs gap-1">
+                  <span className="font-semibold text-sm">{credits}</span>
+                  <span className="opacity-70"> credits left</span>
                 </div>
-                <Progress className="w-full" value={50} />
+                <Progress
+                  className="w-full"
+                  value={(credits / pricingCredits) * 100}
+                />
               </div>
 
               <div className="col-span-3 flex gap-10 items-center">
                 <div className="flex flex-col font-light gap-1">
                   <span className="text-xs opacity-70">Price/Month</span>
-                  <span className="font-semibold">$0</span>
+                  <span className="font-semibold">
+                    $
+                    {subscription
+                      ? `${subscription.prices.unit_amount / 100}`
+                      : "0"}
+                  </span>
                 </div>
 
                 <div className="flex flex-col font-light gap-1">
                   <span className="text-xs opacity-70">Included Credits</span>
-                  <span className="font-semibold">200</span>
+                  <span className="font-semibold">
+                    {subscription ? `${pricingCredits}` : "0"}
+                  </span>
                 </div>
 
                 <div className="flex flex-col font-light gap-1">
                   <span className="text-xs opacity-70">Renewal Date</span>
-                  <span className="font-semibold">Feb 1, 2024</span>
+                  <span className="font-semibold">
+                    {subscription ? renewal : "No active plan"}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="flex px-5 py-2.5 bg-muted justify-end rounded-b-lg border-t">
-              <UpgradePlanDialog user={user} products={products} />
+              <UpgradePlanDialog
+                userDetails={userDetails}
+                products={products}
+              />
             </div>
           </div>
 
@@ -95,17 +119,31 @@ export function SubscriptionGrid({
               </span>
             </div>
             <div className="p-1.5 pt-0 text-sm px-0 group-hover/bento:translate-x-2 transition duration-200">
-              <div className="font-light text-sm">No payment method added.</div>
+              <div className="font-light text-sm">
+              No payment method added
+                {/* {subscription
+                  ? subscription?.card_brand.charAt(0).toUpperCase() +
+                    subscription?.card_brand.slice(1) +
+                    " " +
+                    "••••" +
+                    " " +
+                    subscription.card_last4
+                  : "No payment method added."} */}
+              </div>
             </div>
             <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-4 transition duration-200">
-              <PaymentCard userDetails={user?.user_metadata} />
+              <PaymentCard subscription={subscription} />
             </div>
           </div>
 
           <InvoiceGrid />
         </div>
 
-        <CreditsGrid />
+        <CreditsGrid
+          userCredits={credits}
+          products={products}
+          subscription={subscription}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 
-export function PaymentCard({ userDetails }) {
+export async function PaymentCard({ subscription }) {
   const targetRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -26,10 +25,11 @@ export function PaymentCard({ userDetails }) {
 
     targetRef.current.addEventListener("mousemove", updateMousePosition);
 
+    const currentTarget = targetRef.current;
+    currentTarget.addEventListener("mousemove", updateMousePosition);
+
     return () => {
-      if (targetRef.current) {
-        targetRef.current.removeEventListener("mousemove", updateMousePosition);
-      }
+      currentTarget.removeEventListener("mousemove", updateMousePosition);
     };
   }, []);
 
@@ -44,7 +44,7 @@ export function PaymentCard({ userDetails }) {
       >
         <div className="h-full flex flex-col justify-between">
           <div className="flex items-start justify-between space-x-4 mb-2">
-            <div className="text-lg md:text-xl font-semibold italic">VISA</div>
+            <div className="text-lg md:text-xl font-semibold italic">visa</div>
           </div>
 
           <div className="inline-block w-8 h-6 md:w-12 md:h-8 bg-gradient-to-tl from-yellow-200 to-yellow-100 rounded-md shadow-inner overflow-hidden">
@@ -56,14 +56,6 @@ export function PaymentCard({ userDetails }) {
               <div className=""></div>
               <div className="border-t border-r border-gray-900 rounded-tr"></div>
               <div className="border-t border-l border-gray-900 rounded-tl"></div>
-            </div>
-          </div>
-
-          <div className="mt-5 md:mt-0">
-            <div className="text-xs font-semibold tracking-tight">balance</div>
-
-            <div className="text-xl font-semibold">
-              {userDetails?.credits ?? 0} credits
             </div>
           </div>
         </div>

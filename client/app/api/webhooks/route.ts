@@ -76,7 +76,7 @@ export async function POST(req: Request) {
           }
           break;
         case "invoice.payment_succeeded":
-          // Call your function to credit the user for a subscription payment
+          // Call function to credit the user for a subscription payment
           const invoice = event.data.object as Stripe.Invoice;
           // TODO: implement creditUserForInitialSubscriptionPayment in case of future plan for promotions and trials
           if (invoice.billing_reason === "subscription_create") {
