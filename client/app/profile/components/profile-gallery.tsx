@@ -24,7 +24,7 @@ export const ProfileGallery = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       const fetchImages = async () => {
-        const response = await fetch(`/api/list-images?userId=${userId}`);
+        const response = await fetch(`/api/s3/list-images?userId=${userId}`);
         setIsLoading(true);
         if (response.ok) {
           const data = await response.json();

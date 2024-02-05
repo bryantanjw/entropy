@@ -264,7 +264,7 @@ function ImageDialog({
     const imageKey = extractS3KeyFromUrl(url);
 
     try {
-      const response = await fetch("/api/delete-image", {
+      const response = await fetch("/api/s3/delete-image", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -32,7 +32,7 @@ export async function uploadLora(file) {
     const formData = new FormData();
     formData.append("file", file);
 
-    const blobResponse = await fetch(`/api/upload-lora`, {
+    const blobResponse = await fetch(`/api/s3/upload-lora`, {
       method: "POST",
       body: formData,
     });
@@ -64,4 +64,24 @@ export const deleteBlob = async (blob) => {
     throw new Error("Failed to delete file");
   }
   console.log("delBlobResponse", delBlobResponse);
+};
+
+export const deleteLoraFile = async (key: string): Promise<void> => {
+  try {
+    const response = await fetch("/api/s3/delete-lora", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ key }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to delete the file");
+    }
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    throw error; // Rethrow the error to be handled by the caller
+  }
 };

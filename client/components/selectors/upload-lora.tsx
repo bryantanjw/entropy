@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, uploadLora } from "@/lib/utils";
+import { cn, deleteLoraFile, uploadLora } from "@/lib/utils";
 import { useState } from "react";
 import {
   Tooltip,
@@ -52,6 +52,7 @@ export default function Dropzone({ form }) {
   const uploadedFile = form.watch("custom_lora_file");
   const custom_lora = form.watch("custom_lora");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { dragOver, setDragOver, onDragOver, onDragLeave, setFileDropError } =
     useDragDrop();
@@ -106,9 +107,26 @@ export default function Dropzone({ form }) {
     handleFile(files[0]);
   };
 
-  const handleDelete = () => {
-    form.setValue("custom_lora", "");
-    form.setValue("custom_lora_file", null);
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    const presignedUrl = form.watch("custom_lora"); // Get the presigned URL from the form
+    if (presignedUrl) {
+      // Extract the key from the URL
+      const urlParts = new URL(presignedUrl);
+      const key = urlParts.pathname.substring(1); // Remove the leading slash
+
+      try {
+        await deleteLoraFile(key);
+        console.log("File deleted successfully");
+        toast.success("File deleted successfully.");
+        form.setValue("custom_lora", "");
+        form.setValue("custom_lora_file", null);
+      } catch (error) {
+        console.error("Error deleting file", error);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
   };
 
   return (
@@ -164,7 +182,7 @@ export default function Dropzone({ form }) {
             />
           </form>
         ) : (
-          <div className="w-full gap-2 flex flex-col justify-start items-center dark:border-neutral-700 max-h-52 overflow-auto">
+          <div className="w-full flex flex-col justify-start items-center dark:border-neutral-700 max-h-52 overflow-auto">
             <div className="w-full flex flex-row justify-end items-center"></div>
             <div className="flex flex-row justify-between items-center border dark:border-neutral-700 gap-2 rounded-lg px-3 py-2 w-full group">
               <div className="flex flex-row w-full justify-start items-center gap-3">
@@ -217,7 +235,11 @@ export default function Dropzone({ form }) {
                   className="text-neutral-400 hidden group-hover:flex flex-row justify-end bg-neutral-100 p-1.5 rounded-lg hover:text-red-500 transition-all hover:cursor-pointer"
                   onClick={() => handleDelete()}
                 >
-                  <TrashIcon className="h-5 w-5" />
+                  {isDeleting ? (
+                    <Icons.spinner className="h-4 w-4 animate-spin text-neutral-500" />
+                  ) : (
+                    <TrashIcon className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </div>

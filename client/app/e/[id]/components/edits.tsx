@@ -84,7 +84,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
     console.log(predictions);
 
     try {
-      const response = await fetch("/api/upload-image", {
+      const response = await fetch("/api/s3/upload-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
