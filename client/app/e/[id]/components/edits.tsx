@@ -17,6 +17,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Icons } from "@/components/ui/icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Edits = ({ user, predictionId, path, index }) => {
   const { id, email } = user;
@@ -145,18 +151,38 @@ export const Edits = ({ user, predictionId, path, index }) => {
   };
 
   return (
-    <div className="flex w-full justify-between">
+    <div className="flex flex-col md:flex-row w-full gap-10 md:justify-between">
       <Button
         variant="ghost"
-        className="group items-center"
+        className="group justify-start items-center"
         onClick={() => router.back()}
       >
         <ArrowLeftIcon className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-all" />
         Back
       </Button>
-      <div className="flex items-center space-x-3">
-        <Button variant="secondary">Upscale</Button>
-        <Button variant="secondary">Edit</Button>
+      <div className="flex justify-end items-center space-x-3">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant="secondary" disabled>
+                Upscale
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Coming soon!</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant="secondary" disabled>
+                Animate
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Coming soon!</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <Popover>
           <PopoverTrigger asChild>
             <Button>

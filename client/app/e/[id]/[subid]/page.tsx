@@ -20,22 +20,22 @@ export default async function ImagePage({
   return (
     <div className="flex flex-col w-full items-center">
       <Navbar />
-      <div className="w-full grid grid-cols-[1fr_0.18fr]">
-        <Column className="items-center min-h-screen py-20 px-10 gap-8">
+      <div className="w-full grid md:grid-cols-[1fr_0.18fr] justify-center px-4 md:px-0">
+        <Column className="items-center min-h-screen py-20 md:py-20 px-0 md:px-10 gap-8">
           <Edits
             user={user}
             predictionId={predictionId}
             path={`${subid}`}
             index={index}
           />
-          <Column className="w-full max-w-lg">
+          <Column className="w-full md:max-w-lg">
             <OutputImage path={`${subid}`} index={index} />
           </Column>
         </Column>
 
         {/* Side Menu */}
-        <div className="flex flex-col gap-12 border mt-12 px-5 py-8 bg-muted">
-          <div className="flex justify-between items-center">
+        <div className="hidden md:flex flex-col gap-12 border mt-12 px-5 py-8 bg-muted">
+          {/* <div className="flex justify-between items-center">
             <span className="opacity-60 text-sm">Recent</span>
             <Button variant={"secondary"} size={"sm"} className="opacity-70">
               Clear
@@ -46,7 +46,7 @@ export default async function ImagePage({
             <div className="bg-muted h-9 flex-grow"></div>
             <div className="bg-muted h-9 flex-grow"></div>
             <div className="bg-muted h-9 flex-grow"></div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

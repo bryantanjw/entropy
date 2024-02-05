@@ -330,9 +330,9 @@ export const InputForm = ({
                           <div className="w-full rounded-lg">
                             <div
                               ref={parentDivRef}
-                              className="flex flex-col md:flex-row p-2.5 md:p-0 gap-5 h-full items-center border rounded-lg shadow-lg"
+                              className="flex flex-col md:flex-row p-2.5 md:p-0 gap-8 h-full items-center border rounded-lg shadow-lg"
                             >
-                              <div className="w-full md:w-fit flex gap-3 items-center">
+                              <div className="w-full md:w-fit flex gap-2 items-center">
                                 <Button
                                   variant={
                                     form.watch("lora") ? "outline" : "secondary"
@@ -380,21 +380,20 @@ export const InputForm = ({
 
                               <textarea
                                 placeholder="Imagine..."
-                                className="flex-1 pt-3 border-0 w-full shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
+                                className=" md:pt-3 border-0 w-full shadow-none h-auto md:overflow-hidden bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
                                 onInput={(e) => {
                                   const target =
                                     e.target as HTMLTextAreaElement;
                                   target.style.height = "inherit"; // Reset the height so the scrollHeight includes only the new content
                                   target.style.height = `${target.scrollHeight}px`; // Set the new height based on the content
                                 }}
-                                style={{ height: "auto", overflow: "hidden" }} // Start with auto height and hidden overflow
                                 {...field}
                               />
-                              <div className="justify-end items-center">
+                              <div className="hidden md:flex justify-end items-center">
                                 <Popover>
                                   <PopoverTrigger
                                     asChild
-                                    className="hidden md:flex opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
+                                    className="flex opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
                                   >
                                     <Button
                                       variant="ghost"

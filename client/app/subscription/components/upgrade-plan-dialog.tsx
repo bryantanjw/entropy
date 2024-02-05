@@ -72,11 +72,11 @@ export function UpgradePlanDialog({ subscription, products }) {
         <Button>Upgrade</Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[500px] border-none"
+        className="sm:max-w-[500px] px-4 md:px-0 border-none"
         showCloseIcon={false}
       >
         <Card className="justify-center text-center p-4 px-0 pb-0">
-          <CardHeader className="px-8 pt-4">
+          <CardHeader className="px-4 md:px-8 pt-4">
             <CardTitle className="text-2xl">
               You&apos;re currently on the {subscription?.prices.products.name}{" "}
               plan
@@ -85,7 +85,7 @@ export function UpgradePlanDialog({ subscription, products }) {
               Choose from the plan options below.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-8">
+          <CardContent className="px-4 md:px-8">
             <Tabs defaultValue={eligibleProducts[1].id} className="space-y-4">
               <TabsList className="grid w-full grid-cols-3">
                 {eligibleProducts.map((product) => (

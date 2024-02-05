@@ -1,7 +1,6 @@
 const STYLES = [
   { title: "Anime", value: "anime" },
   { title: "Realism", value: "realism" },
-  { title: "3D", value: "3d" },
   { title: "Digital", value: "digital" },
 ];
 

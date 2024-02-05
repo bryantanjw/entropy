@@ -452,47 +452,43 @@ export default function ImageItem({
           }
         }}
       >
-        <CardContainer>
-          <CardItem translateZ="100">
-            <motion.figure
+        <motion.figure
+          className={clsx(
+            "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
+            image.ratio === "square"
+              ? "aspect-square"
+              : image.ratio === "landscape"
+              ? "aspect-landscape"
+              : "aspect-portrait"
+          )}
+          style={{ y: translateY }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <DrawerTrigger onClick={toggleDialog}>
+            <Image
+              fill={true}
+              loading={image.ratio === "portrait" ? "eager" : "lazy"}
+              priority={image.ratio === "portrait" ? true : false}
+              sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
+              alt={image.title}
+              src={image.image_url}
               className={clsx(
-                "group relative overflow-hidden rounded-md bg-neutral-two dark:bg-neutral-nine",
-                image.ratio === "square"
-                  ? "aspect-square"
-                  : image.ratio === "landscape"
-                  ? "aspect-landscape"
-                  : "aspect-portrait"
+                "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
+                isLoading
+                  ? "scale-120 blur-3xl grayscale"
+                  : "scale-100 blur-0 grayscale-0"
               )}
-              style={{ y: translateY }}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <DrawerTrigger onClick={toggleDialog}>
-                <Image
-                  fill={true}
-                  loading={image.ratio === "portrait" ? "eager" : "lazy"}
-                  priority={image.ratio === "portrait" ? true : false}
-                  sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
-                  alt={image.title}
-                  src={image.image_url}
-                  className={clsx(
-                    "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
-                    isLoading
-                      ? "scale-120 blur-3xl grayscale"
-                      : "scale-100 blur-0 grayscale-0"
-                  )}
-                  onLoad={() => setIsLoading(false)}
-                />
-              </DrawerTrigger>
-            </motion.figure>
-          </CardItem>
-        </CardContainer>
+              onLoad={() => setIsLoading(false)}
+            />
+          </DrawerTrigger>
+        </motion.figure>
 
         <AnimatePresence initial={false} custom={direction}>
           <DrawerContent onEscapeKeyDown={toggleDialog}>
-            <ScrollArea className="h-[400px]">
-              <motion.div className="flex flex-col h-full rounded-lg p-2 py-5 justify-between bg-card text-card-foreground shadow-xl">
+            <ScrollArea className="h-[400px] py-3">
+              <motion.div className="flex flex-col h-full rounded-lg justify-between bg-card text-card-foreground shadow-xl">
                 <div className="space-y-4">
                   <CardHeader>
                     <CardTitle className="mb-2">Imagine</CardTitle>

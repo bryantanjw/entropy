@@ -12,6 +12,7 @@ import { extractProgress } from "@/lib/helpers";
 import Image from "next/image";
 
 import { loadingImages } from "@/lib/constants";
+import { Separator } from "@/components/ui/separator";
 
 export default function OutputImages({ id }) {
   const pathname = usePathname();
@@ -117,30 +118,36 @@ export default function OutputImages({ id }) {
         }}
       >
         {predictions ? (
-          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-10 mt-20">
-            {predictions.output.map((img, index) => {
-              const path = img.split("/").slice(-2, -1)[0];
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                  key={index}
-                >
-                  <Link key={index} href={`${pathname}/${path}${index}`}>
-                    <OutputImage path={path} index={index} />
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
+          <>
+            <div className="flex md:hidden w-full mt-20 items-center gap-3 text-xs font-semibold px-8 md:px-0">
+              <p className="opacity-40">RESULTS</p>
+              <Separator className="h-[1.5px] w-[80%] md:w-[90%]" />
+            </div>
+            <div className="h-full md:pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 md:px-0 mt-10 md:mt-24">
+              {predictions.output.map((img, index) => {
+                const path = img.split("/").slice(-2, -1)[0];
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25 }}
+                    key={index}
+                  >
+                    <Link key={index} href={`${pathname}/${path}${index}`}>
+                      <OutputImage path={path} index={index} />
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </>
         ) : (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-col items-center justify-center gap-8 w-full px-12 md:px-32 mt-20"
+            className="flex flex-col items-center justify-center gap-8 w-full px-8 md:px-32 mt-12 md:mt-20"
           >
             <p className="text-center text-muted-foreground -mb-4">
               {progress <= 0 ? "Booting..." : `Generating ${currentCycle}/3...`}
@@ -155,7 +162,7 @@ export default function OutputImages({ id }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.3 }}
-              className="flex flex-col md:flex-row"
+              className="grid grid-row-2 md:grid-cols-5"
             >
               <Image
                 loading="eager"
@@ -164,24 +171,24 @@ export default function OutputImages({ id }) {
                 width={400}
                 height={500}
                 className={clsx(
-                  "object-cover",
+                  "md:col-span-2 object-cover object-top h-[360px] md:h-full",
                   imageLoading
                     ? "scale-120 blur-3xl grayscale"
                     : "scale-100 blur-0 grayscale-0"
                 )}
                 onLoad={() => setImageLoading(false)}
               />
-              <div className="bg-muted flex flex-col items-start justify-start h-full p-11 pb-16 gap-10">
-                <div className="flex flex-col gap-2">
+              <div className="md:col-span-3 bg-muted flex flex-col items-start justify-start h-full pt-8 p-6 md:p-11 md:pb-16 gap-6 md:gap-10">
+                <div className="flex flex-col gap-2 text-sm md:text-md">
                   <h4 className="text-muted-foreground font-semibold">Tip</h4>
                   <h4 className="text-muted-foreground">{imageData.tip}</h4>
                 </div>
-                <div className="inline-flex text-2xl">
+                <div className="inline-flex md:text-xl">
                   <span>&quot;</span>
                   <h2 className="">{imageData.input_prompt}&quot;</h2>
                 </div>
                 <div className="mt-auto">
-                  <h4 className="text-muted-foreground italic tracking-wide">
+                  <h4 className="text-sm md:text-md text-muted-foreground italic tracking-wide">
                     {imageData.character}
                   </h4>
                 </div>

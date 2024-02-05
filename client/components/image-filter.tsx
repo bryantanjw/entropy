@@ -10,8 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 const styles = [
   { _id: 1, style: "anime" },
   { _id: 2, style: "realism" },
-  { _id: 3, style: "3d" },
-  { _id: 4, style: "digital" },
+  { _id: 3, style: "digital" },
 ];
 
 export default function Filter({
