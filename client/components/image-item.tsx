@@ -15,6 +15,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Cross2Icon,
+  DownloadIcon,
   ImageIcon,
   MagicWandIcon,
   PersonIcon,
@@ -39,6 +40,8 @@ import { ScrollArea } from "./ui/scroll-area";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { FormContext } from "@/lib/providers/form-provider";
+import { Icons } from "./ui/icons";
+import { handleDownload } from "@/lib/helpers";
 
 type ImageItemProps = {
   index: number;
@@ -101,12 +104,19 @@ export default function ImageItem({
 }: ImageItemProps) {
   const form = useContext(FormContext);
   const column = (index % 3) + 1;
-  const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currIndex, setCurrIndex] = useState(index);
   const [direction, setDirection] = useState(0);
+  const [isDownloading, setDownloading] = useState(false);
+
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const match = window.matchMedia("(min-width: 768px)").matches;
+    setIsDesktop(match);
+  }, []);
 
   const toggleDialog = () => setDialogOpen(!isDialogOpen);
 
@@ -286,6 +296,23 @@ export default function ImageItem({
                   onLoad={() => setIsLoading(false)}
                   quality={100}
                 />
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="absolute right-4 top-4 rounded-lg"
+                  onClick={() =>
+                    handleDownload({
+                      imageUrl: currentImage.image_url,
+                      setDownloading,
+                    })
+                  }
+                >
+                  {isDownloading ? (
+                    <Icons.spinner className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <DownloadIcon className="h-4 w-4" />
+                  )}
+                </Button>
               </motion.figure>
               <motion.div
                 key={`${currIndex}-card`}

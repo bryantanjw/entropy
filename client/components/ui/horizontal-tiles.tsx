@@ -35,6 +35,7 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Cross2Icon,
+  DownloadIcon,
   ExternalLinkIcon,
   Pencil1Icon,
   PersonIcon,
@@ -53,6 +54,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { handleDownload } from "@/lib/helpers";
 
 const material = new THREE.LineBasicMaterial({ color: "white" });
 const geometry = new THREE.BufferGeometry().setFromPoints([
@@ -258,6 +260,7 @@ function ImageDialog({
   const { url, userId, metadata, removeImageFromState } = props;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [isDownloading, setDownloading] = useState(false);
 
   const handleDeleteImage = async (url) => {
     setIsDeleting(true);
@@ -328,6 +331,23 @@ function ImageDialog({
             onLoad={() => setIsLoading(false)}
             quality={100}
           />
+          <Button
+            size="icon"
+            variant="secondary"
+            className="absolute right-4 top-4 rounded-lg"
+            onClick={() =>
+              handleDownload({
+                imageUrl: url,
+                setDownloading,
+              })
+            }
+          >
+            {isDownloading ? (
+              <Icons.spinner className="h-4 w-4 animate-spin" />
+            ) : (
+              <DownloadIcon className="h-4 w-4" />
+            )}
+          </Button>
         </motion.figure>
         <motion.div
           initial={{ opacity: 0, y: 50 }}

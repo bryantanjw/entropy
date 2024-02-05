@@ -45,3 +45,34 @@ export const extractProgress = (
   // Return null if no percentage was found
   return { progress: null, cycle: null };
 };
+
+export const handleDownload = ({ imageUrl, setDownloading }) => {
+  setDownloading(true);
+
+  fetch(imageUrl, {
+    headers: new Headers({
+      Origin: location.origin,
+    }),
+    mode: "cors",
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Network response was not ok");
+      return response.blob();
+    })
+    .then((blob) => {
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `entropy.png`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
+    })
+    .catch((error) => {
+      console.error("Download failed:", error);
+    })
+    .finally(() => {
+      setDownloading(false);
+    });
+};

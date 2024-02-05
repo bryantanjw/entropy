@@ -40,8 +40,8 @@ export function usePlaygroundForm() {
       custom_lora_file: {},
       custom_lora: "",
       lora_strength: 1,
-      width: 320,
-      height: 480,
+      width: 340,
+      height: 512,
       batch_size: 3,
     },
   });
