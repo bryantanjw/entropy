@@ -28,16 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -48,7 +39,6 @@ import { ScrollArea } from "./ui/scroll-area";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { FormContext } from "@/lib/providers/form-provider";
-import { useMediaQuery } from "@/lib/hooks/use-media-query";
 
 type ImageItemProps = {
   index: number;
@@ -108,11 +98,10 @@ export default function ImageItem({
   index,
   total,
   images,
-  gridRef,
 }: ImageItemProps) {
   const form = useContext(FormContext);
   const column = (index % 3) + 1;
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -125,7 +114,7 @@ export default function ImageItem({
     images[currIndex] || ({} as ImageDataType);
 
   const { scrollYProgress } = useScroll({
-    offset: ["start start", "end start"], // remove this if your container is not fixed height
+    offset: ["start start", "end start"], // remove this if container is not fixed height
   });
 
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
