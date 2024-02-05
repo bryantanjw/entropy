@@ -68,39 +68,11 @@ function Page({ m = 0.4, urls, ...props }) {
 }
 
 function Pages({ initialImages }) {
-  const [images, setImages] = useState(initialImages.slice(0, 3));
-  const [start, setStart] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const { width } = useThree((state) => state.viewport);
   const pages = [];
 
-  const visible = useRef(false);
-  const ref = useIntersect((isVisible) => (visible.current = isVisible));
-
-  const loadMoreImages = async () => {
-    const next = start + 30;
-    const nextImages = await fetchImages({ start: next });
-    if (nextImages.length > 0) {
-      setStart(next);
-      setImages((prevImages) => [...prevImages, ...nextImages]);
-    } else {
-      setHasMore(false);
-    }
-  };
-
-  useEffect(() => {
-    setImages(initialImages);
-    console.log(initialImages.length);
-  }, [initialImages]);
-
-  useEffect(() => {
-    if (visible && hasMore) {
-      loadMoreImages();
-    }
-  }, [visible, hasMore]);
-
-  for (let i = 0; i < images.length; i += 3) {
-    const imageUrls = images.slice(i, i + 3).map((img) => img.image_url);
+  for (let i = 0; i < initialImages.length; i += 3) {
+    const imageUrls = initialImages.slice(i, i + 3).map((img) => img.image_url);
     pages.push(
       <Page
         key={`page-${i / 3}`}
@@ -110,20 +82,7 @@ function Pages({ initialImages }) {
     );
   }
 
-  return (
-    <>
-      {pages}
-      <Scroll html>
-        <div
-          ref={ref}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      </Scroll>
-    </>
-  );
+  return <>{pages}</>;
 }
 
 export default function DreiGallery({ initialImages }) {
@@ -133,7 +92,7 @@ export default function DreiGallery({ initialImages }) {
     <AnimatePresence mode="wait">
       <Canvas gl={{ antialias: false }} dpr={[1, 1.5]}>
         <Suspense fallback={null}>
-          <ScrollControls horizontal damping={4} pages={numPages} distance={3}>
+          <ScrollControls horizontal damping={4} pages={numPages}>
             <Scroll>
               <Pages initialImages={initialImages} />
             </Scroll>

@@ -1,7 +1,7 @@
 "use client";
 
-import { cn, uploadBlob } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { cn, uploadLora } from "@/lib/utils";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -9,8 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { FileIcon, TrashIcon } from "@radix-ui/react-icons";
-import { Icons } from "./icons";
-import { FormLabel } from "./form";
+import { Icons } from "../ui/icons";
+import { FormLabel } from "../ui/form";
 import { toast } from "sonner";
 
 function formatBytes(bytes: number, decimals: number = 2): string {
@@ -50,41 +50,37 @@ function useDragDrop() {
 
 export default function Dropzone({ form }) {
   const uploadedFile = form.watch("custom_lora_file");
-  console.log("uploadedFile", uploadedFile);
+  const custom_lora = form.watch("custom_lora");
   const [isLoading, setIsLoading] = useState(false);
 
   const { dragOver, setDragOver, onDragOver, onDragLeave, setFileDropError } =
     useDragDrop();
 
   const handleFile = (file: File) => {
-    if (file && file.name.endsWith(".safetensors")) {
-      setIsLoading(true);
-      uploadBlob(file)
-        .then((blob) => {
-          if (blob && blob.url) {
-            form.setValue("custom_lora", blob.url);
-            form.setValue(
-              "lora",
-              file.name.length > 30
-                ? file.name.substring(0, 20) + "..."
-                : file.name
-            );
-          } else {
-            console.error("Failed to get the URL from the uploaded blob.");
-            toast.error("Failed to upload file.");
-            form.setValue("custom_lora_file", {});
-          }
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Upload failed", error);
-          toast.error("Failed to upload file.");
-          setIsLoading(false);
-        });
-    } else {
+    if (!file || !file.name.endsWith(".safetensors")) {
       setFileDropError("Only .safetensors files are allowed.");
       toast.error("Only .safetensors files are allowed.");
+      return;
     }
+
+    setIsLoading(true);
+    uploadLora(file)
+      .then((blob) => {
+        if (!blob || !blob.url) {
+          throw new Error("Failed to get the URL from the uploaded blob.");
+        }
+
+        form.setValue("custom_lora", blob.url);
+      })
+      .catch((error) => {
+        console.error("Upload failed", error);
+        toast.error("Failed to upload file.", {
+          description: error.message || "An error occurred.",
+        });
+        form.setValue("custom_lora", "");
+        form.setValue("custom_lora_file", {});
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const onDrop = (e: React.DragEvent<HTMLLabelElement>) => {
@@ -119,7 +115,7 @@ export default function Dropzone({ form }) {
     <>
       {/* Uploader */}
       <div className="dark:bg-muted bg-white w-full max-w-lg rounded-xl">
-        {!uploadedFile.name ? (
+        {!uploadedFile?.name && !custom_lora ? (
           <form>
             <label
               htmlFor="file"
@@ -207,7 +203,7 @@ export default function Dropzone({ form }) {
                     <p className="text-xs text-neutral-500">
                       {formatBytes(uploadedFile.size)}
                     </p>
-                    {!isLoading && (
+                    {!isLoading && custom_lora && (
                       <div className="flex flex-row justify-start items-center text-xs rounded-full px-2 py-[0.5px] gap-1">
                         <div className="h-2 w-2 bg-green-400 rounded-full" />
                         <p className="text-neutral-500">Uploaded</p>

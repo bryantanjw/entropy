@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export async function PaymentCard({ subscription }) {
   const targetRef = useRef<HTMLDivElement | null>(null);
@@ -43,8 +44,14 @@ export async function PaymentCard({ subscription }) {
         transition={{ duration: 0.2 }}
       >
         <div className="h-full flex flex-col justify-between">
-          <div className="flex items-start justify-between space-x-4 mb-2">
-            <div className="text-lg md:text-xl font-semibold italic">visa</div>
+          <div className="flex items-start justify-between space-x-4 mb-3">
+            {/* <div className="text-lg md:text-xl font-semibold italic">visa</div> */}
+            <Image
+              alt="mastercard"
+              src="/mastercard-logo.png"
+              width={50}
+              height={50}
+            />
           </div>
 
           <div className="inline-block w-8 h-6 md:w-12 md:h-8 bg-gradient-to-tl from-yellow-200 to-yellow-100 rounded-md shadow-inner overflow-hidden">

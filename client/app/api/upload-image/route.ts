@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     // Upload the image buffer to S3
     const uploadResult = await client.send(
       new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.AWS_FAVOURITES_BUCKET_NAME,
         Key: key,
         Body: imageBuffer,
         ContentType: "image/png",
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     );
 
     // Return the URL to the uploaded object
-    const uploadedImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    const uploadedImageUrl = `https://${process.env.AWS_FAVOURITES_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
     return new Response(
       JSON.stringify({ success: true, url: uploadedImageUrl }),

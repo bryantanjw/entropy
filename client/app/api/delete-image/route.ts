@@ -16,7 +16,7 @@ export async function DELETE(request: Request) {
   try {
     await client.send(
       new DeleteObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.AWS_FAVOURITES_BUCKET_NAME,
         Key: imageKey,
       })
     );

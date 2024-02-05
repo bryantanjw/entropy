@@ -18,9 +18,17 @@ export const toDateTime = (secs: number) => {
   return t;
 };
 
-export const extractProgress = (log: string): number | null => {
+export const extractProgress = (
+  log: string
+): { progress: number | null; cycle: number | null } => {
   if (typeof log === "string" && log) {
     const lines = log.split("\n");
+
+    // Find lines that indicate the start of an upscale cycle
+    const upscaleLines = lines.filter((line) =>
+      line.includes("IterativeLatentUpscale")
+    );
+    const cycle = upscaleLines.length; // The number of upscale cycles found
 
     // Reverse the array and find the first line that contains a percentage
     const lastProgressLine = lines.reverse().find((line) => line.includes("%"));
@@ -29,11 +37,11 @@ export const extractProgress = (log: string): number | null => {
       // Extract the percentage from the line
       const percentageMatch = lastProgressLine.match(/(\d+)%/);
       if (percentageMatch) {
-        return parseInt(percentageMatch[1], 10);
+        return { progress: parseInt(percentageMatch[1], 10), cycle };
       }
     }
   }
 
   // Return null if no percentage was found
-  return null;
+  return { progress: null, cycle: null };
 };

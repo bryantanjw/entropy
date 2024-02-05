@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   try {
     const listCommand = new ListObjectsV2Command({
-      Bucket: process.env.AWS_BUCKET_NAME,
+      Bucket: process.env.AWS_FAVOURITES_BUCKET_NAME,
       Prefix: userPrefix,
     });
 
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const imagesWithMetadata = await Promise.all(
       Contents.map(async (content) => {
         const getCommand = new GetObjectCommand({
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: process.env.AWS_FAVOURITES_BUCKET_NAME,
           Key: content.Key,
         });
 

@@ -18,6 +18,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { useSupabase } from "@/lib/providers/supabase-provider";
 import { SparklesCore } from "./ui/sparkles";
@@ -65,15 +71,24 @@ export function UserNav({ user, userDetails }: Props) {
           >
             {userDetails?.full_name ?? user.email}
           </Link>
-          <Link href={"/subscription"}>
-            <Button
-              variant="outline"
-              className="h-fit text-sm leading-none font-medium rounded-full px-2 py-1.5 shadow-sm"
-            >
-              <ShadowIcon className="h-4 w-4 mr-2" />
-              {userDetails?.credits ?? 0}
-            </Button>
-          </Link>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href={"/subscription"}>
+                  <Button
+                    variant="outline"
+                    className="h-fit text-sm leading-none font-medium rounded-full px-2 py-1.5 shadow-sm"
+                  >
+                    <ShadowIcon className="h-4 w-4 mr-2" />
+                    {userDetails?.credits ?? 0}
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="end">
+                <p>You have {userDetails?.credits ?? 0} credits left</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup className="space-y-1 py-2">

@@ -53,7 +53,7 @@ export default async function GenerationPage({
       <Navbar />
 
       <div className="w-full grid grid-cols-[1fr_0.18fr]">
-        <Column className="items-center min-h-screen pt-28 px-10">
+        <Column className="items-center min-h-screen py-28 px-10">
           <Column className="w-full h-full lg:max-w-4xl xl:max-w-6xl">
             <InputForm user={user} characters={characters} />
             <OutputImages id={params.id} />
@@ -62,7 +62,7 @@ export default async function GenerationPage({
 
         {/* Side Menu */}
         <div className="flex flex-col gap-12 border mt-12 px-5 py-8 bg-muted">
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <span className="opacity-60 text-sm">Recent</span>
             <Button variant={"secondary"} size={"sm"} className="opacity-70">
               Clear
@@ -73,7 +73,7 @@ export default async function GenerationPage({
             <div className="bg-muted h-9 flex-grow"></div>
             <div className="bg-muted h-9 flex-grow"></div>
             <div className="bg-muted h-9 flex-grow"></div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

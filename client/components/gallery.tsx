@@ -16,7 +16,6 @@ export async function Gallery() {
       <div className="items-center justify-center mb-6 h-[83vh]">
         <ImageGrid initialImages={data} />
         {/* <DreiGallery initialImages={data} /> */}
-        {/* <HorizontalTiles /> */}
       </div>
     </>
   );

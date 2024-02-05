@@ -21,7 +21,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { ModelSelector } from "./selectors/model-selector";
 import { Textarea } from "./ui/textarea";
-import Dropzone from "./ui/dropzone";
+import Dropzone from "./selectors/upload-lora";
 
 const dimensions = ["Portrait", "Square", "Landscape"];
 
@@ -38,14 +38,14 @@ export const Parameters: React.FC<ParametersProps> = ({ form }) => {
     if (value) {
       setSize(value);
       if (value === "Portrait") {
-        form.setValue("height", 540);
-        form.setValue("width", 360);
+        form.setValue("height", 480);
+        form.setValue("width", 320);
       } else if (value === "Square") {
-        form.setValue("height", 360);
-        form.setValue("width", 360);
+        form.setValue("height", 320);
+        form.setValue("width", 320);
       } else if (value === "Landscape") {
-        form.setValue("height", 360);
-        form.setValue("width", 540);
+        form.setValue("height", 320);
+        form.setValue("width", 480);
       }
     }
   };

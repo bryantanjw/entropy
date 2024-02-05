@@ -99,6 +99,15 @@ export const InputForm = ({
     console.log(values);
     setSubmitting(true);
 
+    if (!values.lora && values.custom_lora) {
+      values.lora = "gaming/Ahri.safetensors";
+    }
+
+    if (!values.lora && !values.custom_lora) {
+      values.lora = "gaming/Ahri.safetensors";
+      values.lora_strength = 0;
+    }
+
     // Make initial request to Lambda function to create a prediction
     const res = await fetch("https://api.entropy.so/predictions", {
       method: "POST",
@@ -404,14 +413,8 @@ export const InputForm = ({
                                       console.log("errors", errors);
                                       const inputPromptError =
                                         errors.input_prompt?.message;
-                                      const loraError = errors.lora?.message;
 
-                                      const errorMessage =
-                                        inputPromptError ||
-                                        loraError ||
-                                        "Please select a character or type a prompt";
-
-                                      toast.error(errorMessage);
+                                      toast.error(inputPromptError);
                                     }
                                   }
                                 }}

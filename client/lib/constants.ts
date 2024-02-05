@@ -33,6 +33,14 @@ export const loadingImages = [
     character: "Ahri from League of Legends",
   },
   {
+    tip: "Each character has trigger phrases. Use them for more prominent features.",
+    imageUrl:
+      "https://cdn.sanity.io/images/6jp747p1/production/af008d550a4fd488f3eb6800731bde89980c5995-1536x2160.png",
+    input_prompt:
+      "masterpiece, (detailed, highres, best quality), 1girl, IncrsAhri, braid, fox tail, multiple tails, korean clothes, skirt, blurry, blurry background, arms behind back, seductive smile",
+    character: "Ahri from League of Legends",
+  },
+  {
     tip: "Combine interesting styles and concepts.",
     imageUrl:
       "https://cdn.sanity.io/images/6jp747p1/production/dd965c1597e158d8e5a3128af0dc2db363827983-720x1080.png ",
@@ -72,6 +80,14 @@ export const loadingImages = [
     character: "Ana de Armas",
   },
   {
+    tip: "Each character has trigger phrases. Use them for more prominent features.",
+    imageUrl:
+      "https://cdn.sanity.io/images/6jp747p1/production/e7654df2d10fc68123cdfcd755a498e57802e977-1024x1536.jpg",
+    input_prompt:
+      "(masterpiece, best quality), intricate details, coven ahri, 1girl, dress, detached sleeves, cleavage, multicolored hair, blonde hair, black hair, animal ears, pantyhose, whisker markings, multiple tails, energy ball, upper body",
+    character: "Coven Ahri from League of Legends",
+  },
+  {
     tip: "Don't see a character you want? Request it!",
     imageUrl:
       "https://cdn.sanity.io/images/6jp747p1/production/ab352aff20a17b716e73599aca6083711ee526a7-720x1080.png",
@@ -79,20 +95,12 @@ export const loadingImages = [
       "pool party miss fortune, 1girl, one-piece swimsuit, red hair, smile, closed mounth, solo, detailed face, looking at viewer, cowboy shot, upper body, pool, (masterpiece:1.2, best quality)",
     character: "Pool Party Miss Fortune from League of Legends",
   },
-];
-
-// Template for inserting jsonb field in Supabase console
-[
   {
-    src: "https://cdn.sanity.io/images/6jp747p1/production/9d2668c2145ea7164f62444507ed23ec8e69d2c5-600x896.jpg",
-    imagePosition: "object-top",
-  },
-  {
-    src: "https://cdn.sanity.io/images/6jp747p1/production/fe15ef85a20e719e9ad4ce666f4ecac36cd83fa8-720x1080.png",
-    imagePosition: "object-top",
-  },
-  {
-    src: "https://cdn.sanity.io/images/6jp747p1/production/e2aca1108e4f73172c44a018467c01f50fef7582-720x1080.png",
-    imagePosition: "object-center",
+    tip: "Don't see a character you want? Request it!",
+    imageUrl:
+      "https://cdn.sanity.io/images/6jp747p1/production/990ce8b05ee243483de20a6053be4c0bd97bcfb8-720x1080.png",
+    input_prompt:
+      "scarlett johansson, (RAW photo, best quality), a close up portrait photo, 1woman, outdoor, high detailed skin, sweater, air bangs, slight cleavage",
+    character: "Scarlett Johansson",
   },
 ];

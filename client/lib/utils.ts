@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
-import type { PutBlobResult } from "@vercel/blob";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,28 +27,26 @@ export async function getBlobs() {
   console.log(data);
 }
 
-export async function uploadBlob(file) {
-  let blob: PutBlobResult;
+export async function uploadLora(file) {
   try {
-    const blobResponse = await fetch(
-      `/api/blob/upload-blob?filename=${file.name}`,
-      {
-        method: "POST",
-        body: file,
-      }
-    );
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const blobResponse = await fetch(`/api/upload-lora`, {
+      method: "POST",
+      body: formData,
+    });
+    console.log("blobResponse", blobResponse);
 
     if (!blobResponse.ok) {
-      throw new Error("Failed to upload file");
+      throw new Error(blobResponse.statusText);
     }
 
-    blob = await blobResponse.json();
-    console.log("blob", blob);
+    const blob = await blobResponse.json();
+    return blob;
   } catch (error) {
-    console.error(error);
-    return;
+    throw new Error(error);
   }
-  return blob;
 }
 
 export const deleteBlob = async (blob) => {

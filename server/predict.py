@@ -9,7 +9,7 @@ import torch
 import uuid
 import json
 import urllib
-import shutil
+from urllib.parse import urlparse, unquote
 import websocket
 from urllib.error import URLError
 from models import checkpoints, loras
@@ -130,11 +130,11 @@ class Predictor(BasePredictor):
             description="Prompt"
         ),
         negative_prompt: str = Input(
-            description="Negative Prompt", default="lowres, worst quality, ugly, blurry, bad fingers"
+            description="Negative Prompt", default="(worst quality:1.4), (low quality:1.4), simple background, bad anatomy"
         ),
         steps: int = Input(
             description="Inference Steps",
-            default=25,
+            default=20,
             ge=1,
             le=100
         ),
@@ -169,11 +169,11 @@ class Predictor(BasePredictor):
         ),
         width: int = Input(
             description="Image Width",
-            default=512
+            default=340
         ),
         height: int = Input(
             description="Image Height",
-            default=720
+            default=512
         ),
         batch_size: int = Input(
             description="Batch Size",
@@ -181,11 +181,11 @@ class Predictor(BasePredictor):
             ge=1,
             le=4
         ),
-        upscale_factor: int = Input(
+        upscale_factor: float = Input(
             description="Upscale Factor",
-            default=3,
-            ge=0,
-            le=3
+            default=3.0,
+            ge=0.0,
+            le=3.0
         )
     ) -> List[Path]:
         """Run a single prediction on the model"""
@@ -241,21 +241,29 @@ class Predictor(BasePredictor):
         lora_to_use = lora
         lora_path = None
         if custom_lora is not None and custom_lora != "":
-            lora_directory = "ComfyUI/models/loras/custom"
-            # Ensure the directory exists
-            os.makedirs(lora_directory, exist_ok=True)
-            lora_path = os.path.join(
-                lora_directory, os.path.basename(custom_lora))
+            lora_directory = "ComfyUI/models/loras"
+            # Parse the filename from the presigned URL
+            parsed_url = urlparse(custom_lora)
+            path = parsed_url.path
 
-            # Download the file from the S3 presigned URL
+            # Extract the filename from the path
+            # Ensure to decode any percent-encoded characters
+            filename = unquote(os.path.basename(path))
+
+            # Construct the full path where the file will be saved
+            lora_path = os.path.join(lora_directory, filename)
+            print(f"Full path for saving file: {lora_path}")
+
+            # Download the file
             response = requests.get(custom_lora)
             if response.status_code == 200:
                 with open(lora_path, 'wb') as f:
                     f.write(response.content)
+                print(f"File downloaded and saved successfully at {lora_path}")
                 lora_to_use = lora_path
             else:
                 raise Exception(
-                    f"Failed to download LoRA file from S3. Status code: {response.status_code}")
+                    f"Failed to download LoRA file. Status code: {response.status_code}")
 
         # set input variables
         prompt["93:0"]["inputs"]["ckpt_name"] = checkpoint_model
@@ -283,9 +291,12 @@ class Predictor(BasePredictor):
 
         # Delete the custom_lora file after generating images
         if custom_lora:
-            os.remove(lora_path)
-            print(
-                f"Custom LoRA file {lora_path} deleted after generating images.")
+            try:
+                os.remove(lora_path)
+                print(
+                    f"Custom LoRA file {lora_path} deleted after generating images.")
+            except OSError as e:
+                print(f"Error: {e.strerror} - {e.filename}")
 
         image_paths = []
         for node_id in images:

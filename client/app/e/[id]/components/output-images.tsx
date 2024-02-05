@@ -20,6 +20,7 @@ export default function OutputImages({ id }) {
   const [imageLoading, setImageLoading] = useState(true);
 
   const [progress, setProgress] = useState(0);
+  const [currentCycle, setCurrentCycle] = useState(0);
 
   useEffect(() => {
     // Randomize the initial image
@@ -66,9 +67,11 @@ export default function OutputImages({ id }) {
           let pollResponse = await pollRes.json();
           const { status, logs } = pollResponse;
 
-          const newProgress = extractProgress(logs);
-          if (newProgress !== null) {
+          const { progress: newProgress, cycle } = extractProgress(logs);
+          if (newProgress !== null && cycle !== null) {
             setProgress(newProgress);
+            // Assuming there's a state to hold the current cycle
+            setCurrentCycle(cycle);
           }
 
           if (pollResponse.status === "succeeded") {
@@ -99,7 +102,7 @@ export default function OutputImages({ id }) {
     return () => {
       isCancelled = true;
     };
-  }, [id]); // Removed predictions from the dependency array
+  }, [id]);
 
   if (error || !id) {
     return notFound();
@@ -114,7 +117,7 @@ export default function OutputImages({ id }) {
         }}
       >
         {predictions ? (
-          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-10 mt-32">
+          <div className="h-full pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-10 mt-20">
             {predictions.output.map((img, index) => {
               const path = img.split("/").slice(-2, -1)[0];
               return (
@@ -137,9 +140,15 @@ export default function OutputImages({ id }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-col items-center justify-center gap-8 w-full px-12 md:px-32 mt-32"
+            className="flex flex-col items-center justify-center gap-8 w-full px-12 md:px-32 mt-20"
           >
+            <p className="text-center text-muted-foreground -mb-4">
+              {progress <= 0 ? "Booting..." : `Generating ${currentCycle}/3...`}
+            </p>
             <Progress className="h-1.5" value={progress} />
+            <p className="text-center -mt-4 text-xs text-muted-foreground">
+              Takes about 40s to generate
+            </p>
             <motion.div
               key={currentImageIndex}
               initial={{ opacity: 0, y: 50 }}

@@ -1,6 +1,6 @@
 checkpoints = [
     # Realism
-    "MajicMix.safetensors",
+    "MajicMixReverie.safetensors",
     "epiCPhotoGasm.safetensors",
     "Era.safetensors",
     "Paragon.safetensors",
@@ -48,6 +48,8 @@ loras = [
     "gaming/Mythmaker_Irelia.safetensors",
     "gaming/Jinx.safetensors",
     "gaming/Akali.safetensors",
+    "gaming/Soul_Fighter_Gwen.safetensors",
+    "gaming/Custom.safetensors",
 
     "gaming/Jett.safetensors",
 
@@ -58,6 +60,10 @@ loras = [
     "anime/Highschool_of_the_Dead.safetensors",
     "anime/Yor_Forger.safetensors",
     "anime/2B.safetensors",
+    "anime/Raphtalia.safetensors",
+
+    # Cinematic
+    "cinematic/Spider_Gwen.safetensors",
 
     # Hollywood
     "hollywood/Jenna_Ortega.safetensors",
