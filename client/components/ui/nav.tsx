@@ -69,15 +69,7 @@ export default function Nav({ user, userDetails, dark = false }: NavbarProps) {
           Entropy<sup className="text-blue-500 ml-1">alpha</sup>
         </Link>
         <div className="ml-auto flex space-x-3 sm:justify items-center">
-          <Button
-            variant="ghost"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            className={cn("md:hidden")}
-          >
-            {isMenuOpen ? <Cross2Icon /> : <HamburgerMenuIcon />}
-          </Button>
-
-          <div className="hidden space-x-5 md:flex">
+          <div className="space-x-5 md:flex">
             <div>
               <NavigationMenu>
                 <NavigationMenuList className="gap-4 items-center">
@@ -123,94 +115,6 @@ export default function Nav({ user, userDetails, dark = false }: NavbarProps) {
           </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            className={cn(
-              "fixed top-14 flex w-full flex-col justify-between bg-white dark:bg-slate-900 border-b rounded-b-md z-40 bg-opacity-80 backdrop-blur"
-            )}
-            initial={{ y: "-100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="flex flex-col px-6 py-6">
-              <div className="flex flex-col gap-5">
-                <Link href="/subscription" className="flex items-center gap-3">
-                  <RocketIcon /> Subscription
-                </Link>
-                <Link href="/gallery" className="flex items-center gap-3">
-                  <CameraIcon /> Gallery
-                </Link>
-                <span className="flex items-center gap-3" onClick={toggleTheme}>
-                  {theme === "light" ? <MoonIcon /> : <SunIcon />} Toggle theme
-                </span>
-                {user && (
-                  <p
-                    onClick={async () => {
-                      const { error } = await supabase.auth.signOut();
-                      if (error) {
-                        console.error("Error signing out:", error.message);
-                        toast.error("Uh oh! Something went wrong", {
-                          description: error.message || "Failed to sign out.",
-                        });
-                        return;
-                      }
-                      router.push("/signin");
-                    }}
-                    className="cursor-pointer flex items-center gap-3 mt-4"
-                  >
-                    <ExitIcon /> Logout
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="sticky inset-x-0 bottom-0 border-t border-slate-400 border-opacity-20 px-2">
-              {user ? (
-                <Link
-                  href="/subscription"
-                  className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
-                >
-                  <div className="flex flex-row items-center">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={
-                          user.user_metadata.avatar_url ?? "/avatar-icon.png"
-                        }
-                        alt={userDetails?.full_name ?? user.email}
-                      />
-                      <AvatarFallback>
-                        <PersonIcon />
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <div className="ml-3">
-                      <p className="text-sm font-medium">
-                        {userDetails?.full_name ?? user.email}
-                      </p>
-                      <p className="text-sm leading-none text-muted-foreground">
-                        {userDetails?.credits ?? 0} credits
-                      </p>
-                    </div>
-                  </div>
-
-                  <ArrowRightIcon className="h-5 w-5 mr-2" />
-                </Link>
-              ) : (
-                <Link
-                  href="/signin"
-                  className="flex items-center gap-2 p-4 hover:bg-gray-50 justify-between"
-                >
-                  <p>Log In</p>
-                  <ArrowRightIcon className="mr-3" />
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

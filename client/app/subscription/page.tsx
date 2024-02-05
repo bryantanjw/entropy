@@ -23,7 +23,7 @@ export default async function SubscriptionPage() {
     <div>
       <Navbar />
 
-      <Column className="w-full items-center min-h-screen py-18">
+      <Column className="w-full items-center min-h-screen py-18 px-4">
         <Column className="w-full max-w-4xl xl:max-w-7xl">
           <div className="relative w-full overflow-hidden bg-background flex flex-col justify-start rounded-lg pt-32 pb-14">
             <div

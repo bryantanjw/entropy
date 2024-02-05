@@ -62,7 +62,7 @@ export function SubscriptionGrid({
                 {subscription?.prices?.products?.name ?? "Free"} Plan
               </Badge>
             </div>
-            <div className="grid grid-cols-5 gap-16 p-1.5 pt-0 text-sm items-center px-5 pb-5 group-hover/bento:translate-x-2 transition duration-200">
+            <div className="grid grid-row-2 md:grid-cols-5 gap-4 md:gap-16 p-1.5 pt-0 text-sm items-center px-5 pb-5 group-hover/bento:translate-x-2 transition duration-200">
               <div className="col-span-2 flex flex-col gap-2">
                 <div className="font-light text-xs gap-1">
                   <span className="font-semibold text-sm">{credits}</span>
@@ -74,7 +74,7 @@ export function SubscriptionGrid({
                 />
               </div>
 
-              <div className="col-span-3 flex gap-10 items-center">
+              <div className="md:col-span-3 flex gap-10 items-center">
                 <div className="flex flex-col font-light gap-1">
                   <span className="text-xs opacity-70">Price/Month</span>
                   <span className="font-semibold">
@@ -131,7 +131,7 @@ export function SubscriptionGrid({
                   : "No payment method added."} */}
               </div>
             </div>
-            <div className="absolute -right-36 top-7 h-full max-w-none group-hover/bento:-translate-y-4 transition duration-200">
+            <div className="absolute -right-56 md:-right-28 top-7 h-full w-full md:w-fit md:max-w-none group-hover/bento:-translate-y-4 transition duration-200">
               <PaymentCard subscription={subscription} />
             </div>
           </div>

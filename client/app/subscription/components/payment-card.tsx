@@ -35,7 +35,7 @@ export async function PaymentCard({ subscription }) {
   }, []);
 
   return (
-    <div className="flex flex-col space-y-5 md:space-y-8 max-w-xs md:w-full md:max-w-xl h-full">
+    <div className="flex flex-col space-y-5 md:space-y-8 w-full max-w-xl h-full">
       <motion.div
         ref={targetRef}
         className="relative border dark:border-slate-700 border-opacity-10 text-white h-56 md:w-96 p-5 py-4 rounded-xl before:rounded-xl shadow-2xl before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_var(--x,0px)_var(--y,0px),gray_0%,_transparent_100%)] before:opacity-30 dark:before:opacity-20 bg-gradient-to-tl from-gray-900 to-gray-800 md:bg-transparent md:grainy-background"
@@ -44,7 +44,7 @@ export async function PaymentCard({ subscription }) {
         transition={{ duration: 0.2 }}
       >
         <div className="h-full flex flex-col justify-between">
-          <div className="flex items-start justify-between space-x-4 mb-3">
+          <div className="flex items-start justify-between space-x-4 mb-4">
             {/* <div className="text-lg md:text-xl font-semibold italic">visa</div> */}
             <Image
               alt="mastercard"

@@ -60,12 +60,12 @@ export const CreditsGrid = ({ userCredits, products, subscription }) => {
       }}
     >
       <Illustration mouseEnter={mouseEnter} />
-      <div className="flex p-1.5 px-4 pt-3">
+      <div className="flex p-1.5 px-2 md:px-4 pt-3">
         <span className="font-semibold leading-none tracking-wide">
           On-Demand Credits
         </span>
       </div>
-      <div className="p-1.5 pt-0 text-sm font-light px-4 space-y-4">
+      <div className="p-1.5 pt-0 text-sm font-light px-2 md:px-4 space-y-4">
         <p className="opacity-70">
           You cannot buy on-demand credits without an active subscription.
         </p>

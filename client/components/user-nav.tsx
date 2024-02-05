@@ -168,7 +168,7 @@ export function UserNav({ user, userDetails }: Props) {
               Subscription & Billing
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             asChild
             className="text-muted-foreground cursor-pointer rounded-md py-2"
           >
@@ -192,13 +192,13 @@ export function UserNav({ user, userDetails }: Props) {
               </svg>
               Pricing
             </Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
 
           <DropdownMenuItem
             asChild
             className="text-muted-foreground cursor-pointer rounded-md py-2"
           >
-            <Link href="https://instagram.com/entropy.so" target="_blank">
+            <Link href="https://instagram.com/entropyso" target="_blank">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="icon icon-tabler icon-tabler-message-circle w-5 h-5 mr-4"
