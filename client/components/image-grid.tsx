@@ -52,7 +52,7 @@ export default function ImageGrid({
     <>
       <div
         ref={topOfRef}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 py-12"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-10 px-4 md:px-0 py-12"
       >
         {images.map((image, index) => (
           <ImageItem

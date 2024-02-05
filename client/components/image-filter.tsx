@@ -54,9 +54,9 @@ export default function Filter({
         y: { type: "spring", stiffness: 300, damping: 30 },
         opacity: { duration: 0.2 },
       }}
-      className="text-sm flex flex-col md:flex-row justify-between w-full items-center"
+      className="text-sm flex flex-col md:flex-row gap-6 md:gap-0 justify-between w-full items-center"
     >
-      <form onSubmit={handleSearch} className="relative w-[300px]">
+      <form onSubmit={handleSearch} className="relative w-[350px] md:w-[300px]">
         <input
           name="search"
           type="text"

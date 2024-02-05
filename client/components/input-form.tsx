@@ -171,7 +171,7 @@ export const InputForm = ({
           opacity: { duration: 0.2 },
         }}
       >
-        <div className="gap-8 w-full px-8 md:px-0">
+        <div className="gap-8 w-full px-4 md:px-0">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CommandDialog
@@ -179,10 +179,10 @@ export const InputForm = ({
                 onOpenChange={(newOpen) => {
                   setOpen(newOpen);
                 }}
-                className="md:min-w-[900px]"
+                className="w-[350px] h-[400px] md:h-fit md:min-w-[900px] rounded-xl"
               >
                 <CommandInput placeholder="Search..." />
-                <div className="grid grid-cols-[1.1fr_0.01fr_1fr] px-1 justify-items-center">
+                <div className="grid md:grid-cols-[1.1fr_0.01fr_1fr] px-1 justify-items-center">
                   <CommandList className="w-full h-full">
                     <CommandEmpty className="flex flex-col py-6 items-center gap-5">
                       <span> No results found. </span>
@@ -330,32 +330,57 @@ export const InputForm = ({
                           <div className="w-full rounded-lg">
                             <div
                               ref={parentDivRef}
-                              className="flex gap-5 h-full items-center border rounded-lg shadow-lg"
+                              className="flex flex-col md:flex-row p-2.5 md:p-0 gap-5 h-full items-center border rounded-lg shadow-lg"
                             >
-                              <Button
-                                variant={
-                                  form.watch("lora") ? "outline" : "secondary"
-                                }
-                                onClick={(event) => {
-                                  setOpen(true);
-                                  event.preventDefault();
-                                }}
-                                className="m-2 h-11 item-start"
-                              >
-                                {form
-                                  .watch("lora")
-                                  ?.split("/")[1]
-                                  ?.split(".")[0]
-                                  .replace(/_/g, " ") ?? (
-                                  <>
-                                    <PlusIcon className="mr-2 h-4 w-4" />
-                                    Character
-                                  </>
-                                )}
-                              </Button>
+                              <div className="w-full md:w-fit flex gap-3 items-center">
+                                <Button
+                                  variant={
+                                    form.watch("lora") ? "outline" : "secondary"
+                                  }
+                                  onClick={(event) => {
+                                    setOpen(true);
+                                    event.preventDefault();
+                                  }}
+                                  className="w-full md:m-2 h-11 item-start"
+                                >
+                                  {form
+                                    .watch("lora")
+                                    ?.split("/")[1]
+                                    ?.split(".")[0]
+                                    .replace(/_/g, " ") ?? (
+                                    <>
+                                      <PlusIcon className="mr-2 h-4 w-4" />
+                                      Character
+                                    </>
+                                  )}
+                                </Button>
+                                <Popover>
+                                  <PopoverTrigger
+                                    asChild
+                                    className="flex md:hidden opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
+                                  >
+                                    <Button
+                                      variant="ghost"
+                                      className="p-2 hover:bg-transparent transition duration-200"
+                                    >
+                                      <MixerHorizontalIcon className="h-4 w-4" />
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent
+                                    alignOffset={-10}
+                                    sideOffset={30}
+                                    style={{ width: popoverWidth }}
+                                  >
+                                    <ScrollArea className="h-[700px] md:h-full">
+                                      <Parameters form={form} />
+                                    </ScrollArea>
+                                  </PopoverContent>
+                                </Popover>
+                              </div>
+
                               <textarea
                                 placeholder="Imagine..."
-                                className="flex-1 pt-3 border-0 shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
+                                className="flex-1 pt-3 border-0 w-full shadow-none bg-transparent outline-none resize-none" // Added resize-none to prevent manual resizing
                                 onInput={(e) => {
                                   const target =
                                     e.target as HTMLTextAreaElement;
@@ -369,7 +394,7 @@ export const InputForm = ({
                                 <Popover>
                                   <PopoverTrigger
                                     asChild
-                                    className="opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
+                                    className="hidden md:flex opacity-60 hover:opacity-100 data-[state=open]:opacity-100"
                                   >
                                     <Button
                                       variant="ghost"
@@ -418,7 +443,7 @@ export const InputForm = ({
                                     }
                                   }
                                 }}
-                                className="w-[120px] h-full rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
+                                className="w-full md:w-[120px] h-[60px] md:h-full md:rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
                               >
                                 <div className="w-full absolute inset-0 h-full">
                                   <SparklesCore

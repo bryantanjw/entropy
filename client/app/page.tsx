@@ -16,7 +16,7 @@ export default async function Home() {
   return (
     <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
       <Navbar />
-      <Column className="w-full items-center min-h-screen pt-44">
+      <Column className="w-full items-center min-h-screen pt-28 md:pt-44">
         <Column className="w-full max-w-3xl lg:max-w-5xl xl:max-w-6xl">
           <InputForm user={user} characters={characters} />
           <Gallery />

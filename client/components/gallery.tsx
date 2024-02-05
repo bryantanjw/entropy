@@ -9,7 +9,7 @@ export async function Gallery() {
 
   return (
     <>
-      <Row className="my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
+      <Row className="my-14 md:my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
       <div className="flex">
         <Filter />
       </div>

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const playgroundFormSchema = z.object({
   checkpoint_model: z.string().default("Aniverse.safetensors"),
-  input_prompt: z.string().optional(),
+  input_prompt: z.string().min(1, { message: "Please type a prompt." }),
   negative_prompt: z
     .string()
     .default(
