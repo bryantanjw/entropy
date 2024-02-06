@@ -28,7 +28,7 @@ export default async function ImagePage({
             path={`${subid}`}
             index={index}
           />
-          <Column className="w-full md:max-w-lg">
+          <Column className="max-h-screen my-auto">
             <OutputImage path={`${subid}`} index={index} />
           </Column>
         </Column>

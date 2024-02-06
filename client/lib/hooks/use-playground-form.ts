@@ -22,6 +22,7 @@ export const playgroundFormSchema = z.object({
   height: z.number().default(1200),
   batch_size: z.number().min(1).max(4).default(1),
   style: z.enum(["Digital", "Realism", "Anime"]).default("Digital"),
+  upscale_factor: z.number().min(1).max(3).default(3),
 });
 
 export function usePlaygroundForm() {
@@ -43,6 +44,7 @@ export function usePlaygroundForm() {
       width: 340,
       height: 512,
       batch_size: 3,
+      upscale_factor: 3,
     },
   });
 

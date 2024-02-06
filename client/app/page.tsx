@@ -3,12 +3,18 @@ import { Gallery } from "@/components/gallery";
 import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 
-import { getCharacters, getSession } from "@/lib/supabase-server";
+import {
+  getCharacters,
+  getGenerationCount,
+  getSession,
+} from "@/lib/supabase-server";
+import { formatCount } from "@/lib/helpers";
 
 export default async function Home() {
-  const [session, characters] = await Promise.all([
+  const [session, characters, generationCount] = await Promise.all([
     getSession(),
     getCharacters(),
+    getGenerationCount(),
   ]);
 
   const user = session?.user;
@@ -16,8 +22,11 @@ export default async function Home() {
   return (
     <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
       <Navbar />
-      <Column className="w-full items-center min-h-screen pt-28 md:pt-44">
+      <Column className="w-full items-center min-h-screen pt-28 md:pt-32">
         <Column className="w-full max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+          <div className="thirteen w-fit relative mx-auto mb-8 px-4 py-1.5 text-sm font-light tracking-wide">
+            {formatCount(generationCount)} images generated and counting!
+          </div>
           <InputForm user={user} characters={characters} />
           <Gallery />
         </Column>

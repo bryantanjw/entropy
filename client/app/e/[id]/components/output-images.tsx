@@ -123,7 +123,7 @@ export default function OutputImages({ id }) {
               <p className="opacity-40">RESULTS</p>
               <Separator className="h-[1.5px] w-[80%] md:w-[90%]" />
             </div>
-            <div className="h-full md:pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 md:px-0 mt-10 md:mt-24">
+            <div className="md:pb-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 md:px-0 mt-10 md:mt-24">
               {predictions.output.map((img, index) => {
                 const path = img.split("/").slice(-2, -1)[0];
                 return (
