@@ -29,6 +29,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Icons } from "./ui/icons";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -40,7 +41,6 @@ import { ScrollArea } from "./ui/scroll-area";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";
 import { FormContext } from "@/lib/providers/form-provider";
-import { Icons } from "./ui/icons";
 import { handleDownload } from "@/lib/helpers";
 
 type ImageItemProps = {
@@ -103,7 +103,6 @@ export default function ImageItem({
   images,
 }: ImageItemProps) {
   const form = useContext(FormContext);
-  const column = (index % 3) + 1;
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -117,6 +116,7 @@ export default function ImageItem({
     const match = window.matchMedia("(min-width: 768px)").matches;
     setIsDesktop(match);
   }, []);
+  const column = isDesktop ? (index % 3) + 1 : 1;
 
   const toggleDialog = () => setDialogOpen(!isDialogOpen);
 

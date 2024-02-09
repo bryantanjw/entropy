@@ -3,7 +3,6 @@
 import { useInView } from "react-intersection-observer";
 import { useEffect, useRef, useState } from "react";
 
-import { Icons } from "./ui/icons";
 import ImageItem from "./image-item";
 
 import { ImageDataType } from "@/sanity/types/ImageDataType";

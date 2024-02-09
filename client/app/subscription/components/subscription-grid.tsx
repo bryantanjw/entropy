@@ -121,14 +121,14 @@ export function SubscriptionGrid({
             <div className="p-1.5 pt-0 text-sm px-0 group-hover/bento:translate-x-2 transition duration-200">
               <div className="font-light text-sm">
                 No payment method added
-                {/* {subscription
+                {subscription?.payment_method_id
                   ? subscription?.card_brand.charAt(0).toUpperCase() +
                     subscription?.card_brand.slice(1) +
                     " " +
                     "••••" +
                     " " +
                     subscription.card_last4
-                  : "No payment method added."} */}
+                  : "No payment method added."}
               </div>
             </div>
             <div className="absolute -right-56 md:-right-28 top-7 h-full w-full md:w-fit md:max-w-none group-hover/bento:-translate-y-4 transition duration-200">

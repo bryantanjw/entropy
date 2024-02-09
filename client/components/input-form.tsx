@@ -442,7 +442,7 @@ export const InputForm = ({
                                     }
                                   }
                                 }}
-                                className="w-full md:w-[120px] h-[60px] md:h-full md:rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition width duration-200"
+                                className="w-full md:w-[150px] h-[60px] md:h-full md:rounded-l-none active:scale-95 scale-100 disabled:cursor-not-allowed transition-all duration-200"
                               >
                                 <div className="w-full absolute inset-0 h-full">
                                   <SparklesCore

@@ -154,7 +154,7 @@ export default function OutputImages({ id }) {
             </p>
             <Progress className="h-1.5" value={progress} />
             <p className="text-center -mt-4 text-xs text-muted-foreground">
-              Takes about 40s to generate
+              Takes about 45s to generate
             </p>
             <motion.div
               key={currentImageIndex}

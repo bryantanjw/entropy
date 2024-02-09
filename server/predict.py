@@ -18,7 +18,7 @@ from models import checkpoints, loras
 class Predictor(BasePredictor):
     def setup(self):
         self.server_address = "127.0.0.1:8188"
-        self.download_models()  # Uncomment this function call when you're adding new models
+        # self.download_models()  # Uncomment this function call when you're adding new models
         self.start_server()
 
     def start_server(self):
@@ -43,35 +43,62 @@ class Predictor(BasePredictor):
         except URLError:
             return False
 
-    def download_models(self):
+    # def download_models(self):
+    #     start_time = time.time()
+    #     base_url = "https://huggingface.co/bryantanjw/entropy-lol/resolve/main/models"
+
+    #     def download_model(model_type, model_names):
+    #         print(f"Now downloading {model_type}")
+    #         upscale_model_path = f"ComfyUI/models/upscale_models/RealESRGAN_x4plus.pth"
+    #         if not os.path.exists(upscale_model_path):
+    #             upscale_model_url = f"{base_url}/upscale_models/RealESRGAN_x4plus.pth"
+    #             print(
+    #                 f"Upscale model not found, downloading from {upscale_model_url}")
+    #             urllib.request.urlretrieve(
+    #                 upscale_model_url, upscale_model_path)
+    #             print(f"\nDownloaded upscale model to {upscale_model_path}")
+    #         else:
+    #             print(
+    #                 f"Upscale model {upscale_model_path} already exists, skipping download")
+    #         for model_name in model_names:
+    #             path = f"ComfyUI/models/{model_type}/{os.path.basename(model_name)}"
+    #             if not os.path.exists(path):
+    #                 url = f"{base_url}/{model_type}/{model_name}"
+    #                 print(f"Model {path} not found, downloading from {url}")
+    #                 urllib.request.urlretrieve(url, path)
+    #                 print(f"\nDownloaded model to {path}")
+    #             else:
+    #                 print(f"Model {path} already exists, skipping download")
+
+    #     download_model("checkpoints", checkpoints)
+    #     download_model("loras", loras)
+    #     end_time = time.time()
+    #     print(
+    #         f"Total time taken to download models: {end_time - start_time} seconds")
+
+    def download_model(self, model_type, model_name):
         base_url = "https://huggingface.co/bryantanjw/entropy-lol/resolve/main/models"
+        print(f"Now downloading {model_type} model: {model_name}")
+        path = f"ComfyUI/models/{model_type}/{os.path.basename(model_name)}"
+        if not os.path.exists(path):
+            url = f"{base_url}/{model_type}/{model_name}"
+            print(f"Model {path} not found, downloading checkpoint model")
+            urllib.request.urlretrieve(url, path)
+            print(f"\nDownloaded model to {path}")
+        else:
+            print(f"Model {path} already exists, skipping download")
 
-        def download_models(model_type, model_names):
-            print(f"Now downloading {model_type}")
-            upscale_model_path = f"ComfyUI/models/upscale_models/RealESRGAN_x4plus.pth"
-            if not os.path.exists(upscale_model_path):
-                upscale_model_url = f"{base_url}/upscale_models/RealESRGAN_x4plus.pth"
-                print(
-                    f"Upscale model not found, downloading from {upscale_model_url}")
-                urllib.request.urlretrieve(
-                    upscale_model_url, upscale_model_path)
-                print(f"\nDownloaded upscale model to {upscale_model_path}")
-            else:
-                print(
-                    f"Upscale model {upscale_model_path} already exists, skipping download")
-            for model_name in model_names:
-                path = f"ComfyUI/models/{model_type}/{os.path.basename(model_name)}"
-                if not os.path.exists(path):
-                    url = f"{base_url}/{model_type}/{model_name}"
-                    print(f"Model {path} not found, downloading from {url}")
-                    urllib.request.urlretrieve(
-                        url, path)
-                    print(f"\nDownloaded model to {path}")
-                else:
-                    print(f"Model {path} already exists, skipping download")
-
-        download_models("checkpoints", checkpoints)
-        download_models("loras", loras)
+        # Download the upscale model
+        upscale_model_path = "ComfyUI/models/upscale_models/RealESRGAN_x4plus.pth"
+        if not os.path.exists(upscale_model_path):
+            upscale_model_url = f"{base_url}/upscale_models/RealESRGAN_x4plus.pth"
+            print(
+                f"Upscale model not found, downloading upscale model")
+            urllib.request.urlretrieve(upscale_model_url, upscale_model_path)
+            print(f"\nDownloaded upscale model to {upscale_model_path}")
+        else:
+            print(
+                f"Upscale model {upscale_model_path} already exists, skipping download")
 
     def queue_prompt(self, prompt, client_id):
         p = {"prompt": prompt, "client_id": client_id}
@@ -192,6 +219,10 @@ class Predictor(BasePredictor):
         if seed is None or seed == 0:
             seed = int.from_bytes(os.urandom(3), "big")
         print(f"Using seed: {seed}")
+
+        # Download only the required models at runtime
+        self.download_model("checkpoints", checkpoint_model)
+        self.download_model("loras", lora)
 
         # queue prompt
         img_output_path = self.get_workflow_output(
