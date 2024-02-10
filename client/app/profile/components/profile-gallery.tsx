@@ -58,7 +58,11 @@ export const ProfileGallery = ({ userId }) => {
       ) : (
         !isLoading &&
         images.length <= 0 && (
-          <span className="text-center text-gray-500">No favourites yet!</span>
+          <div className="flex justify-center -mt-32 items-center h-screen">
+            <span className="text-center text-gray-500">
+              No favourites yet! Save your generations for them to appear here!
+            </span>
+          </div>
         )
       )}
       {/* <InterstellarScroll
