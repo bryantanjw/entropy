@@ -42,7 +42,7 @@ export function StrengthSelector({ form }: StrengthSelectorProps) {
           <Slider
             id="lora_strength"
             max={1.0}
-            min={0.1}
+            min={0}
             value={[value]}
             step={0.01}
             onValueChange={handleSliderChange}

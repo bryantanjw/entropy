@@ -109,7 +109,10 @@ export function UpgradePlanDialog({ subscription, products }) {
 
             <div className="flex opacity-80 text-start pt-5 text-sm gap-1">
               <p>Or check all plans in our</p>
-              <Link className="text-blue-600 hover:underline w-fit" href="#">
+              <Link
+                className="text-blue-600 hover:underline w-fit"
+                href="#https://www.entropy.so/#pricing"
+              >
                 Pricing Page <sup>&#8599;</sup>
               </Link>
             </div>

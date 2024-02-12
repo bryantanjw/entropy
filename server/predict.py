@@ -212,7 +212,7 @@ class Predictor(BasePredictor):
             description="Upscale Factor",
             default=3.0,
             ge=0.0,
-            le=3.0
+            le=4.0
         )
     ) -> List[Path]:
         """Run a single prediction on the model"""

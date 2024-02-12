@@ -4,11 +4,22 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-export default function OutputImage({ path, index }) {
+export default function OutputImage({ path, index, predictionId }) {
   const pathname = usePathname().split("/").pop().slice(0, -1);
 
   const flag = path.toString() === pathname;
+
+  const [predictions, setPredictions] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedPredictions = localStorage.getItem(
+        `predictions-${predictionId}`
+      );
+      return storedPredictions ? JSON.parse(storedPredictions) : null;
+    }
+    return null;
+  });
 
   // TODO: figure out why the fuck does the exit page transition for image
   // to pop back in not fukcing work???

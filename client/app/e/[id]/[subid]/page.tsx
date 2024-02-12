@@ -1,6 +1,5 @@
-import OutputImage from "../components/image";
+import OutputImage from "../components/output-image";
 import Navbar from "@/components/navbar";
-import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/column";
 import { Edits } from "../components/edits";
 import { getSession } from "@/lib/supabase-server";
@@ -21,7 +20,7 @@ export default async function ImagePage({
     <div className="flex flex-col w-full items-center">
       <Navbar />
       <div className="w-full grid md:grid-cols-[1fr_0.18fr] justify-center px-4 md:px-0">
-        <Column className="items-center min-h-screen py-20 md:py-20 px-0 md:px-10 gap-8">
+        <Column className="items-center min-h-screen py-20 px-0 md:px-10 gap-8">
           <Edits
             user={user}
             predictionId={predictionId}
@@ -29,7 +28,7 @@ export default async function ImagePage({
             index={index}
           />
           <Column className="max-h-screen my-auto">
-            <OutputImage path={`${subid}`} index={index} />
+            <OutputImage path={`${subid}`} index={index} predictionId={predictionId} />
           </Column>
         </Column>
 

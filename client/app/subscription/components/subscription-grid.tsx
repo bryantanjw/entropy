@@ -120,7 +120,6 @@ export function SubscriptionGrid({
             </div>
             <div className="p-1.5 pt-0 text-sm px-0 group-hover/bento:translate-x-2 transition duration-200">
               <div className="font-light text-sm">
-                No payment method added
                 {subscription?.payment_method_id
                   ? subscription?.card_brand.charAt(0).toUpperCase() +
                     subscription?.card_brand.slice(1) +

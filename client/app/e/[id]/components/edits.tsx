@@ -5,6 +5,7 @@ import {
   ArrowLeftIcon,
   ChevronDownIcon,
   DownloadIcon,
+  ExternalLinkIcon,
   StarIcon,
 } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
@@ -38,6 +39,20 @@ export const Edits = ({ user, predictionId, path, index }) => {
   });
   const [uploading, setUploading] = useState(false);
   const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        router.back();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [router]);
 
   useEffect(() => {
     async function getPrediction() {
@@ -203,7 +218,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
                 {uploading ? (
                   <Icons.spinner className="w-4 h-4 mr-3 animate-spin" />
                 ) : (
-                  <StarIcon className="w-4 h-4 mr-4" />
+                  <StarIcon className="w-4 h-4 mr-3" />
                 )}
                 Save to favorites
               </Button>
@@ -218,6 +233,18 @@ export const Edits = ({ user, predictionId, path, index }) => {
                   <DownloadIcon className="w-4 h-4 mr-3" />
                 )}
                 Download
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full py-5 px-3 justify-start items-center"
+                onClick={() =>
+                  window.open(
+                    `https://replicate.delivery/pbxt/${path}/out-${index}.png`
+                  )
+                }
+              >
+                <ExternalLinkIcon className="w-4 h-4 mr-3" />
+                Open in new tab
               </Button>
             </div>
           </PopoverContent>

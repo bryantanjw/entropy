@@ -43,7 +43,7 @@ export const loadingImages = [
   {
     tip: "Combine interesting styles and concepts.",
     imageUrl:
-      "https://cdn.sanity.io/images/6jp747p1/production/dd965c1597e158d8e5a3128af0dc2db363827983-720x1080.png ",
+      "https://cdn.sanity.io/images/6jp747p1/production/dd965c1597e158d8e5a3128af0dc2db363827983-720x1080.png",
     input_prompt:
       "black blindfold, masterpiece, best quality, high res, hm2b, 1girl, portrait, realistic, side lighting, wallpaper, masterpiece, best quality, highres, Gorgeous lips, covered eyes, towel, (onsen),  hm2b, towel, chest towel, wet towel",
     character: "2B from Nier: Automata",
@@ -102,5 +102,13 @@ export const loadingImages = [
     input_prompt:
       "scarlett johansson, (RAW photo, best quality), a close up portrait photo, 1woman, outdoor, high detailed skin, sweater, air bangs, slight cleavage",
     character: "Scarlett Johansson",
+  },
+  {
+    tip: "You can choose to use the base checkpoint models wihout selecting any character.",
+    imageUrl:
+      "https://cdn.sanity.io/images/6jp747p1/production/15492f9bb82a0bee0e66711dc5f06d56bb9f0d70-1008x1536.png",
+    input_prompt:
+      "((masterpiece, best quality, detailed)) 1girl, highres, japanese clothes, kimono, moon, original, partially submerged, petals, short hair, sion 0d1m, solo, wading, water",
+    character: "",
   },
 ];

@@ -40,9 +40,6 @@ const gallerySchema = {
       title: "Model Directory",
       name: "lora_dir",
       type: "string",
-      validation: (Rule: any) => [
-        Rule.min(1).error("Title must be between 3 and 50 characters"),
-      ],
     },
     {
       title: "Image Ratio",
@@ -75,8 +72,6 @@ const gallerySchema = {
       options: {
         list: CATEGORIES,
       },
-      validation: (Rule: any) =>
-        Rule.required().error("At least one category is required"),
     },
     {
       title: "Image Origin",
@@ -186,8 +181,6 @@ const gallerySchema = {
       options: {
         layout: "tags",
       },
-      validation: (Rule: any) =>
-        Rule.required().error("At least one tag is required"),
     },
     {
       title: "Tags String",

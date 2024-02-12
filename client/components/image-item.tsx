@@ -16,6 +16,7 @@ import {
   ChevronRightIcon,
   Cross2Icon,
   DownloadIcon,
+  ExternalLinkIcon,
   ImageIcon,
   MagicWandIcon,
   PersonIcon,
@@ -232,7 +233,7 @@ export default function ImageItem({
                     alt={image.title}
                     src={image.image_url}
                     className={clsx(
-                      "object-cover duration-200 ease-in-out group-hover:cursor-pointer",
+                      "object-cover object-top duration-200 ease-in-out group-hover:cursor-pointer",
                       isLoading
                         ? "scale-120 blur-3xl grayscale"
                         : "scale-100 blur-0 grayscale-0"
@@ -280,15 +281,15 @@ export default function ImageItem({
                 )}
               >
                 <Image
-                  width={1536}
-                  height={1032}
+                  width={1920}
+                  height={1080}
                   loading={currentImage.ratio === "portrait" ? "eager" : "lazy"}
                   priority={currentImage.ratio === "portrait" ? true : false}
                   sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
                   alt={currentImage.title}
                   src={currentImage.image_url}
                   className={clsx(
-                    "object-cover duration-700 ease-in-out h-full",
+                    "object-cover object-top duration-700 ease-in-out h-full",
                     isLoading
                       ? "scale-120 blur-3xl grayscale"
                       : "scale-100 blur-0 grayscale-0"
@@ -296,23 +297,35 @@ export default function ImageItem({
                   onLoad={() => setIsLoading(false)}
                   quality={100}
                 />
-                <Button
-                  size="icon"
-                  variant="secondary"
-                  className="absolute right-4 top-4 rounded-lg"
-                  onClick={() =>
-                    handleDownload({
-                      imageUrl: currentImage.image_url,
-                      setDownloading,
-                    })
-                  }
-                >
-                  {isDownloading ? (
-                    <Icons.spinner className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <DownloadIcon className="h-4 w-4" />
-                  )}
-                </Button>
+
+                <div className="absolute right-4 top-4 space-x-2">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="rounded-lg"
+                    onClick={() =>
+                      window.open(currentImage.image_url, "_blank")
+                    }
+                  >
+                    <ExternalLinkIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    onClick={() =>
+                      handleDownload({
+                        imageUrl: currentImage.image_url,
+                        setDownloading,
+                      })
+                    }
+                  >
+                    {isDownloading ? (
+                      <Icons.spinner className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <DownloadIcon className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </motion.figure>
               <motion.div
                 key={`${currIndex}-card`}

@@ -6,7 +6,7 @@ import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 
 import { notFound, usePathname } from "next/navigation";
 import Link from "next/link";
-import OutputImage from "./image";
+import OutputImage from "./output-image";
 import { Progress } from "@/components/ui/progress";
 import { extractProgress } from "@/lib/helpers";
 import Image from "next/image";
@@ -134,7 +134,11 @@ export default function OutputImages({ id }) {
                     key={index}
                   >
                     <Link key={index} href={`${pathname}/${path}${index}`}>
-                      <OutputImage path={path} index={index} />
+                      <OutputImage
+                        path={path}
+                        index={index}
+                        predictionId={id}
+                      />
                     </Link>
                   </motion.div>
                 );

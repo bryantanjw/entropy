@@ -331,23 +331,33 @@ function ImageDialog({
             onLoad={() => setIsLoading(false)}
             quality={100}
           />
-          <Button
-            size="icon"
-            variant="secondary"
-            className="absolute right-4 top-4 rounded-lg"
-            onClick={() =>
-              handleDownload({
-                imageUrl: url,
-                setDownloading,
-              })
-            }
-          >
-            {isDownloading ? (
-              <Icons.spinner className="h-4 w-4 animate-spin" />
-            ) : (
-              <DownloadIcon className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="absolute right-4 top-4 space-x-2">
+            <Button
+              size="icon"
+              variant="secondary"
+              className="rounded-lg"
+              onClick={() => window.open(currentImage.url, "_blank")}
+            >
+              <ExternalLinkIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="secondary"
+              className="rounded-lg"
+              onClick={() =>
+                handleDownload({
+                  imageUrl: url,
+                  setDownloading,
+                })
+              }
+            >
+              {isDownloading ? (
+                <Icons.spinner className="h-4 w-4 animate-spin" />
+              ) : (
+                <DownloadIcon className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </motion.figure>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
