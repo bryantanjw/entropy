@@ -13,8 +13,6 @@ export default async function SubscriptionLayout({
   children,
 }: SubscriptionLayoutProps) {
   return (
-    <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
-      {children}
-    </div>
+    <div className="w-full mx-auto flex flex-col items-center">{children}</div>
   );
 }

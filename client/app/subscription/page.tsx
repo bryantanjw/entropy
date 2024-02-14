@@ -9,6 +9,7 @@ import { Column } from "@/components/ui/column";
 import { Row } from "@/components/ui/row";
 import { SubscriptionGrid } from "./components/subscription-grid";
 import { BoxesContainer } from "@/components/ui/interactive-bg-boxes";
+import Footer from "@/components/footer";
 
 export default async function SubscriptionPage() {
   const [session, userDetails, products, subscription] = await Promise.all([
@@ -55,6 +56,8 @@ export default async function SubscriptionPage() {
           />
         </Column>
       </Column>
+
+      <Footer />
     </div>
   );
 }

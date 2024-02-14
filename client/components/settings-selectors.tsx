@@ -4,21 +4,11 @@ import * as z from "zod";
 import { StepSelector } from "./selectors/step-selector";
 import { Label } from "./ui/label";
 import { Row } from "./ui/row";
-import { Slider } from "./ui/slider";
 
-import { useSliderChange } from "@/lib/hooks/use-slider-change";
 import { playgroundFormSchema } from "@/lib/hooks/use-playground-form";
 import { CfgSelector } from "./selectors/cfg-selector";
 import { StrengthSelector } from "./selectors/strength-selector";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-import { Input } from "./ui/input";
+import { FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 interface SettingsSelectorsProps {
@@ -26,11 +16,6 @@ interface SettingsSelectorsProps {
 }
 
 export function SettingsSelectors({ form }: SettingsSelectorsProps) {
-  const { value, handleSliderChange } = useSliderChange(
-    form,
-    "controlnetConditioning"
-  );
-
   return (
     <div className="flex flex-col gap-6 items-center justify-between bg-slate-50 dark:bg-card bg-opacity-30 px-5 py-5 rounded-lg border border-slate-200 dark:border-accent border-opacity-50">
       <Label htmlFor="settings">Settings</Label>

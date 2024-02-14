@@ -12,6 +12,7 @@ import SupabaseProvider from "@/lib/providers/supabase-provider";
 import { FormProvider } from "@/lib/providers/form-provider";
 
 import "./globals.css";
+import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Entropy AI",

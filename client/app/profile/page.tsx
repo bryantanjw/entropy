@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { ProfileGallery } from "./components/profile-gallery";
 import { Spotlight } from "@/components/ui/spotlight";
+import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { getUserDetails } from "@/lib/supabase-server";
 
@@ -36,6 +37,7 @@ export default async function ProfilePage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
