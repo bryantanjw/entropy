@@ -5,7 +5,11 @@ import { InputForm } from "@/components/input-form";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
-import { getCharacters, getSession } from "@/lib/supabase-server";
+import {
+  getCharacters,
+  getSession,
+  getSubscription,
+} from "@/lib/supabase-server";
 import OutputImages from "./components/output-images";
 
 export async function generateMetadata({
@@ -41,9 +45,10 @@ export default async function GenerationPage({
     id: string;
   };
 }) {
-  const [session, characters] = await Promise.all([
+  const [session, characters, subsciption] = await Promise.all([
     getSession(),
     getCharacters(),
+    getSubscription(),
   ]);
 
   const user = session?.user;
@@ -55,7 +60,11 @@ export default async function GenerationPage({
       <div className="w-full grid md:grid-cols-[1fr_0.18fr]">
         <Column className="items-center min-h-screen py-12 pt-24 md:px-10">
           <Column className="w-full h-full lg:max-w-4xl xl:max-w-6xl">
-            <InputForm user={user} characters={characters} />
+            <InputForm
+              user={user}
+              characters={characters}
+              subscription={subsciption}
+            />
             <OutputImages id={params.id} />
           </Column>
         </Column>
