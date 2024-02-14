@@ -594,7 +594,7 @@ export default function ImageItem({
                       <Field
                         id="lora_strength"
                         label="lora_strength"
-                        value={currentImage.lora_strength}
+                        value={currentImage.lora_strength || 1}
                       />
                       <Field
                         id="sampler"
