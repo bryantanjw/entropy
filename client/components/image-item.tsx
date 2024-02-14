@@ -178,8 +178,7 @@ export default function ImageItem({
     form.setValue("sampler_name", currentImage.sampler);
     form.setValue("seed", currentImage.seed);
     form.setValue("cfg", currentImage.cfg_scale);
-    form.setValue("lora_strength", currentImage.lora_strength);
-
+    form.setValue("lora_strength", currentImage.lora_strength || 1);
     setDialogOpen(false);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -594,7 +593,7 @@ export default function ImageItem({
                       <Field
                         id="lora_strength"
                         label="lora_strength"
-                        value={currentImage.lora_strength || 1}
+                        value={1}
                       />
                       <Field
                         id="sampler"
