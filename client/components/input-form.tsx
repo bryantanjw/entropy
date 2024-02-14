@@ -124,7 +124,6 @@ export const InputForm = ({
     });
 
     const response = await res.json();
-    console.log("response", response);
 
     if (res.status !== 200 || response.status === "error") {
       toast.error("Uh oh! Something went wrong", {

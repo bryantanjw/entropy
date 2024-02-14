@@ -14,7 +14,7 @@ export const playgroundFormSchema = z.object({
   sampler_name: z.string().default("dpmpp_2m"),
   seed: z.number().optional(),
   cfg: z.number().min(1.0).max(10.0).default(6.0),
-  lora: z.string().optional(),
+  lora: z.string().optional().nullable(),
   custom_lora_file: z.record(z.any()).optional(), // only used to store the state for dropzone
   custom_lora: z.string().optional(),
   lora_strength: z.number().min(0.0).max(1.0).default(1.0),
