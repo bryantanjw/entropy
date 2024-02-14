@@ -41,9 +41,11 @@ import { FormContext } from "@/lib/providers/form-provider";
 export const InputForm = ({
   user,
   characters,
+  subscription,
 }: {
   user?: User;
   characters: any;
+  subscription: any;
 }) => {
   const router = useRouter();
   const form = useContext(FormContext);
@@ -117,6 +119,7 @@ export const InputForm = ({
       body: JSON.stringify({
         ...values,
         userId: user.id,
+        subscription_tier: subscription?.prices.product_id,
       }),
     });
 
