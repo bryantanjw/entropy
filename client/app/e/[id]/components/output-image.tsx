@@ -46,8 +46,8 @@ export default function OutputImage({ path, index, predictionId }) {
             "transition-all duration-200",
             { "hover:scale-95": !flag }
           )}
-          width={1080}
-          height={1080}
+          width={1200}
+          height={1200}
           src={`https://replicate.delivery/pbxt/${path}/out-${index}.png`}
         />
       </motion.div>

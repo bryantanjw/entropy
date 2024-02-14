@@ -10,6 +10,7 @@ export type ImageDataType = {
   model: string;
   category: string;
   cfg_scale: number;
+  lora_strength: number;
   steps: number;
   sampler: string;
   seed: number;

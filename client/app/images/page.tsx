@@ -7,7 +7,12 @@ import Filter from "@/components/image-filter";
 import ImageGrid from "@/components/image-grid";
 
 import { fetchImages } from "@/lib/actions";
-import { getCharacters, getSession } from "@/lib/supabase-server";
+import {
+  getCharacters,
+  getGenerationCount,
+  getSession,
+} from "@/lib/supabase-server";
+import { formatCount } from "@/lib/helpers";
 
 export async function generateMetadata({
   searchParams,
@@ -41,9 +46,10 @@ export default async function Search({
 }: {
   searchParams: { search: string; style: string };
 }) {
-  const [session, characters] = await Promise.all([
+  const [session, characters, generationCount] = await Promise.all([
     getSession(),
     getCharacters(),
+    getGenerationCount(),
   ]);
 
   const user = session?.user;
@@ -57,6 +63,9 @@ export default async function Search({
       <Navbar />
       <Column className="w-full items-center min-h-screen py-44">
         <Column className="w-full max-w-3xl lg:max-w-4xl xl:max-w-6xl">
+          <div className="thirteen w-fit relative mx-auto mb-8 px-4 py-1.5 text-sm font-light tracking-wide">
+            {formatCount(generationCount)} images generated and counting!
+          </div>
           <InputForm user={user} characters={characters} />
           <Row className="my-24 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent" />
 

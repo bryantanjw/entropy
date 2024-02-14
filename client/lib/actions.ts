@@ -1,5 +1,4 @@
 "use server";
-import { stripe } from "@/lib/stripe";
 import { getImages } from "@/sanity/sanity-utils";
 
 export async function fetchImages({

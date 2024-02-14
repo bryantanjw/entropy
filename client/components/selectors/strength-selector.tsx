@@ -29,10 +29,10 @@ export function StrengthSelector({ form }: StrengthSelectorProps) {
           <div className="flex items-center justify-between">
             <HoverCardTrigger asChild>
               <Label
-                htmlFor="strength"
+                htmlFor="lora_strength"
                 className="font-normal underline underline-offset-2 decoration-dotted decoration-slate-500"
               >
-                Strength
+                LoRA Strength
               </Label>
             </HoverCardTrigger>
             <span className="w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm text-muted-foreground hover:border-border">
@@ -55,10 +55,7 @@ export function StrengthSelector({ form }: StrengthSelectorProps) {
           align="start"
           className="w-[260px] text-sm"
         >
-          Number of denoising steps (minimum: 1; maximum: 100).
-          <br /> <br /> Decrease to have the initial composition follows the QR
-          code more. You will only see the QR code if you reduce it too much.
-          The range of steps varies by model.
+          How obvious the you want the selected character to appear.
         </HoverCardContent>
       </HoverCard>
     </div>

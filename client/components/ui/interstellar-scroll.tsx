@@ -322,8 +322,8 @@ function ImageDialog({
           )}
         >
           <Image
-            width={1080}
-            height={720}
+            width={1920}
+            height={1275}
             alt={"entropy"}
             src={url}
             className={clsx(

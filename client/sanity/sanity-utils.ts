@@ -30,6 +30,7 @@ export async function getImages(
       "image_url": image.asset->url,
       "prompt": image.prompt,
       "negative_prompt": image.negative_prompt,
+      "lora_strength": image.lora_strength,
       "model": image.model,
       "steps": image.steps,
       "seed": image.seed,

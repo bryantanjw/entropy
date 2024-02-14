@@ -178,6 +178,7 @@ export default function ImageItem({
     form.setValue("sampler_name", currentImage.sampler);
     form.setValue("seed", currentImage.seed);
     form.setValue("cfg", currentImage.cfg_scale);
+    form.setValue("lora_strength", currentImage.lora_strength);
 
     setDialogOpen(false);
     setTimeout(() => {
@@ -282,7 +283,7 @@ export default function ImageItem({
               >
                 <Image
                   width={1920}
-                  height={1080}
+                  height={1275}
                   loading={currentImage.ratio === "portrait" ? "eager" : "lazy"}
                   priority={currentImage.ratio === "portrait" ? true : false}
                   sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
@@ -340,16 +341,18 @@ export default function ImageItem({
                   <CardHeader>
                     <CardTitle className="mb-2">Imagine</CardTitle>
                     <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
-                      <Link
-                        href={`/images?search=${currentImage.title}`}
-                        className={clsx(
-                          badgeVariants({ variant: "default" }),
-                          "w-fit py-1 opacity-90 items-center"
-                        )}
-                      >
-                        <PersonIcon className="mr-2 h-3 w-3" />
-                        {currentImage.title}
-                      </Link>
+                      {currentImage.title !== "Custom" && (
+                        <Link
+                          href={`/images?search=${currentImage.title}`}
+                          className={clsx(
+                            badgeVariants({ variant: "default" }),
+                            "w-fit py-1 opacity-90 items-center"
+                          )}
+                        >
+                          <PersonIcon className="mr-2 h-3 w-3" />
+                          {currentImage.title}
+                        </Link>
+                      )}
                       <ScrollArea className="h-20">
                         {currentImage.prompt?.length > 500
                           ? `${currentImage.prompt.substring(0, 500)}...`
@@ -387,17 +390,23 @@ export default function ImageItem({
                         />
                       </div>
 
-                      <div className="flex flex-col space-y-1.5">
+                      <div className="flex gap-3">
+                        <Field
+                          id="steps"
+                          label="steps"
+                          value={currentImage.steps}
+                        />
                         <Field
                           id="cfg_scale"
                           label="cfg_scale"
                           value={currentImage.cfg_scale}
                         />
                       </div>
+
                       <Field
-                        id="steps"
-                        label="steps"
-                        value={currentImage.steps}
+                        id="lora_strength"
+                        label="lora_strength"
+                        value={currentImage.lora_strength}
                       />
                       <Field
                         id="sampler"
@@ -516,9 +525,9 @@ export default function ImageItem({
 
         <AnimatePresence initial={false} custom={direction}>
           <DrawerContent onEscapeKeyDown={toggleDialog}>
-            <ScrollArea className="h-[400px] py-3">
+            <ScrollArea className="h-[400px] py-4">
               <motion.div className="flex flex-col h-full rounded-lg justify-between bg-card text-card-foreground shadow-xl">
-                <div className="space-y-4">
+                <div className="space-y-4 mb-2">
                   <CardHeader>
                     <CardTitle className="mb-2">Imagine</CardTitle>
                     <CardDescription className="flex flex-col text-sm gap-2 text-foreground">
@@ -569,17 +578,23 @@ export default function ImageItem({
                         />
                       </div>
 
-                      <div className="flex flex-col space-y-1.5">
+                      <div className="flex gap-3">
+                        <Field
+                          id="steps"
+                          label="steps"
+                          value={currentImage.steps}
+                        />
                         <Field
                           id="cfg_scale"
                           label="cfg_scale"
                           value={currentImage.cfg_scale}
                         />
                       </div>
+
                       <Field
-                        id="steps"
-                        label="steps"
-                        value={currentImage.steps}
+                        id="lora_strength"
+                        label="lora_strength"
+                        value={currentImage.lora_strength}
                       />
                       <Field
                         id="sampler"
