@@ -111,7 +111,7 @@ export function UpgradePlanDialog({ subscription, products }) {
               <p>Or check all plans in our</p>
               <Link
                 className="text-blue-600 hover:underline w-fit"
-                href="#https://www.entropy.so/#pricing"
+                href="https://www.entropy.so/#pricing"
               >
                 Pricing Page <sup>&#8599;</sup>
               </Link>

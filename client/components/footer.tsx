@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default async function Footer() {
   return (
-    <footer className="fixed bottom-0 right-0 flex items-center w-full md:px-12 p-4 justify-end gap-4 text-xs">
+    <footer className="hidden md:flex fixed bottom-0 right-0 items-center w-full md:px-12 p-4 justify-end gap-4 text-xs">
       <Link
         href={"https://www.entropy.so/legal/terms-of-service"}
         target="_blank"
