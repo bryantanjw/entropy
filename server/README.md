@@ -30,4 +30,4 @@ The workflow used for this repo is found under:
 
 "masterpiece, (detailed, highres, best quality), 1girl, IncrsAhri, braid, fox tail, multiple tails, korean clothes, skirt, blurry, blurry background, arms behind back, seductive smile"
 
-![output.png](https://cdn.sanity.io/images/6jp747p1/production/098ab44b01901d5a02fd996e43bc1e0f9956b08b-720x1080.png)
+![output.png](https://cdn.sanity.io/images/6jp747p1/production/af008d550a4fd488f3eb6800731bde89980c5995-1536x2160.png)
