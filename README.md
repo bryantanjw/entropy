@@ -30,4 +30,4 @@ We welcome contributions and feedback to make Entropy even better 🤧.
 
 ## License
 
-Entropy is released under the MIT License. See [LICENSE](./LICENSE) for more details.
+Entropy is released under the MIT License. See [LICENSE](./LICENSE.md) for more details.
