@@ -49,6 +49,7 @@ loras = [
     "gaming/Jinx.safetensors",
     "gaming/Akali.safetensors",
     "gaming/Soul_Fighter_Gwen.safetensors",
+    "gaming/Gwen.safetensors",
     "gaming/Custom.safetensors",
 
     "gaming/Jett.safetensors",
