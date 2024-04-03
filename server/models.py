@@ -50,6 +50,7 @@ loras = [
     "gaming/Akali.safetensors",
     "gaming/Soul_Fighter_Gwen.safetensors",
     "gaming/Gwen.safetensors",
+    "gaming/Snow_Moon_Ahri.safetensors",
     "gaming/Custom.safetensors",
 
     "gaming/Jett.safetensors",
