@@ -16,8 +16,6 @@ Entropy is a cutting-edge platform for generating images of characters using adv
 
 Entropy leverages the latest in AI to bring your favorite characters to life in unique and creative ways.
 
-[Support Entropy - Buy Me A Coffee](https://www.buymeacoffee.com/bryantan)
-
 ## Features
 
 - Generate high resolution images of any character.
