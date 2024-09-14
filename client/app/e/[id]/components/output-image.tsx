@@ -7,10 +7,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function OutputImage({ path, index, predictionId }) {
-  console.log(
-    `output: https://replicate.delivery/pbxt/${path}/out-${index}.png`
-  );
-
   const pathname = usePathname().split("/").pop().slice(0, -1);
 
   const flag = path.toString() === pathname;
