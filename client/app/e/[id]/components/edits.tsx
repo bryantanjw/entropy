@@ -105,7 +105,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          imageUrl: `https://replicate.delivery/pbxt/${path}/out-${index}.png`,
+          imageUrl: `https://replicate.delivery/yhqm/${path}/out-${index}.png`,
           userId: id,
           predictionInput: predictions.input,
         }),
@@ -134,7 +134,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
 
   const handleDownload = () => {
     setDownloading(true);
-    const imageUrl = `https://replicate.delivery/pbxt/${path}/out-${index}.png`;
+    const imageUrl = `https://replicate.delivery/yhqm/${path}/out-${index}.png`;
 
     fetch(imageUrl, {
       headers: new Headers({
@@ -239,7 +239,7 @@ export const Edits = ({ user, predictionId, path, index }) => {
                 className="w-full py-5 px-3 justify-start items-center"
                 onClick={() =>
                   window.open(
-                    `https://replicate.delivery/pbxt/${path}/out-${index}.png`
+                    `https://replicate.delivery/yhqm/${path}/out-${index}.png`
                   )
                 }
               >
